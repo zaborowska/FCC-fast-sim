@@ -23,37 +23,65 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: Par01ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
+/// \file eventgenerator/HepMC/HepMCEx03/include/HepMCG4Pythia8Interface.hh
+/// \brief Definition of the HepMCG4Pythia8Interface class
 //
-/// \file Par01ActionInitialization.cc
-/// \brief Implementation of the Par01ActionInitialization class
+//
 
-#include "Par01ActionInitialization.hh"
-#include "H02PrimaryGeneratorAction.hh"
+#ifndef HEPMC_G4_PYTHIA8_INTERFACE_H
+#define HEPMC_G4_PYTHIA8_INTERFACE_H
 
+#include "HepMCG4Interface.hh"
+#include "Pythia8/Pythia8ToHepMC.h"
+#include "Pythia8/Pythia.h"
+
+class HepMCG4Pythia8Messenger;
+
+/// A generic interface class with Pythia8 event generator via HepMC.
+
+class HepMCG4Pythia8Interface : public HepMCG4Interface {
+protected:
+   G4int verbose;
+   HepMC::Pythia8ToHepMC ToHepMC;
+   Pythia8::Pythia pythia;
+
+  HepMCG4Pythia8Messenger* messenger;
+
+  virtual HepMC::GenEvent* GenerateHepMCEvent();
+
+public:
+  HepMCG4Pythia8Interface();
+  ~HepMCG4Pythia8Interface();
+
+  // set/get methods
+  void SetVerboseLevel(G4int i);
+  G4int GetVerboseLevel() const;
+
+  // call pyxxx
+  void CallPythiaInit(G4int beam, G4int target, G4double eCM);
+  void CallPythiaStat();
+  void CallPythiaReadString(G4String par);
+
+  // random numbers operations
+  void SetRandomSeed(G4int iseed);
+  void PrintRandomStatus(std::ostream& ostr=G4cout) const;
+
+  // setup user parameters (empty in default).
+  // Implement your parameters in a delived class if you want.
+  virtual void SetUserParameters();
+
+  virtual void Print() const;
+};
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-Par01ActionInitialization::Par01ActionInitialization()
- : G4VUserActionInitialization()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-Par01ActionInitialization::~Par01ActionInitialization()
-{;}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::BuildForMaster() const
+inline void HepMCG4Pythia8Interface::SetVerboseLevel(G4int i)
 {
+  verbose= i;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::Build() const
+inline G4int HepMCG4Pythia8Interface::GetVerboseLevel() const
 {
-  SetUserAction(new H02PrimaryGeneratorAction);
+  return verbose;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#endif

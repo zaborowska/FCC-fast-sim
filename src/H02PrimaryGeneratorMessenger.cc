@@ -23,37 +23,70 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: Par01ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
+/// \file eventgenerator/HepMC/HepMCEx03/src/H02PrimaryGeneratorMessenger.cc
+/// \brief Implementation of the H02PrimaryGeneratorMessenger class
 //
-/// \file Par01ActionInitialization.cc
-/// \brief Implementation of the Par01ActionInitialization class
-
-#include "Par01ActionInitialization.hh"
+//   $Id: H02PrimaryGeneratorMessenger.cc 77801 2013-11-28 13:33:20Z gcosmo $
+//
+#include "G4UIcmdWithABool.hh"
+#include "G4UIcmdWithAnInteger.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithoutParameter.hh"
+#include "G4UIcommand.hh"
+#include "G4UIdirectory.hh"
+#include "G4UIparameter.hh"
+#include "H02PrimaryGeneratorMessenger.hh"
 #include "H02PrimaryGeneratorAction.hh"
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-Par01ActionInitialization::Par01ActionInitialization()
- : G4VUserActionInitialization()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-Par01ActionInitialization::~Par01ActionInitialization()
-{;}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::BuildForMaster() const
+H02PrimaryGeneratorMessenger::H02PrimaryGeneratorMessenger
+                            (H02PrimaryGeneratorAction* genaction)
+  : primaryAction(genaction)
 {
+  dir= new G4UIdirectory("/generator/");
+  dir-> SetGuidance("Control commands for primary generator");
+
+  //verbose= new G4UIcmdWithAnInteger("/generator/verbose", this);
+  //verbose-> SetGuidance("set verbose level (0,1,2)");
+  //verbose-> SetParameterName("verbose", false, false);
+  //verbose-> SetDefaultValue(0);
+  //verbose-> SetRange("verbose>=0 && verbose<=2");
+
+  select= new G4UIcmdWithAString("/generator/select", this);
+  select-> SetGuidance("select generator type");
+  select-> SetParameterName("generator_type", false, false);
+  select-> SetCandidates("particleGun pythia8 hepmcAscii");
+  select-> SetDefaultValue("particleGun");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::Build() const
+H02PrimaryGeneratorMessenger::~H02PrimaryGeneratorMessenger()
 {
-  SetUserAction(new H02PrimaryGeneratorAction);
+  //delete verbose;
+  delete select;
+
+  delete dir;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void H02PrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
+                                              G4String newValues)
+{
+  if ( command==select) {
+    primaryAction-> SetGenerator(newValues);
+    G4cout << "current generator type: "
+            << primaryAction-> GetGeneratorName() << G4endl;
+  } else {
+  }
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4String H02PrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
+{
+  G4String cv, st;
+  if (command == select) {
+    cv= primaryAction-> GetGeneratorName();
+  }
+
+ return cv;
+}

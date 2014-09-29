@@ -39,7 +39,7 @@
 //-------------------
 // Generator action:
 //-------------------
-#include "Par01PrimaryGeneratorAction.hh"
+#include "H02PrimaryGeneratorAction.hh"
 
 //---------------------------
 // Parameterisation manager:

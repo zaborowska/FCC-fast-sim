@@ -1,0 +1,5 @@
+/generator/select hepmcAscii
+/generator/hepmcAscii/open data_Pythia8ToAscii/example_MyPythia8.dat
+/generator/hepmcAscii/verbose 1
+/run/beamOn 1
+

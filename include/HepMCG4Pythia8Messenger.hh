@@ -23,37 +23,41 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: Par01ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
+/// \file eventgenerator/HepMC/HepMCEx03/include/HepMCG4Pythia8Messenger.hh
+/// \brief Definition of the HepMCG4Pythia8Messenger class
 //
-/// \file Par01ActionInitialization.cc
-/// \brief Implementation of the Par01ActionInitialization class
 
-#include "Par01ActionInitialization.hh"
-#include "H02PrimaryGeneratorAction.hh"
+#ifndef HEPMC_G4_PYTHIA8_MESSENGER_H
+#define HEPMC_G4_PYTHIA8_MESSENGER_H
 
+#include "G4UImessenger.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+class HepMCG4Pythia8Interface;
+class G4UIdirectory;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithAString;
+class G4UIcmdWithAnInteger;
 
-Par01ActionInitialization::Par01ActionInitialization()
- : G4VUserActionInitialization()
-{}
+class HepMCG4Pythia8Messenger : public G4UImessenger {
+private:
+  HepMCG4Pythia8Interface* gen;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+  G4UIdirectory*           dir;
+  G4UIcmdWithAnInteger*    verbose;
+  G4UIcmdWithoutParameter* print;
+  G4UIcommand*             cpythiainit;
+  G4UIcmdWithoutParameter* cpythiastat;
+  G4UIcommand*             cpythiaread;
+  G4UIcommand*             setUserParameters;
+  G4UIcmdWithAnInteger*    setSeed;
+  G4UIcmdWithAString*      printRandomStatus;
 
-Par01ActionInitialization::~Par01ActionInitialization()
-{;}
+public:
+  HepMCG4Pythia8Messenger(HepMCG4Pythia8Interface* agen);
+  ~HepMCG4Pythia8Messenger();
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+  void SetNewValue(G4UIcommand* command, G4String newValues);
+  G4String GetCurrentValue(G4UIcommand* command);
+};
 
-void Par01ActionInitialization::BuildForMaster() const
-{
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::Build() const
-{
-  SetUserAction(new H02PrimaryGeneratorAction);
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#endif
