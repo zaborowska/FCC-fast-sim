@@ -3,6 +3,8 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(Par01)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
 # You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
@@ -21,10 +23,31 @@ endif()
 include(${Geant4_USE_FILE})
 
 #----------------------------------------------------------------------------
+# Find HepMC (required package)
+#
+find_package(HepMC REQUIRED)
+
+#----------------------------------------------------------------------------
+# Find Pythia8 (required package)
+#
+find_package(Pythia8 REQUIRED)
+if(PYTHIA8_FOUND)
+  message(STATUS "G4 Examples: Pythia8 -- found.") 
+  add_definitions(-DG4LIB_USE_PYTHIA8) 
+else()
+  message(STATUS "G4 Examples: Pythia8 -- NOT found.") 
+  set(PYTHIA8_LIBRARY "")
+  set(PYTHIA8_HEPMC_LIBRARY "")
+  set(PYTHIA8_HAPDF_LIBRARY "")
+endif()
+
+#----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
 include_directories(${PROJECT_SOURCE_DIR}/include 
-                    ${Geant4_INCLUDE_DIR})
+                    ${Geant4_INCLUDE_DIR}
+                    ${HEPMC_INCLUDE_DIR}
+                    ${PYTHIA8_INCLUDE_DIR})
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
@@ -32,7 +55,10 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 # Add the executable, and link it to the Geant4 libraries
 #
 add_executable(examplePar01 examplePar01.cc ${sources} ${headers})
-target_link_libraries(examplePar01 ${Geant4_LIBRARIES} )
+target_link_libraries(examplePar01 ${Geant4_LIBRARIES}
+                      ${HEPMC_LIBRARIES}
+                       ${PYTHIA8_LIBRARY}
+                       ${PYTHIA8_HEPMC_LIBRARY} ${PYTHIA8_HAPDF_LIBRARY})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -40,7 +66,7 @@ target_link_libraries(examplePar01 ${Geant4_LIBRARIES} )
 # relies on these scripts being in the current working directory.
 #
 set(Par01_SCRIPTS
-    examplePar01.in examplePar01.large_N.in examplePar01.out vis.mac
+    examplePar01.in examplePar01_ascii.in vis.mac
   )
 
 foreach(_script ${Par01_SCRIPTS})

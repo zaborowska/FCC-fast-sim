@@ -23,37 +23,50 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: Par01ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
+/// \file eventgenerator/HepMC/HepMCEx03/src/H02PrimaryGeneratorAction.cc
+/// \brief Implementation of the H02PrimaryGeneratorAction class
+//   $Id: H02PrimaryGeneratorAction.cc 77801 2013-11-28 13:33:20Z gcosmo $
 //
-/// \file Par01ActionInitialization.cc
-/// \brief Implementation of the Par01ActionInitialization class
-
-#include "Par01ActionInitialization.hh"
+#include "G4Event.hh"
+#include "G4ParticleGun.hh"
+#include "HepMCG4AsciiReader.hh"
+#include "HepMCG4Pythia8Interface.hh"
 #include "H02PrimaryGeneratorAction.hh"
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-Par01ActionInitialization::Par01ActionInitialization()
- : G4VUserActionInitialization()
-{}
+#include "H02PrimaryGeneratorMessenger.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-Par01ActionInitialization::~Par01ActionInitialization()
-{;}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::BuildForMaster() const
+H02PrimaryGeneratorAction::H02PrimaryGeneratorAction()
 {
+  // default generator is particle gun.
+  currentGenerator= particleGun= new G4ParticleGun();
+  currentGeneratorName= "particleGun";
+  hepmcAscii= new HepMCG4AsciiReader();
+#ifdef G4LIB_USE_PYTHIA8
+  pythia8Gen= new HepMCG4Pythia8Interface();
+#else
+  pythia8Gen= 0;
+#endif
+
+  gentypeMap["particleGun"]= particleGun;
+  gentypeMap["hepmcAscii"]= hepmcAscii;
+  gentypeMap["pythia8"]= pythia8Gen;
+
+  messenger= new H02PrimaryGeneratorMessenger(this);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::Build() const
+H02PrimaryGeneratorAction::~H02PrimaryGeneratorAction()
 {
-  SetUserAction(new H02PrimaryGeneratorAction);
+  delete messenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void H02PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+{
+  if(currentGenerator)
+    currentGenerator-> GeneratePrimaryVertex(anEvent);
+  else
+    G4Exception("H02PrimaryGeneratorAction::GeneratePrimaries",
+                "InvalidSetup", FatalException,
+                "Generator is not instanciated.");
+}

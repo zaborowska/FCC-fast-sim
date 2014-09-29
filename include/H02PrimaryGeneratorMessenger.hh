@@ -23,37 +23,39 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: Par01ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
+/// \file eventgenerator/HepMC/HepMCEx02/include/H02PrimaryGeneratorMessenger.hh
+/// \brief Definition of the H02PrimaryGeneratorMessenger class
 //
-/// \file Par01ActionInitialization.cc
-/// \brief Implementation of the Par01ActionInitialization class
+//   $Id: H02PrimaryGeneratorMessenger.hh 77801 2013-11-28 13:33:20Z gcosmo $
+//
+#ifndef H02_PRIMARY_GENERATOR_MESSENGER_H
+#define H02_PRIMARY_GENERATOR_MESSENGER_H
 
-#include "Par01ActionInitialization.hh"
-#include "H02PrimaryGeneratorAction.hh"
+#include "globals.hh"
+#include "G4UImessenger.hh"
 
+class H02PrimaryGeneratorAction;
+class G4UIdirectory;
+class G4UIcommand;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithABool;
+class G4UIcmdWithAnInteger;
+class G4UIcmdWithAString;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+class H02PrimaryGeneratorMessenger : public G4UImessenger {
+public:
+  H02PrimaryGeneratorMessenger(H02PrimaryGeneratorAction* genaction);
+  ~H02PrimaryGeneratorMessenger();
 
-Par01ActionInitialization::Par01ActionInitialization()
- : G4VUserActionInitialization()
-{}
+  void SetNewValue(G4UIcommand* command, G4String newValues);
+  G4String GetCurrentValue(G4UIcommand* command);
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+private:
+  H02PrimaryGeneratorAction* primaryAction;
 
-Par01ActionInitialization::~Par01ActionInitialization()
-{;}
+  G4UIdirectory* dir;
+  G4UIcmdWithAString* select;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+};
 
-void Par01ActionInitialization::BuildForMaster() const
-{
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::Build() const
-{
-  SetUserAction(new H02PrimaryGeneratorAction);
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#endif
