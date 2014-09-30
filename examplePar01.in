@@ -1,10 +1,13 @@
 #  examplePar01.in
 #
 /generator/select pythia8
-#/generator/pythia8/verbose 0
+#/generator/pythia8/verbose 1
+
+#setting seed to be able to restore the event in future
+#/generator/pythia8/setSeed CombinationOfRunNumberAndEventNumber
 
 /generator/pythia8/init 2212 2212 140.
 
-/run/beamOn 3
+/run/beamOn 1
 /generator/pythia8/stat
 
