@@ -39,8 +39,6 @@
 HepMCG4Pythia8Interface::HepMCG4Pythia8Interface()
    : verbose(0)
 {
-  pythia.readString("HardQCD:all = on");
-  pythia.readString("PhaseSpace:pTHatMin = 20.");
   messenger= new HepMCG4Pythia8Messenger(this);
 }
 
