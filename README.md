@@ -11,7 +11,9 @@ ____________________________________________________________________
         mkdir build
         cd build
         source /afs/cern.ch/sw/lcg/external/geant4/10.0.p02/x86_64-slc6-gcc47-opt/CMake-setup.sh
+        export PYTHIA8DATA=/afs/cern.ch/sw/lcg/external/MCGenerators_lcgcmt67b/pythia8/186/x86_64-slc6-gcc47-opt/xmldoc
         cmake -DHEPMC_ROOT_DIR='/afs/cern.ch/sw/lcg/external/HepMC/2.06.08/x86_64-slc6-gcc47-opt/' -DPYTHIA8='/afs/cern.ch/sw/lcg/external/MCGenerators_lcgcmt67b/pythia8/186/x86_64-slc6-gcc47-opt/' -DCMAKE_INSTALL_PREFIX=. ..
+        make
 
 2. Event generator - Pythia 8
 -------------------
@@ -25,10 +27,10 @@ There is a possibility to read an ACII HepMC event:
 
 or to generate pythia event from G4:
 
-   /generator/select pythia8
-   /generator/pythia8/read "HardQCD:all = on"
-   /generator/pythia8/read "PhaseSpace:pTHatMin = 20."
-   /generator/pythia8/init 2212 2212 14000.
+        /generator/select pythia8
+        /generator/pythia8/read "HardQCD:all = on"
+        /generator/pythia8/read "PhaseSpace:pTHatMin = 20."
+        /generator/pythia8/init 2212 2212 14000.
 
 3. Producing ASCII file
 -------------------
