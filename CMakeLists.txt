@@ -66,7 +66,7 @@ target_link_libraries(examplePar01 ${Geant4_LIBRARIES}
 # relies on these scripts being in the current working directory.
 #
 set(Par01_SCRIPTS
-    examplePar01.in examplePar01_ascii.in vis.mac
+    examplePar01.in examplePar01_ascii.in vis.mac FCCdetector.gdml
   )
 
 foreach(_script ${Par01_SCRIPTS})
