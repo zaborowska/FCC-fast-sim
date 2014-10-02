@@ -32,6 +32,12 @@ or to generate pythia event from G4:
         /generator/pythia8/read "PhaseSpace:pTHatMin = 20."
         /generator/pythia8/init 2212 2212 14000.
 
+
+
+____________________________________________________________________
+
+____________________________________________________________________
+
 3. Producing ASCII file
 -------------------
 
