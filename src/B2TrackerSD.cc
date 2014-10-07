@@ -29,6 +29,7 @@
 /// \brief Implementation of the B2TrackerSD class
 
 #include "B2TrackerSD.hh"
+#include "RootIO.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 #include "G4ThreeVector.hh"
@@ -98,12 +99,21 @@ G4bool B2TrackerSD::ProcessHits(G4Step* aStep,
 
 void B2TrackerSD::EndOfEvent(G4HCofThisEvent*)
 {
-  if ( verboseLevel>1 ) { 
-     G4int nofHits = fHitsCollection->entries();
-     G4cout << "\n-------->Hits Collection: in this event they are " << nofHits 
-            << " hits in the tracker chambers: " << G4endl;
-     for ( G4int i=0; i<nofHits; i++ ) (*fHitsCollection)[i]->Print();
-  }
+   if ( verboseLevel>1 ) { 
+      G4int nofHits = fHitsCollection->entries();
+      G4cout << "\n-------->Hits Collection: in this event they are " << nofHits 
+             << " hits in the tracker chambers: " << G4endl;
+      for ( G4int i=0; i<nofHits; i++ ) (*fHitsCollection)[i]->Print();
+   }
+
+// storing the hits in ROOT file
+   G4int NbHits = fHitsCollection->entries();
+   std::vector<B2TrackerHit*> hitsVector;
+
+   for (G4int i=0;i<NbHits;i++)
+      hitsVector.push_back((*fHitsCollection)[i]);
+
+   RootIO::GetInstance()->Write(&hitsVector);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

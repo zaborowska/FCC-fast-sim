@@ -23,48 +23,83 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B2TrackerSD.hh 69706 2013-05-13 09:12:40Z gcosmo $
+/// \file persistency/P01/src/RootIO.cc
+/// \brief Implementation of the RootIO class
 //
-/// \file B2TrackerSD.hh
-/// \brief Definition of the B2TrackerSD class
+// $Id: RootIO.cc 71791 2013-06-24 14:08:28Z gcosmo $
+//
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef B2TrackerSD_h
-#define B2TrackerSD_h 1
+#include <sstream>
 
-
-#include "G4VSensitiveDetector.hh"
-
-#include "B2TrackerHit.hh"
-
-#include <vector>
-
-class G4Step;
-class G4HCofThisEvent;
+#include "RootIO.hh"
+//
+#include "Cintex/Cintex.h"
+#include "G4SDManager.hh"
+#include "G4HCofThisEvent.hh"
+#include "G4EventManager.hh"
+#include "G4Event.hh"
+//
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-/// B2Tracker sensitive detector class
-///
-/// The hits are accounted in hits in ProcessHits() function which is called
-/// by Geant4 kernel at each step. A hit is created with each step with non zero 
-/// energy deposit.
+static RootIO* instance = 0;
 
-class B2TrackerSD : public G4VSensitiveDetector
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+RootIO::RootIO():fNevents(0)
 {
-  public:
-    B2TrackerSD(const G4String& name, 
-                const G4String& hitsCollectionName);
-    virtual ~B2TrackerSD();
-  
-    // methods from base class
-    virtual void   Initialize(G4HCofThisEvent* hitCollection);
-    virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
-    virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
+  // initialize ROOT
+  TSystem ts;
+  gSystem->Load("libExP01ClassesDict");
 
-  private:
-    B2TrackerHitsCollection* fHitsCollection;
-};
+  ROOT::Cintex::Cintex::SetDebug(0);
+  ROOT::Cintex::Cintex::Enable();
+  //gDebug = 1;
+
+  fFile = new TFile("hits.root","RECREATE");
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+RootIO::~RootIO()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+RootIO* RootIO::GetInstance()
+{
+  if (instance == 0 )
+  {
+    instance = new RootIO();
+  }
+  return instance;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void RootIO::Write(std::vector<B2TrackerHit*>* hcont)
+{
+  fNevents++;
+
+  std::ostringstream os;
+  os << fNevents;
+  std::string stevt = "Event_" + os.str(); 
+  const char* chevt = stevt.c_str();
+
+  std::cout << "writing " << stevt << std::endl;
+
+
+  fFile->WriteObject(hcont, chevt);
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void RootIO::Close()
+{
+  fFile->Close();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

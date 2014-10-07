@@ -23,48 +23,45 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B2TrackerSD.hh 69706 2013-05-13 09:12:40Z gcosmo $
+/// \file persistency/P01/include/RootIO.hh
+/// \brief Definition of the RootIO class
 //
-/// \file B2TrackerSD.hh
-/// \brief Definition of the B2TrackerSD class
+// $Id: RootIO.hh 71791 2013-06-24 14:08:28Z gcosmo $
+#ifndef INCLUDE_ROOTIO_HH 
+#define INCLUDE_ROOTIO_HH 1
 
-#ifndef B2TrackerSD_h
-#define B2TrackerSD_h 1
-
-
-#include "G4VSensitiveDetector.hh"
+// Include files
+#include "TROOT.h"
+#include "TFile.h"
+#include "TSystem.h"
 
 #include "B2TrackerHit.hh"
 
-#include <vector>
+/** @class RootIO
+ *   
+ *
+ *  @author Witold POKORSKI
+ *  @date   2005-10-27
+ */
 
-class G4Step;
-class G4HCofThisEvent;
+/// Root IO implementation for the persistency example
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/// B2Tracker sensitive detector class
-///
-/// The hits are accounted in hits in ProcessHits() function which is called
-/// by Geant4 kernel at each step. A hit is created with each step with non zero 
-/// energy deposit.
-
-class B2TrackerSD : public G4VSensitiveDetector
+class RootIO 
 {
-  public:
-    B2TrackerSD(const G4String& name, 
-                const G4String& hitsCollectionName);
-    virtual ~B2TrackerSD();
+public: 
+  virtual ~RootIO();
   
-    // methods from base class
-    virtual void   Initialize(G4HCofThisEvent* hitCollection);
-    virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
-    virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
+  static RootIO* GetInstance();
+  void Write(std::vector<B2TrackerHit*>*);
+  void Close();
 
-  private:
-    B2TrackerHitsCollection* fHitsCollection;
+protected:
+  RootIO(); 
+  
+private:
+
+  TFile* fFile;
+  int fNevents;
+  
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-#endif
+#endif // INCLUDE_ROOTIO_HH
