@@ -61,7 +61,7 @@
 #include "Par01PhysicsList.hh"
 
 // Sensitive Detector
-#include "B2TrackerSD.hh"
+#include "G04SensitiveDetector.hh"
 #include "G4SDManager.hh"
 
 #include "G4UImanager.hh"

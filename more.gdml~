@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+  <define/>
+
+  <materials>
+    <material Z="13" name="Aluminum0x7ff5f9e42670" state="solid">
+      <MEE unit="eV" value="166"/>
+      <D unit="g/cm3" value="2.69999857937074"/>
+      <atom unit="g/mole" value="26.9814858034413"/>
+    </material>
+    <material Z="4" name="Beryllium0x7ff5f9e3baf0" state="solid">
+      <MEE unit="eV" value="63.7000000000001"/>
+      <D unit="g/cm3" value="1.84799902765819"/>
+      <atom unit="g/mole" value="9.01219525814998"/>
+    </material>
+    <isotope N="14" Z="7" name="N140x7ff5f9e3bbf0">
+      <atom unit="g/mole" value="14.0031"/>
+    </isotope>
+    <isotope N="15" Z="7" name="N150x7ff5f9e3e570">
+      <atom unit="g/mole" value="15.0001"/>
+    </isotope>
+    <element name="N0x7ff5f9e3e780">
+      <fraction n="0.99632" ref="N140x7ff5f9e3bbf0"/>
+      <fraction n="0.00368" ref="N150x7ff5f9e3e570"/>
+    </element>
+    <isotope N="16" Z="8" name="O160x7ff5f9e3f410">
+      <atom unit="g/mole" value="15.9949"/>
+    </isotope>
+    <isotope N="17" Z="8" name="O170x7ff5f9e3f450">
+      <atom unit="g/mole" value="16.9991"/>
+    </isotope>
+    <isotope N="18" Z="8" name="O180x7ff5f9e3f490">
+      <atom unit="g/mole" value="17.9992"/>
+    </isotope>
+    <element name="O0x7ff5f9e3f300">
+      <fraction n="0.99757" ref="O160x7ff5f9e3f410"/>
+      <fraction n="0.00038" ref="O170x7ff5f9e3f450"/>
+      <fraction n="0.00205" ref="O180x7ff5f9e3f490"/>
+    </element>
+    <isotope N="36" Z="18" name="Ar360x7ff5f9e45fb0">
+      <atom unit="g/mole" value="35.9675"/>
+    </isotope>
+    <isotope N="38" Z="18" name="Ar380x7ff5f9e45ff0">
+      <atom unit="g/mole" value="37.9627"/>
+    </isotope>
+    <isotope N="40" Z="18" name="Ar400x7ff5f9e46030">
+      <atom unit="g/mole" value="39.9624"/>
+    </isotope>
+    <element name="Ar0x7ff5f9e45e80">
+      <fraction n="0.003365" ref="Ar360x7ff5f9e45fb0"/>
+      <fraction n="0.000632" ref="Ar380x7ff5f9e45ff0"/>
+      <fraction n="0.996003" ref="Ar400x7ff5f9e46030"/>
+    </element>
+    <isotope N="1" Z="1" name="H10x7ff5f9e38e80">
+      <atom unit="g/mole" value="1.00782503081372"/>
+    </isotope>
+    <isotope N="2" Z="1" name="H20x7ff5f9e38c00">
+      <atom unit="g/mole" value="2.01410199966617"/>
+    </isotope>
+    <element name="H0x7ff5f9e38da0">
+      <fraction n="0.999885" ref="H10x7ff5f9e38e80"/>
+      <fraction n="0.000115" ref="H20x7ff5f9e38c00"/>
+    </element>
+    <material name="Air0x7ff5f9e72ea0" state="gas">
+      <MEE unit="eV" value="85.5378097493424"/>
+      <D unit="g/cm3" value="0.00121399936124299"/>
+      <fraction n="0.7494" ref="N0x7ff5f9e3e780"/>
+      <fraction n="0.2369" ref="O0x7ff5f9e3f300"/>
+      <fraction n="0.0129" ref="Ar0x7ff5f9e45e80"/>
+      <fraction n="0.0008" ref="H0x7ff5f9e38da0"/>
+    </material>
+  </materials>
+
+  <solids>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ForwardDipoles10x7ff5f9e7a6b0" rmax="300" rmin="210" startphi="0" z="250"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ForwardDipoles20x7ff5f9e7a8b0" rmax="330" rmin="240" startphi="0" z="250"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="Beampipe0x7ff5f9e7af40" rmax="19.5" rmin="19.11" startphi="0" z="3200"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ECalBarrel0x7ff5f9e7b300" rmax="299" rmin="150" startphi="0" z="600"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ECalEndCap_10x7ff5f9e7b630" rmax="299" rmin="150" startphi="0" z="200"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ECalEndCap_20x7ff5f9e7bc30" rmax="299" rmin="150" startphi="0" z="200"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ECalForward_10x7ff5f9e7c050" rmax="300" rmin="50" startphi="0" z="100"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ECalForward_20x7ff5f9e7c330" rmax="300" rmin="50" startphi="0" z="100"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ForwardCavities10x7ff5f9e7c850" rmax="200" rmin="20" startphi="0" z="200"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="ForwardCavities20x7ff5f9e7cbc0" rmax="200" rmin="20" startphi="0" z="200"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="InnerDetector0x7ff5f9e7e010" rmax="149" rmin="20" startphi="0" z="600"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="InnerSolenoid0x7ff5f9e7e5b0" rmax="850" rmin="801" startphi="0" z="1050"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="OuterSolenoid0x7ff5f9e7eaa0" rmax="1550" rmin="1500" startphi="0" z="1200"/>
+    <box lunit="mm" name="world_volume0x7ff5f9e788a0" x="10000" y="10000" z="20000"/>
+  </solids>
+
+  <structure>
+    <volume name="ForwardDipoles10x7ff5f9e7a530">
+      <materialref ref="Aluminum0x7ff5f9e42670"/>
+      <solidref ref="ForwardDipoles10x7ff5f9e7a6b0"/>
+    </volume>
+    <volume name="ForwardDipoles20x7ff5f9e7a9b0">
+      <materialref ref="Aluminum0x7ff5f9e42670"/>
+      <solidref ref="ForwardDipoles20x7ff5f9e7a8b0"/>
+    </volume>
+    <volume name="Beampipe0x7ff5f9e7b020">
+      <materialref ref="Beryllium0x7ff5f9e3baf0"/>
+      <solidref ref="Beampipe0x7ff5f9e7af40"/>
+    </volume>
+    <volume name="ECalBarrel0x7ff5f9e7b420">
+      <materialref ref="Aluminum0x7ff5f9e42670"/>
+      <solidref ref="ECalBarrel0x7ff5f9e7b300"/>
+    </volume>
+    <volume name="ECalEndCap_10x7ff5f9e7b710">
+      <materialref ref="Aluminum0x7ff5f9e42670"/>
+      <solidref ref="ECalEndCap_10x7ff5f9e7b630"/>
+    </volume>
+    <volume name="ECalEndCap_20x7ff5f9e7bd10">
+      <materialref ref="Aluminum0x7ff5f9e42670"/>
+      <solidref ref="ECalEndCap_20x7ff5f9e7bc30"/>
+    </volume>
+    <volume name="ECalForward_10x7ff5f9e7c130">
+      <materialref ref="Aluminum0x7ff5f9e42670"/>
+      <solidref ref="ECalForward_10x7ff5f9e7c050"/>
+    </volume>
+    <volume name="ECalForward_20x7ff5f9e7c490">
+      <materialref ref="Aluminum0x7ff5f9e42670"/>
+      <solidref ref="ECalForward_20x7ff5f9e7c330"/>
+    </volume>
+    <volume name="ForwardCavities10x7ff5f9e7c930">
+      <materialref ref="Aluminum0x7ff5f9e42670"/>
+      <solidref ref="ForwardCavities10x7ff5f9e7c850"/>
+    </volume>
+    <volume name="ForwardCavities20x7ff5f9e7cca0">
+      <materialref ref="Aluminum0x7ff5f9e42670"/>
+      <solidref ref="ForwardCavities20x7ff5f9e7cbc0"/>
+    </volume>
+    <volume name="InnerDetector0x7ff5f9e7e1f0">
+      <materialref ref="Air0x7ff5f9e72ea0"/>
+      <solidref ref="InnerDetector0x7ff5f9e7e010"/>
+    </volume>
+    <volume name="InnerSolenoid0x7ff5f9e7e690">
+      <materialref ref="Aluminum0x7ff5f9e42670"/>
+      <solidref ref="InnerSolenoid0x7ff5f9e7e5b0"/>
+    </volume>
+    <volume name="OuterSolenoid0x7ff5f9e7eb80">
+      <materialref ref="Aluminum0x7ff5f9e42670"/>
+      <solidref ref="OuterSolenoid0x7ff5f9e7eaa0"/>
+    </volume>
+    <volume name="world_volume0x7ff5f9e77ca0">
+      <materialref ref="Air0x7ff5f9e72ea0"/>
+      <solidref ref="world_volume0x7ff5f9e788a0"/>
+      <physvol name="ForwardDipoles10x7ff5f9e7a7f0">
+        <volumeref ref="ForwardDipoles10x7ff5f9e7a530"/>
+        <position name="ForwardDipoles10x7ff5f9e7a7f0_pos" unit="mm" x="0" y="0" z="2000"/>
+      </physvol>
+      <physvol name="ForwardDipoles20x7ff5f9e7aad0">
+        <volumeref ref="ForwardDipoles20x7ff5f9e7a9b0"/>
+        <position name="ForwardDipoles20x7ff5f9e7aad0_pos" unit="mm" x="0" y="0" z="-2000"/>
+      </physvol>
+      <physvol name="Beampipe0x7ff5f9e7aea0">
+        <volumeref ref="Beampipe0x7ff5f9e7b020"/>
+      </physvol>
+      <physvol name="ECalBarrel0x7ff5f9e7b560">
+        <volumeref ref="ECalBarrel0x7ff5f9e7b420"/>
+      </physvol>
+      <physvol name="ECalEndCap_10x7ff5f9e7bbb0">
+        <volumeref ref="ECalEndCap_10x7ff5f9e7b710"/>
+        <position name="ECalEndCap_10x7ff5f9e7bbb0_pos" unit="mm" x="0" y="0" z="850"/>
+      </physvol>
+      <physvol name="ECalEndCap_20x7ff5f9e7be10">
+        <volumeref ref="ECalEndCap_20x7ff5f9e7bd10"/>
+        <rotation name="ECalEndCap_20x7ff5f9e7be10_rot" unit="deg" x="0" y="0" z="6.58741388002726"/>
+      </physvol>
+      <physvol name="ECalForward_10x7ff5f9e7c260">
+        <volumeref ref="ECalForward_10x7ff5f9e7c130"/>
+        <position name="ECalForward_10x7ff5f9e7c260_pos" unit="mm" x="0" y="0" z="2370"/>
+      </physvol>
+      <physvol name="ECalForward_20x7ff5f9e7c2e0">
+        <volumeref ref="ECalForward_20x7ff5f9e7c490"/>
+        <position name="ECalForward_20x7ff5f9e7c2e0_pos" unit="mm" x="0" y="0" z="-2370"/>
+      </physvol>
+      <physvol name="ForwardCavities10x7ff5f9e7ca40">
+        <volumeref ref="ForwardCavities10x7ff5f9e7c930"/>
+        <position name="ForwardCavities10x7ff5f9e7ca40_pos" unit="mm" x="0" y="0" z="2000"/>
+      </physvol>
+      <physvol name="ForwardCavities20x7ff5f9e7cd50">
+        <volumeref ref="ForwardCavities20x7ff5f9e7cca0"/>
+        <position name="ForwardCavities20x7ff5f9e7cd50_pos" unit="mm" x="0" y="0" z="-2000"/>
+      </physvol>
+      <physvol name="InnerDetector0x7ff5f9e7e390">
+        <volumeref ref="InnerDetector0x7ff5f9e7e1f0"/>
+      </physvol>
+      <physvol name="InnerSolenoid0x7ff5f9e7e790">
+        <volumeref ref="InnerSolenoid0x7ff5f9e7e690"/>
+      </physvol>
+      <physvol name="OuterSolenoid0x7ff5f9e7ec80">
+        <volumeref ref="OuterSolenoid0x7ff5f9e7eb80"/>
+      </physvol>
+    </volume>
+  </structure>
+
+  <setup name="Default" version="1.0">
+    <world ref="world_volume0x7ff5f9e77ca0"/>
+  </setup>
+
+</gdml>
