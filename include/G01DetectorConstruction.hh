@@ -23,38 +23,38 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file persistency/gdml/G01/include/G01DetectorConstruction.hh
+/// \brief Definition of the G01DetectorConstruction class
 //
-// $Id: Par01PiModel.hh 70911 2013-06-07 11:05:37Z mverderi $
 //
-// 
-//----------------------------------------
-// Simple example of a "parameterisation".
-//----------------------------------------
-#ifndef Par01PiModel_h
-#define Par01PiModel_h 1
+// $Id: G01DetectorConstruction.hh 68025 2013-03-13 13:43:46Z gcosmo $
+//
+//
 
-#include "G4VFastSimulationModel.hh"
+#ifndef _G01DETECTORCONSTRUCTION_H_
+#define _G01DETECTORCONSTRUCTION_H_
 
-class Par01PiModel : public G4VFastSimulationModel
+#include "G4VUserDetectorConstruction.hh"
+
+/// Detector construction allowing to use the geometry read from the GDML file
+
+class G01DetectorConstruction : public G4VUserDetectorConstruction
 {
-public:
-  //-------------------------
-  // Constructor, destructor
-  //-------------------------
-  Par01PiModel (G4Region *anEnvelope);
-  ~Par01PiModel();
+  public:
+ 
+    G01DetectorConstruction(G4VPhysicalVolume *setWorld = 0)
+    {   
+      fWorld = setWorld;
+    }
 
-  //------------------------------
-  // Virtual methods of the base
-  // class to be coded by the user
-  //------------------------------
+    virtual G4VPhysicalVolume *Construct()
+    {
+      return fWorld;
+    }
 
-  // -- IsApplicable
-  virtual G4bool IsApplicable(const G4ParticleDefinition&);
-  // -- ModelTrigger
-  virtual G4bool ModelTrigger(const G4FastTrack &);
-  // -- User method DoIt
-  virtual void DoIt(const G4FastTrack&, G4FastStep&);
+  private:
 
+    G4VPhysicalVolume *fWorld;
 };
+
 #endif
