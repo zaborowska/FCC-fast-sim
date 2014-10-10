@@ -1,0 +1,24 @@
+<lcgdict>
+<class name="HepMC::GenEvent"/>
+<class name="HepMC::GenParticle"/>
+<class name="HepMC::Polarization"/>
+<class name="HepMC::Flow"/>
+<class name="HepMC::GenVertex"/>
+<class name="HepMC::WeightContainer"/>
+<class name="std::map< int,HepMC::GenVertex*,std::greater<int> >"/>
+<class name="std::map<int,HepMC::GenParticle*>" />
+<class name="std::map<std::string,unsigned long>" />
+<class name="std::map<int,int>"/>
+<!-- <class name="std::map< int,HepMC::GenVertex*,std::less<int> >"/> -->
+<class name="HepMC::GenCrossSection"/>
+<class name="HepMC::HeavyIon"/>
+<class name="HepMC::PdfInfo"/>
+<class name="enum HepMC::Units::MomentumUnit"/>
+<class name="enum HepMC::Units::LengthUnit"/>
+<class name="HepMC::FourVector"/>
+<class name="std::vector<HepMC::GenParticle*>"/>
+<class name="GenParticleProductionRange" />
+<class name="ConstGenParticleProductionRange" />
+<class name="GenParticleEndRange" />
+<class name="GenVertexParticleRange" />
+</lcgdict>
