@@ -85,7 +85,7 @@ void RootIO::Write(std::vector<B2TrackerHit*>* hcont)
 
   std::ostringstream os;
   os << fNevents;
-  std::string stevt = "Event_" + os.str(); 
+  std::string stevt = "Hits_" + os.str(); 
   const char* chevt = stevt.c_str();
 
   std::cout << "writing " << stevt << std::endl;

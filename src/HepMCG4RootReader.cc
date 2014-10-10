@@ -23,53 +23,61 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx03/src/H02PrimaryGeneratorAction.cc
-/// \brief Implementation of the H02PrimaryGeneratorAction class
-//   $Id: H02PrimaryGeneratorAction.cc 77801 2013-11-28 13:33:20Z gcosmo $
+/// \file eventgenerator/HepMC/HepMCEx01/src/HepMCG4RootReader.cc
+/// \brief Implementation of the HepMCG4RootReader class
 //
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
-#include "HepMCG4AsciiReader.hh"
+//
+
 #include "HepMCG4RootReader.hh"
-#include "HepMCG4Pythia8Interface.hh"
-#include "H02PrimaryGeneratorAction.hh"
-#include "H02PrimaryGeneratorMessenger.hh"
+#include "HepMCG4RootReaderMessenger.hh"
+
+#include <iostream>
+#include <fstream>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-H02PrimaryGeneratorAction::H02PrimaryGeneratorAction()
+HepMCG4RootReader::HepMCG4RootReader()
+   : filename("hepmc.root"), verbose(0)
 {
-  // default generator is particle gun.
-  currentGenerator= particleGun= new G4ParticleGun();
-  currentGeneratorName= "particleGun";
-  hepmcAscii= new HepMCG4AsciiReader();
-  hepmcRoot = new HepMCG4RootReader();
-#ifdef G4LIB_USE_PYTHIA8
-  pythia8Gen= new HepMCG4Pythia8Interface();
-#else
-  pythia8Gen= 0;
-#endif
-
-  gentypeMap["particleGun"]= particleGun;
-  gentypeMap["hepmcAscii"]= hepmcAscii;
-  gentypeMap["pythia8"]= pythia8Gen;
-  gentypeMap["hepmcRoot"]= hepmcRoot;
-
-  messenger= new H02PrimaryGeneratorMessenger(this);
+   gSystem->Load("libCintex");
+   gSystem->Load("libmyHepMC");
+   ROOT::Cintex::Cintex::Enable();
+   messenger= new HepMCG4RootReaderMessenger(this);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-H02PrimaryGeneratorAction::~H02PrimaryGeneratorAction()
+HepMCG4RootReader::~HepMCG4RootReader()
 {
-  delete messenger;
+   delete rootInput;
+   delete messenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void H02PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void HepMCG4RootReader::Initialize()
 {
-  if(currentGenerator)
-    currentGenerator-> GeneratePrimaryVertex(anEvent);
-  else
-    G4Exception("H02PrimaryGeneratorAction::GeneratePrimaries",
-                "InvalidSetup", FatalException,
-                "Generator is not instanciated.");
+   // delete TFile and TList !!!  TODO
+   G4cout << filename << G4endl;
+   rootInput= new TFile(filename.c_str());
+   if(verbose>0) rootInput->ls();
+   //lnk = (rootInput->GetListOfKeys())->FirstLink();
+   //rootIter = new rootIter(rootInput->GetListOfKeys());
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+HepMC::GenEvent* HepMCG4RootReader::GenerateHepMCEvent()
+{
+// TODO: rewrite so that it can outoput events one by one!
+   HepMC::GenEvent* evt =  new HepMC::GenEvent();
+   // TKey *key;
+ // if (lnk)
+   //  {
+   //  key = (TKey*)rootIter();// lnk->GetObject();
+   //HepMC::GenEvent* evt = new HepMC::GenEvent()//*) key->ReadObj();//rootInput->Get(key->GetName());
+      rootInput->GetObject("Event_0",evt);
+      // G4cout << "Getting HepMC EVENT: " << key->GetName() << G4endl;
+     // lnk=lnk->Next();
+      if(verbose>0) evt->print();
+      //}
+   G4cout << "End of GenerateEvent........................... "  << G4endl;
+   //delete key;
+   return evt;
 }

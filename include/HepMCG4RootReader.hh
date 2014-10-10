@@ -23,53 +23,73 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx03/src/H02PrimaryGeneratorAction.cc
-/// \brief Implementation of the H02PrimaryGeneratorAction class
-//   $Id: H02PrimaryGeneratorAction.cc 77801 2013-11-28 13:33:20Z gcosmo $
+/// \file eventgenerator/HepMC/HepMCEx03/include/HepMCG4RootReader.hh
+/// \brief Definition of the HepMCG4RootReader class
 //
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
-#include "HepMCG4AsciiReader.hh"
-#include "HepMCG4RootReader.hh"
-#include "HepMCG4Pythia8Interface.hh"
-#include "H02PrimaryGeneratorAction.hh"
-#include "H02PrimaryGeneratorMessenger.hh"
+//
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-H02PrimaryGeneratorAction::H02PrimaryGeneratorAction()
+#ifndef HEPMC_G4_ROOT_READER_H
+#define HEPMC_G4_ROOT_READER_H
+
+#include "HepMCG4Interface.hh"
+#include "TROOT.h"
+#include "TFile.h"
+#include "TList.h"
+#include "TSystem.h"
+#include "TKey.h"
+#include "Cintex/Cintex.h"
+
+class HepMCG4RootReaderMessenger;
+
+class HepMCG4RootReader : public HepMCG4Interface {
+protected:
+  G4String filename;
+   TFile* rootInput;
+   TObjLink *lnk;
+   TIter* rootIter;
+
+  G4int verbose;
+  HepMCG4RootReaderMessenger* messenger;
+
+  virtual HepMC::GenEvent* GenerateHepMCEvent();
+
+public:
+  HepMCG4RootReader();
+  ~HepMCG4RootReader();
+
+  // set/get methods
+  void SetFileName(G4String name);
+  G4String GetFileName() const;
+
+  void SetVerboseLevel(G4int i);
+  G4int GetVerboseLevel() const; 
+
+  // methods...
+  void Initialize();
+};
+
+// ====================================================================
+// inline functions
+// ====================================================================
+
+inline void HepMCG4RootReader::SetFileName(G4String name)
 {
-  // default generator is particle gun.
-  currentGenerator= particleGun= new G4ParticleGun();
-  currentGeneratorName= "particleGun";
-  hepmcAscii= new HepMCG4AsciiReader();
-  hepmcRoot = new HepMCG4RootReader();
-#ifdef G4LIB_USE_PYTHIA8
-  pythia8Gen= new HepMCG4Pythia8Interface();
-#else
-  pythia8Gen= 0;
+  filename= name;
+}
+
+inline G4String HepMCG4RootReader::GetFileName() const
+{
+  return filename;
+}
+
+inline void HepMCG4RootReader::SetVerboseLevel(G4int i)
+{
+  verbose= i;
+}
+
+inline G4int HepMCG4RootReader::GetVerboseLevel() const
+{
+  return verbose;
+}
+
 #endif
-
-  gentypeMap["particleGun"]= particleGun;
-  gentypeMap["hepmcAscii"]= hepmcAscii;
-  gentypeMap["pythia8"]= pythia8Gen;
-  gentypeMap["hepmcRoot"]= hepmcRoot;
-
-  messenger= new H02PrimaryGeneratorMessenger(this);
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-H02PrimaryGeneratorAction::~H02PrimaryGeneratorAction()
-{
-  delete messenger;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void H02PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
-{
-  if(currentGenerator)
-    currentGenerator-> GeneratePrimaryVertex(anEvent);
-  else
-    G4Exception("H02PrimaryGeneratorAction::GeneratePrimaries",
-                "InvalidSetup", FatalException,
-                "Generator is not instanciated.");
-}

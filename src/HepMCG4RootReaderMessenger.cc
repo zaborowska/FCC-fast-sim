@@ -23,70 +23,71 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx03/src/H02PrimaryGeneratorMessenger.cc
-/// \brief Implementation of the H02PrimaryGeneratorMessenger class
+/// \file eventgenerator/HepMC/HepMCEx01/src/HepMCG4RootReaderMessenger.cc
+/// \brief Implementation of the HepMCG4RootReaderMessenger class
 //
-//   $Id: H02PrimaryGeneratorMessenger.cc 77801 2013-11-28 13:33:20Z gcosmo $
 //
-#include "G4UIcmdWithABool.hh"
-#include "G4UIcmdWithAnInteger.hh"
-#include "G4UIcmdWithAString.hh"
-#include "G4UIcmdWithoutParameter.hh"
-#include "G4UIcommand.hh"
 #include "G4UIdirectory.hh"
-#include "G4UIparameter.hh"
-#include "H02PrimaryGeneratorMessenger.hh"
-#include "H02PrimaryGeneratorAction.hh"
+#include "G4UIcmdWithoutParameter.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithAnInteger.hh"
+#include "HepMCG4RootReaderMessenger.hh"
+#include "HepMCG4RootReader.hh"
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-H02PrimaryGeneratorMessenger::H02PrimaryGeneratorMessenger
-                            (H02PrimaryGeneratorAction* genaction)
-  : primaryAction(genaction)
+HepMCG4RootReaderMessenger::HepMCG4RootReaderMessenger
+                             (HepMCG4RootReader* agen)
+  : gen(agen)
 {
-  dir= new G4UIdirectory("/generator/");
-  dir-> SetGuidance("Control commands for primary generator");
+  dir= new G4UIdirectory("/generator/hepmcRoot/");
+  dir-> SetGuidance("Reading HepMC event from an Root file");
 
-  //verbose= new G4UIcmdWithAnInteger("/generator/verbose", this);
-  //verbose-> SetGuidance("set verbose level (0,1,2)");
-  //verbose-> SetParameterName("verbose", false, false);
-  //verbose-> SetDefaultValue(0);
-  //verbose-> SetRange("verbose>=0 && verbose<=2");
+  verbose=
+    new G4UIcmdWithAnInteger("/generator/hepmcRoot/verbose", this);
+  verbose-> SetGuidance("Set verbose level");
+  verbose-> SetParameterName("verboseLevel", false, false);
+  verbose-> SetRange("verboseLevel>=0 && verboseLevel<=1");
 
-  select= new G4UIcmdWithAString("/generator/select", this);
-  select-> SetGuidance("select generator type");
-  select-> SetParameterName("generator_type", false, false);
-  select-> SetCandidates("particleGun pythia8 hepmcAscii hepmcRoot");
-  select-> SetDefaultValue("particleGun");
+  open= new G4UIcmdWithAString("/generator/hepmcRoot/open", this);
+  open-> SetGuidance("(re)open data file (HepMC Root format)");
+  open-> SetParameterName("input root file", true, true);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-H02PrimaryGeneratorMessenger::~H02PrimaryGeneratorMessenger()
+HepMCG4RootReaderMessenger::~HepMCG4RootReaderMessenger()
 {
-  //delete verbose;
-  delete select;
+  delete verbose;
+  delete open;
 
   delete dir;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void H02PrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
+void HepMCG4RootReaderMessenger::SetNewValue(G4UIcommand* command,
                                               G4String newValues)
 {
-  if ( command==select) {
-    primaryAction-> SetGenerator(newValues);
-    G4cout << "current generator type: "
-            << primaryAction-> GetGeneratorName() << G4endl;
-  } else {
+  if (command==verbose) {
+    int level= verbose-> GetNewIntValue(newValues);
+    gen-> SetVerboseLevel(level);
+  } else if (command==open) {
+    gen-> SetFileName(newValues);
+    G4cout << "HepMC Root inputfile: "
+           << gen-> GetFileName() << G4endl;
+    gen-> Initialize();
   }
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4String H02PrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
-{
-  G4String cv, st;
-  if (command == select) {
-    cv= primaryAction-> GetGeneratorName();
-  }
 
- return cv;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4String HepMCG4RootReaderMessenger::GetCurrentValue(G4UIcommand* command)
+{
+  G4String cv;
+
+  if (command == verbose) {
+    cv= verbose-> ConvertToString(gen-> GetVerboseLevel());
+  } else  if (command == open) {
+    cv= gen-> GetFileName();
+  }
+  return cv;
 }
