@@ -24,4 +24,8 @@
 #pragma link C++ class HepMC::GenParticleEndRange+;
 #pragma link C++ class HepMC::GenVertexParticleRange+;
 
+#pragma link C++ class std::pair<string,unsigned long>+;
+#pragma link C++ class std::pair<int,HepMC::GenVertex*>+;
+#pragma link C++ class std::pair<int,HepMC::GenParticle*>+;
+
 #endif

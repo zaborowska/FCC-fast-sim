@@ -44,8 +44,7 @@ class HepMCG4RootReader : public HepMCG4Interface {
 protected:
   G4String filename;
    TFile* rootInput;
-   TObjLink *lnk;
-   TIter* rootIter;
+   TObjLink *rootLnk;
 
   G4int verbose;
   HepMCG4RootReaderMessenger* messenger;
