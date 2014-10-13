@@ -81,7 +81,7 @@ target_link_libraries(examplePar01 ${Geant4_LIBRARIES}
 # relies on these scripts being in the current working directory.
 #
 set(Par01_SCRIPTS
-    pythia.in root.in ascii.in vis.mac PythiaInHepMC.root
+    pythia.in root.in vis.mac PythiaInHepMC.root
   )
 
 foreach(_script ${Par01_SCRIPTS})
