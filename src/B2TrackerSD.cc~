@@ -23,14 +23,12 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file persistency/gdml/G04/src/G04SensitiveDetector.cc
-/// \brief Implementation of the G04SensitiveDetector class
+// $Id: B2TrackerSD.cc 68058 2013-03-13 14:47:43Z gcosmo $
 //
-//
-// $Id: G04SensitiveDetector.cc 68025 2013-03-13 13:43:46Z gcosmo $
-//
+/// \file B2TrackerSD.cc
+/// \brief Implementation of the B2TrackerSD class
 
-#include "G04SensitiveDetector.hh"
+#include "B2TrackerSD.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 #include "G4ThreeVector.hh"
@@ -39,33 +37,73 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G04SensitiveDetector::G04SensitiveDetector(const G4String& name)
-  : G4VSensitiveDetector(name)
+B2TrackerSD::B2TrackerSD(const G4String& name,
+                         const G4String& hitsCollectionName) 
+ : G4VSensitiveDetector(name),
+   fHitsCollection(NULL)
 {
+  collectionName.insert(hitsCollectionName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G04SensitiveDetector::~G04SensitiveDetector()
+B2TrackerSD::~B2TrackerSD() 
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B2TrackerSD::Initialize(G4HCofThisEvent* hce)
 {
+  // Create hits collection
+
+  fHitsCollection 
+    = new B2TrackerHitsCollection(SensitiveDetectorName, collectionName[0]); 
+
+  // Add this collection in hce
+
+  G4int hcID 
+    = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
+  hce->AddHitsCollection( hcID, fHitsCollection ); 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void G04SensitiveDetector::Initialize(G4HCofThisEvent*)
-{
-}
+G4bool B2TrackerSD::ProcessHits(G4Step* aStep, 
+                                     G4TouchableHistory*)
+{  
+  // energy deposit
+  G4double edep = aStep->GetTotalEnergyDeposit();
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+  if (edep==0.) return false;
 
-G4bool G04SensitiveDetector::ProcessHits(G4Step*, G4TouchableHistory*)
-{
-  G4cout << "Processing hits ...." << G4endl; 
+  B2TrackerHit* newHit = new B2TrackerHit();
+
+  newHit->SetTrackID  (aStep->GetTrack()->GetTrackID());
+  newHit->SetChamberNb(aStep->GetPreStepPoint()->GetTouchableHandle()
+                                               ->GetCopyNumber());
+  newHit->SetEdep(edep);
+  newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
+
+  newHit->SetParentID(aStep->GetTrack()->GetParentID()); //Added by me!!
+  newHit->SetParticleName(aStep->GetTrack()->GetDefinition()->GetParticleName());
+
+  fHitsCollection->insert( newHit );
+
+  //newHit->Print();
+
   return true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void G04SensitiveDetector::EndOfEvent(G4HCofThisEvent*)
+void B2TrackerSD::EndOfEvent(G4HCofThisEvent*)
 {
+   if ( verboseLevel>1 ) { 
+      G4int nofHits = fHitsCollection->entries();
+      G4cout << "\n-------->Hits Collection: in this event they are " << nofHits 
+             << " hits in the tracker chambers: " << G4endl;
+      for ( G4int i=0; i<nofHits; i++ ) (*fHitsCollection)[i]->Print();
+   }
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

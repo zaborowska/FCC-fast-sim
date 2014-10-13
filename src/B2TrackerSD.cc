@@ -78,14 +78,14 @@ G4bool B2TrackerSD::ProcessHits(G4Step* aStep,
 
   B2TrackerHit* newHit = new B2TrackerHit();
 
-  newHit->SetTrackID  (aStep->GetTrack()->GetTrackID());
-  newHit->SetChamberNb(aStep->GetPreStepPoint()->GetTouchableHandle()
-                                               ->GetCopyNumber());
+  //newHit->SetTrackID  (aStep->GetTrack()->GetTrackID());
+  //newHit->SetChamberNb(aStep->GetPreStepPoint()->GetTouchableHandle()
+  //                                             ->GetCopyNumber());
   newHit->SetEdep(edep);
   newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
 
-  newHit->SetParentID(aStep->GetTrack()->GetParentID()); //Added by me!!
-  newHit->SetParticleName(aStep->GetTrack()->GetDefinition()->GetParticleName());
+  //newHit->SetParentID(aStep->GetTrack()->GetParentID()); //Added by me!!
+  //newHit->SetParticleName(aStep->GetTrack()->GetDefinition()->GetParticleName());
 
   fHitsCollection->insert( newHit );
 

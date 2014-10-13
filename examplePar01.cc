@@ -53,12 +53,15 @@
 #include "G4GDMLParser.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4TransportationManager.hh"
+#include "G4RegionStore.hh"
 
 //-----------------------------------
 // Par01PhysicsList (makes use of the
 // G4ParameterisationManagerProcess):
 //-----------------------------------
 #include "Par01PhysicsList.hh"
+#include "Par01EMShowerModel.hh"
+
 
 // Sensitive Detector
 #include "B2TrackerSD.hh"
@@ -152,6 +155,7 @@ int main(int argc, char** argv)
     // Example how to retrieve Auxiliary Information
     //
 
+   G4LogicalVolume* myvol; 
 
    const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
    std::cout << "Found " << auxmap->size()
@@ -179,7 +183,7 @@ int main(int argc, char** argv)
          G4VSensitiveDetector* mydet = SDman->FindSensitiveDetector((*vit).value);
          if(mydet) 
          {
-           G4LogicalVolume* myvol = (*iter).first;
+           myvol = (*iter).first; 
            myvol->SetSensitiveDetector(mydet);
          }
          else
@@ -193,6 +197,19 @@ int main(int argc, char** argv)
     // End of Auxiliary Information block
     //
     ////////////////////////////////////////////////////////////////////////
+
+  // -- Makes the calorimeterLog volume becoming a G4Region: 
+   G4Region* caloRegion = new G4Region("EM_calo_region");
+   caloRegion->AddRootLogicalVolume(myvol); 
+
+   std::vector<double> cuts; 
+   cuts.push_back(1.0*mm);cuts.push_back(1.0*mm);cuts.push_back(1.0*mm);cuts.push_back(1.0*mm);
+   caloRegion->SetProductionCuts(new G4ProductionCuts());
+   caloRegion->GetProductionCuts()->SetProductionCuts(cuts);
+
+   new Par01EMShowerModel("emShowerModel",caloRegion);
+
+
 
 
    G4UImanager* UImanager = G4UImanager::GetUIpointer();

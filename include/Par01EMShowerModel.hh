@@ -24,14 +24,16 @@
 // ********************************************************************
 //
 //
-// $Id: Par01PionShowerModel.hh 70911 2013-06-07 11:05:37Z mverderi $
+// $Id: Par01EMShowerModel.hh 70911 2013-06-07 11:05:37Z mverderi $
 //
 // 
 //----------------------------------------------
-// Parameterisation for pi+/pi- producing hits.
+// Parameterisation of e+/e-/gamma producing hits
+// The hits are the same as defined in the detailed
+// simulation.
 //----------------------------------------------
-#ifndef Par01PionShowerModel_h
-#define Par01PionShowerModel_h 1
+#ifndef Par01EMShowerModel_h
+#define Par01EMShowerModel_h 1
 
 #include "Par01EnergySpot.hh"
 
@@ -40,15 +42,15 @@
 #include "G4TouchableHandle.hh"
 #include <vector>
 
-class Par01PionShowerModel : public G4VFastSimulationModel
+class Par01EMShowerModel : public G4VFastSimulationModel
 {
 public:
   //-------------------------
   // Constructor, destructor
   //-------------------------
-  Par01PionShowerModel (G4String, G4Region*);
-  Par01PionShowerModel (G4String);
-  ~Par01PionShowerModel ();
+  Par01EMShowerModel (G4String, G4Region*);
+  Par01EMShowerModel (G4String);
+  ~Par01EMShowerModel ();
 
   //------------------------------
   // Virtual methods of the base
@@ -68,14 +70,19 @@ private:
   void Explode(const G4FastTrack&);
   void BuildDetectorResponse();
   
-private:
+private:  
   G4Step                         *fFakeStep;
   G4StepPoint                    *fFakePreStepPoint, *fFakePostStepPoint;
   G4TouchableHandle              fTouchableHandle;
   G4Navigator                    *fpNavigator;
   G4bool                         fNaviSetup;
+  G4Material*                    fCsI;
 
   std::vector<Par01EnergySpot> feSpotList;
 
 };
 #endif
+
+
+
+
