@@ -1,8 +1,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-project(4Reflex)
-
+project(Pythia8ToHepMCroot)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/Modules)
 
@@ -12,9 +11,6 @@ include(${Geant4_USE_FILE})
 # Find ROOT (required package)
 #
 find_package(ROOT REQUIRED)
-if(NOT GCCXML)
-   message(FATAL_ERROR " requires GCCXML")
-endif()
 #----------------------------------------------------------------------------
 # Find Pythia8 (required package)
 #
@@ -40,16 +36,13 @@ include_directories(${PROJECT_SOURCE_DIR}/.
 file(GLOB sources ${PROJECT_SOURCE_DIR}/*.cxx)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/*.h)
 
-REFLEX_GENERATE_DICTIONARY(HepMCDict HepMCClasses.h  SELECTION selection.xml )
-add_library(myHepMC SHARED ${sources} HepMCDict.cpp)
-set(libsuffix .so)
-set(ROOT_LIBRARY_PROPERTIES ${ROOT_LIBRARY_PROPERTIES} SUFFIX ${libsuffix})
-set_target_properties(myHepMC PROPERTIES ${ROOT_LIBRARY_PROPERTIES})
-target_link_libraries(myHepMC   ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES} Cintex Reflex)
+ROOT_GENERATE_DICTIONARY(HepMC HepMCClasses.h  LINKDEF HepMCLinkDef.h )
+add_library(HepMCdict SHARED ${sources} HepMC.cxx)
+target_link_libraries(HepMCdict   ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES})
 
 
 add_executable(main main.cxx ${sources} ${headers})
 target_link_libraries(main ${ROOT_LIBRARIES} ${HEPMC_LIBRARIES} ${PYTHIA8_LIBRARY} ${PYTHIA8_HEPMC_LIBRARY}  ${PYTHIA8_HAPDF_LIBRARY}
-                     myHepMC Cintex Reflex )
+                     HepMCdict )
 
 install(TARGETS main DESTINATION ${PROJECT_SOURCE_DIR}/build)

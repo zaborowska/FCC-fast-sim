@@ -1,7 +1,6 @@
 #include "Pythia8/Pythia.h"
 #include "Pythia8/Pythia8ToHepMC.h"
 #include "HepMC/GenEvent.h"
-#include "Cintex/Cintex.h"
 #include "TROOT.h"
 #include "TFile.h"
 #include "TSystem.h"
@@ -24,8 +23,7 @@ int main(int argc, char* argv[])
            << " and saved to " << argv[2]<< std::endl;
    }
    // Load library to enable saving HepMC to root file
-   gSystem->Load("libmyHepMC");
-   ROOT::Cintex::Cintex::Enable();
+   gSystem->Load("libHepMCdict");
    TFile* fFile = new TFile(argv[2],"RECREATE");
 
    // Interface for conversion from Pythia8::Event to HepMC event.

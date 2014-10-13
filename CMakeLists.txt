@@ -44,13 +44,9 @@ endif()
 # Find ROOT (required package)
 #
 find_package(ROOT REQUIRED)
-
-#----------------------------------------------------------------------------
-# P01 requires GCCXML 
-#
-if(NOT GCCXML)
-   message(FATAL_ERROR "P01 requires GCCXML")
-endif() 
+# if(NOT GCCXML)
+#    message(FATAL_ERROR "P01 requires GCCXML")
+# endif() 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
@@ -65,19 +61,9 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Generate dictionaries, add ROOT libraries properties
 #
-REFLEX_GENERATE_DICTIONARY(HepMCDict include/HepMCClasses.hh  SELECTION xml/HepMC_selection.xml )
-add_library(myHepMC SHARED ${sources} HepMCDict.cpp)
-set(libsuffix .so)
-set(ROOT_LIBRARY_PROPERTIES ${ROOT_LIBRARY_PROPERTIES} SUFFIX ${libsuffix})
-set_target_properties(myHepMC PROPERTIES ${ROOT_LIBRARY_PROPERTIES})
-target_link_libraries(myHepMC ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES} Cintex Reflex)
-
-REFLEX_GENERATE_DICTIONARY(ExP01Classes include/ExP01Classes.hh  SELECTION xml/hits_selection.xml )
-add_library(ExP01ClassesDict SHARED ${sources} ExP01Classes.cpp)
-set(libsuffix .so)
-set(ROOT_LIBRARY_PROPERTIES ${ROOT_LIBRARY_PROPERTIES} SUFFIX ${libsuffix})
-set_target_properties(ExP01ClassesDict PROPERTIES ${ROOT_LIBRARY_PROPERTIES})
-target_link_libraries(ExP01ClassesDict ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} Cintex Reflex)
+ROOT_GENERATE_DICTIONARY(HepMC include/HepMCClasses.hh  LINKDEF include/HepMCLinkDef.h )
+add_library(HepMCdict SHARED ${sources} HepMC.cxx)
+target_link_libraries(HepMCdict ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
@@ -87,7 +73,7 @@ target_link_libraries(examplePar01 ${Geant4_LIBRARIES}
                       ${HEPMC_LIBRARIES}
                        ${PYTHIA8_LIBRARY}
                        ${PYTHIA8_HEPMC_LIBRARY} ${PYTHIA8_HAPDF_LIBRARY}
-                       myHepMC ExP01ClassesDict ${ROOT_LIBRARIES} Cintex Reflex)
+                       HepMCdict ${ROOT_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we

@@ -38,9 +38,7 @@
 HepMCG4RootReader::HepMCG4RootReader()
    : filename("hepmc.root"), verbose(0)
 {
-   gSystem->Load("libCintex");
-   gSystem->Load("libmyHepMC");
-   ROOT::Cintex::Cintex::Enable();
+   gSystem->Load("libHepMCdict");
    messenger= new HepMCG4RootReaderMessenger(this);
 }
 

@@ -37,7 +37,6 @@
 #include "TList.h"
 #include "TSystem.h"
 #include "TKey.h"
-#include "Cintex/Cintex.h"
 
 class HepMCG4RootReaderMessenger;
 
