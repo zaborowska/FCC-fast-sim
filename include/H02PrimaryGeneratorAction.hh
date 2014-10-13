@@ -58,8 +58,8 @@ public:
 
 private:
   G4VPrimaryGenerator* particleGun;
-  G4VPrimaryGenerator* hepmcAscii;
   G4VPrimaryGenerator* pythia8Gen;
+  G4VPrimaryGenerator* hepmcRoot;
 
   G4VPrimaryGenerator* currentGenerator;
   G4String currentGeneratorName;

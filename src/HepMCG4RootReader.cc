@@ -23,49 +23,59 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx01/src/HepMCG4AsciiReader.cc
-/// \brief Implementation of the HepMCG4AsciiReader class
+/// \file eventgenerator/HepMC/HepMCEx01/src/HepMCG4RootReader.cc
+/// \brief Implementation of the HepMCG4RootReader class
 //
-// $Id: HepMCG4AsciiReader.cc 77801 2013-11-28 13:33:20Z gcosmo $
 //
 
-#include "HepMCG4AsciiReader.hh"
-#include "HepMCG4AsciiReaderMessenger.hh"
+#include "HepMCG4RootReader.hh"
+#include "HepMCG4RootReaderMessenger.hh"
 
 #include <iostream>
 #include <fstream>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-HepMCG4AsciiReader::HepMCG4AsciiReader()
-  :  filename("xxx.dat"), verbose(0)
+HepMCG4RootReader::HepMCG4RootReader()
+   : filename("hepmc.root"), verbose(0)
 {
-  asciiInput= new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
-
-  messenger= new HepMCG4AsciiReaderMessenger(this);
+   gSystem->Load("libHepMCdict");
+   messenger= new HepMCG4RootReaderMessenger(this);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-HepMCG4AsciiReader::~HepMCG4AsciiReader()
+HepMCG4RootReader::~HepMCG4RootReader()
 {
-  delete asciiInput;
-  delete messenger;
+   delete rootInput;
+   delete messenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void HepMCG4AsciiReader::Initialize()
+void HepMCG4RootReader::Initialize()
 {
-  delete asciiInput;
-
-  asciiInput= new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
+   // delete TFile and TList !!!  TODO
+   G4cout << filename << G4endl;
+   rootInput= new TFile(filename.c_str());
+   if(verbose>0) rootInput->ls();
+   //lnk = (rootInput->GetListOfKeys())->FirstLink();
+   //rootIter = new rootIter(rootInput->GetListOfKeys());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-HepMC::GenEvent* HepMCG4AsciiReader::GenerateHepMCEvent()
+HepMC::GenEvent* HepMCG4RootReader::GenerateHepMCEvent()
 {
-  HepMC::GenEvent* evt= asciiInput-> read_next_event();
-  if(!evt) return 0; // no more event
-
-  if(verbose>0) evt-> print();
-
-  return evt;
+// TODO: rewrite so that it can outoput events one by one!
+   HepMC::GenEvent* evt =  new HepMC::GenEvent();
+   // TKey *key;
+ // if (lnk)
+   //  {
+   //  key = (TKey*)rootIter();// lnk->GetObject();
+   //HepMC::GenEvent* evt = new HepMC::GenEvent()//*) key->ReadObj();//rootInput->Get(key->GetName());
+      rootInput->GetObject("Event_0",evt);
+      // G4cout << "Getting HepMC EVENT: " << key->GetName() << G4endl;
+     // lnk=lnk->Next();
+      if(verbose>0) evt->print();
+      //}
+   G4cout << "End of GenerateEvent........................... "  << G4endl;
+   //delete key;
+   return evt;
 }

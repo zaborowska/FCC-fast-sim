@@ -23,32 +23,72 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file eventgenerator/HepMC/HepMCEx03/include/HepMCG4RootReader.hh
+/// \brief Definition of the HepMCG4RootReader class
 //
-// $Id: Par01PrimaryGeneratorAction.hh 70911 2013-06-07 11:05:37Z mverderi $
 //
 
-#ifndef Par01PrimaryGeneratorAction_h
-#define Par01PrimaryGeneratorAction_h 1
+#ifndef HEPMC_G4_ROOT_READER_H
+#define HEPMC_G4_ROOT_READER_H
 
-#include "G4VUserPrimaryGeneratorAction.hh"
+#include "HepMCG4Interface.hh"
+#include "TROOT.h"
+#include "TFile.h"
+#include "TList.h"
+#include "TSystem.h"
+#include "TKey.h"
 
-class G4ParticleGun;
-class G4Event;
+class HepMCG4RootReaderMessenger;
 
-class Par01PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
-{
-  public:
-    Par01PrimaryGeneratorAction();
-    ~Par01PrimaryGeneratorAction();
+class HepMCG4RootReader : public HepMCG4Interface {
+protected:
+  G4String filename;
+   TFile* rootInput;
+   TObjLink *lnk;
+   TIter* rootIter;
 
-  public:
-    virtual void GeneratePrimaries(G4Event* anEvent);
-    G4ParticleGun* GetParticleGun();
+  G4int verbose;
+  HepMCG4RootReaderMessenger* messenger;
 
-  private:
-    G4ParticleGun* fParticleGun;
+  virtual HepMC::GenEvent* GenerateHepMCEvent();
+
+public:
+  HepMCG4RootReader();
+  ~HepMCG4RootReader();
+
+  // set/get methods
+  void SetFileName(G4String name);
+  G4String GetFileName() const;
+
+  void SetVerboseLevel(G4int i);
+  G4int GetVerboseLevel() const; 
+
+  // methods...
+  void Initialize();
 };
 
+// ====================================================================
+// inline functions
+// ====================================================================
+
+inline void HepMCG4RootReader::SetFileName(G4String name)
+{
+  filename= name;
+}
+
+inline G4String HepMCG4RootReader::GetFileName() const
+{
+  return filename;
+}
+
+inline void HepMCG4RootReader::SetVerboseLevel(G4int i)
+{
+  verbose= i;
+}
+
+inline G4int HepMCG4RootReader::GetVerboseLevel() const
+{
+  return verbose;
+}
+
 #endif
-
-

@@ -29,7 +29,7 @@
 //
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
-#include "HepMCG4AsciiReader.hh"
+#include "HepMCG4RootReader.hh"
 #include "HepMCG4Pythia8Interface.hh"
 #include "H02PrimaryGeneratorAction.hh"
 #include "H02PrimaryGeneratorMessenger.hh"
@@ -40,7 +40,7 @@ H02PrimaryGeneratorAction::H02PrimaryGeneratorAction()
   // default generator is particle gun.
   currentGenerator= particleGun= new G4ParticleGun();
   currentGeneratorName= "particleGun";
-  hepmcAscii= new HepMCG4AsciiReader();
+  hepmcRoot = new HepMCG4RootReader();
 #ifdef G4LIB_USE_PYTHIA8
   pythia8Gen= new HepMCG4Pythia8Interface();
 #else
@@ -48,8 +48,8 @@ H02PrimaryGeneratorAction::H02PrimaryGeneratorAction()
 #endif
 
   gentypeMap["particleGun"]= particleGun;
-  gentypeMap["hepmcAscii"]= hepmcAscii;
   gentypeMap["pythia8"]= pythia8Gen;
+  gentypeMap["hepmcRoot"]= hepmcRoot;
 
   messenger= new H02PrimaryGeneratorMessenger(this);
 }

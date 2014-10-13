@@ -23,47 +23,49 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file persistency/gdml/G04/src/G04SensitiveDetector.cc
+/// \brief Implementation of the G04SensitiveDetector class
 //
-// $Id: Par01PrimaryGeneratorAction.cc 70911 2013-06-07 11:05:37Z mverderi $
+//
+// $Id: G04SensitiveDetector.cc 68025 2013-03-13 13:43:46Z gcosmo $
 //
 
-#include "Par01PrimaryGeneratorAction.hh"
+#include "G04SensitiveDetector.hh"
+#include "G4HCofThisEvent.hh"
+#include "G4Step.hh"
+#include "G4ThreeVector.hh"
+#include "G4SDManager.hh"
+#include "G4ios.hh"
 
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
-#include "G4ParticleTable.hh"
-#include "G4ParticleDefinition.hh"
-#include "globals.hh"
-#include "G4SystemOfUnits.hh"
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-Par01PrimaryGeneratorAction::Par01PrimaryGeneratorAction()
+G04SensitiveDetector::G04SensitiveDetector(const G4String& name)
+  : G4VSensitiveDetector(name)
 {
-  G4int n_particle = 1;
-  fParticleGun = new G4ParticleGun(n_particle);
-
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4String particleName;
-  G4ParticleDefinition* particle 
-    = particleTable->FindParticle(particleName="geantino");
-  fParticleGun->SetParticleDefinition(particle);
-
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,1.,0.));
-  fParticleGun->SetParticleEnergy(100.*GeV);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0.*cm,-300.*cm,0.*cm));
 }
 
-Par01PrimaryGeneratorAction::~Par01PrimaryGeneratorAction()
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G04SensitiveDetector::~G04SensitiveDetector()
 {
-  delete fParticleGun;
 }
 
-void Par01PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void G04SensitiveDetector::Initialize(G4HCofThisEvent*)
 {
-  fParticleGun->GeneratePrimaryVertex(anEvent);
 }
 
-G4ParticleGun* Par01PrimaryGeneratorAction::GetParticleGun()
-{
-  return fParticleGun;
-} 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+G4bool G04SensitiveDetector::ProcessHits(G4Step*, G4TouchableHistory*)
+{
+  G4cout << "Processing hits ...." << G4endl; 
+  return true;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void G04SensitiveDetector::EndOfEvent(G4HCofThisEvent*)
+{
+}

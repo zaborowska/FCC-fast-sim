@@ -40,16 +40,30 @@ else()
   set(PYTHIA8_HEPMC_LIBRARY "")
   set(PYTHIA8_HAPDF_LIBRARY "")
 endif()
-
+#----------------------------------------------------------------------------
+# Find ROOT (required package)
+#
+find_package(ROOT REQUIRED)
+# if(NOT GCCXML)
+#    message(FATAL_ERROR "P01 requires GCCXML")
+# endif() 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
 include_directories(${PROJECT_SOURCE_DIR}/include 
                     ${Geant4_INCLUDE_DIR}
                     ${HEPMC_INCLUDE_DIR}
-                    ${PYTHIA8_INCLUDE_DIR})
+                    ${PYTHIA8_INCLUDE_DIR}
+                    ${ROOT_INCLUDE_DIR})
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+
+#----------------------------------------------------------------------------
+# Generate dictionaries, add ROOT libraries properties
+#
+ROOT_GENERATE_DICTIONARY(HepMC include/HepMCClasses.hh  LINKDEF include/HepMCLinkDef.h )
+add_library(HepMCdict SHARED ${sources} HepMC.cxx)
+target_link_libraries(HepMCdict ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
@@ -58,7 +72,8 @@ add_executable(examplePar01 examplePar01.cc ${sources} ${headers})
 target_link_libraries(examplePar01 ${Geant4_LIBRARIES}
                       ${HEPMC_LIBRARIES}
                        ${PYTHIA8_LIBRARY}
-                       ${PYTHIA8_HEPMC_LIBRARY} ${PYTHIA8_HAPDF_LIBRARY})
+                       ${PYTHIA8_HEPMC_LIBRARY} ${PYTHIA8_HAPDF_LIBRARY}
+                       HepMCdict ${ROOT_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -66,7 +81,7 @@ target_link_libraries(examplePar01 ${Geant4_LIBRARIES}
 # relies on these scripts being in the current working directory.
 #
 set(Par01_SCRIPTS
-    examplePar01.in examplePar01_ascii.in vis.mac
+    pythia.in root.in vis.mac PythiaInHepMC.root
   )
 
 foreach(_script ${Par01_SCRIPTS})
@@ -78,13 +93,8 @@ foreach(_script ${Par01_SCRIPTS})
 endforeach()
 
 #----------------------------------------------------------------------------
-# Add program to the project targets
-# (this avoids the need of typing the program name after make)
-#
-add_custom_target(Par01 DEPENDS examplePar01)
-
-#----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
 install(TARGETS examplePar01 DESTINATION bin)
+
 

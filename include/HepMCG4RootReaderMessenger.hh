@@ -23,22 +23,36 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file eventgenerator/HepMC/HepMCEx01/include/HepMCG4RootReaderMessenger.hh
+/// \brief Definition of the HepMCG4RootReaderMessenger class
 //
-// $Id: Par01ParallelWorldForPion.hh 77659 2013-11-27 08:57:46Z gcosmo $
 //
-#ifndef Par01ParallelWorldForPion_hh
-#define Par01ParallelWorldForPion_hh
 
-#include "G4VUserParallelWorld.hh"
+#ifndef HEPMC_G4_ROOT_READER_MESSENGER_H
+#define HEPMC_G4_ROOT_READER_MESSENGER_H
 
-class Par01ParallelWorldForPion : public G4VUserParallelWorld {
+#include "G4UImessenger.hh"
+
+class HepMCG4RootReader;
+class G4UIdirectory;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithAString;
+class G4UIcmdWithAnInteger;
+
+class HepMCG4RootReaderMessenger : public G4UImessenger {
 public:
-  Par01ParallelWorldForPion(G4String worldName);
-  ~Par01ParallelWorldForPion();
-  
+  HepMCG4RootReaderMessenger(HepMCG4RootReader* agen);
+  ~HepMCG4RootReaderMessenger();
+
+  void SetNewValue(G4UIcommand* command, G4String newValues);
+  G4String GetCurrentValue(G4UIcommand* command);
+
 private:
-  virtual void Construct();
-  virtual void ConstructSD();
+  HepMCG4RootReader* gen;
+
+  G4UIdirectory* dir;
+  G4UIcmdWithAnInteger* verbose;
+  G4UIcmdWithAString* open;
 
 };
 

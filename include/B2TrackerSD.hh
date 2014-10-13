@@ -23,67 +23,48 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReader.hh
-/// \brief Definition of the HepMCG4AsciiReader class
+// $Id: B2TrackerSD.hh 69706 2013-05-13 09:12:40Z gcosmo $
 //
-// $Id: HepMCG4AsciiReader.hh 77801 2013-11-28 13:33:20Z gcosmo $
-//
+/// \file B2TrackerSD.hh
+/// \brief Definition of the B2TrackerSD class
 
-#ifndef HEPMC_G4_ASCII_READER_H
-#define HEPMC_G4_ASCII_READER_H
+#ifndef B2TrackerSD_h
+#define B2TrackerSD_h 1
 
-#include "HepMCG4Interface.hh"
-#include "HepMC/IO_GenEvent.h"
 
-class HepMCG4AsciiReaderMessenger;
+#include "G4VSensitiveDetector.hh"
 
-class HepMCG4AsciiReader : public HepMCG4Interface {
-protected:
-  G4String filename;
-  HepMC::IO_GenEvent* asciiInput;
+#include "B2TrackerHit.hh"
 
-  G4int verbose;
-  HepMCG4AsciiReaderMessenger* messenger;
+#include <vector>
 
-  virtual HepMC::GenEvent* GenerateHepMCEvent();
+class G4Step;
+class G4HCofThisEvent;
 
-public:
-  HepMCG4AsciiReader();
-  ~HepMCG4AsciiReader();
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-  // set/get methods
-  void SetFileName(G4String name);
-  G4String GetFileName() const;
+/// B2Tracker sensitive detector class
+///
+/// The hits are accounted in hits in ProcessHits() function which is called
+/// by Geant4 kernel at each step. A hit is created with each step with non zero 
+/// energy deposit.
 
-  void SetVerboseLevel(G4int i);
-  G4int GetVerboseLevel() const; 
+class B2TrackerSD : public G4VSensitiveDetector
+{
+  public:
+    B2TrackerSD(const G4String& name, 
+                const G4String& hitsCollectionName);
+    virtual ~B2TrackerSD();
+  
+    // methods from base class
+    virtual void   Initialize(G4HCofThisEvent* hitCollection);
+    virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
+    virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
 
-  // methods...
-  void Initialize();
+  private:
+    B2TrackerHitsCollection* fHitsCollection;
 };
 
-// ====================================================================
-// inline functions
-// ====================================================================
-
-inline void HepMCG4AsciiReader::SetFileName(G4String name)
-{
-  filename= name;
-}
-
-inline G4String HepMCG4AsciiReader::GetFileName() const
-{
-  return filename;
-}
-
-inline void HepMCG4AsciiReader::SetVerboseLevel(G4int i)
-{
-  verbose= i;
-}
-
-inline G4int HepMCG4AsciiReader::GetVerboseLevel() const
-{
-  return verbose;
-}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

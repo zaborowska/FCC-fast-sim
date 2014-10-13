@@ -49,7 +49,6 @@
 //------------
 // Geometries:
 //------------
-#include "Par01ParallelWorldForPion.hh"
 #include "G01DetectorConstruction.hh"
 #include "G4GDMLParser.hh"
 #include "G4LogicalVolumeStore.hh"
@@ -60,6 +59,10 @@
 // G4ParameterisationManagerProcess):
 //-----------------------------------
 #include "Par01PhysicsList.hh"
+
+// Sensitive Detector
+#include "B2TrackerSD.hh"
+#include "G4SDManager.hh"
 
 #include "G4UImanager.hh"
 #ifdef G4MULTITHREADED
@@ -114,8 +117,7 @@ int main(int argc, char** argv)
 
    // Detector/mass geometry and parallel geometry(ies):
    G4VUserDetectorConstruction* detector = new G01DetectorConstruction(parser.GetWorldVolume());
-   // -- Parallel geometry for pion parameterisation
-   detector->RegisterParallelWorld(new Par01ParallelWorldForPion("pionGhostWorld"));
+
    // --  The name passed must be the same passed to the
    // -- G4FastSimulationManagerProcess attached to the pions
    runManager->SetUserInitialization(detector);
@@ -133,31 +135,64 @@ int main(int argc, char** argv)
    runManager->Initialize();
 
 
+   //------------------------------------------------ 
+   // Sensitive detectors
+   //------------------------------------------------ 
+   
+   G4SDManager* SDman = G4SDManager::GetSDMpointer();
+   
 
-   // ///////////////////////////////////////////////////////////////////////
-   // //
-   // // Example how to retrieve Auxiliary Information
-   // //
-   // const G4LogicalVolumeStore* lvs = G4LogicalVolumeStore::GetInstance();
-   // std::vector<G4LogicalVolume*>::const_iterator lvciter;
-   // for( lvciter = lvs->begin(); lvciter != lvs->end(); lvciter++ )z
-   // {
-   //   G4GDMLAuxListType auxInfo = parser.GetVolumeAuxiliaryInformation(*lvciter);
-   //   std::vector<G4GDMLAuxPairType>::const_iterator ipair = auxInfo.begin();
-   //   for( ipair = auxInfo.begin(); ipair != auxInfo.end(); ipair++ )
-   //   {
-   //     G4String str=ipair->type;
-   //     G4String val=ipair->value;
-   //     G4cout << " Auxiliary Information is found for Logical Volume :  "
-   //            << (*lvciter)->GetName() << G4endl;
-   //     G4cout << " Name of Auxiliary type is     :  " << str << G4endl;
-   //     G4cout << " Associated Auxiliary value is :  " << val << G4endl;
-   //   }
-   // }
-   // //
-   // // End of Auxiliary Information block
-   // //
-   // ////////////////////////////////////////////////////////////////////////
+   G4String trackerChamberSDname = "Tracker";
+   B2TrackerSD* aTrackerSD = new B2TrackerSD(trackerChamberSDname, "Tracker");
+   SDman->AddNewDetector( aTrackerSD );
+
+
+    ///////////////////////////////////////////////////////////////////////
+    //
+    // Example how to retrieve Auxiliary Information
+    //
+
+
+   const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
+   std::cout << "Found " << auxmap->size()
+             << " volume(s) with auxiliary information."
+             << G4endl << G4endl;
+
+   // The same as above, but now we are looking for
+   // sensitive detectors setting them for the volumes
+
+   for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin();
+       iter!=auxmap->end(); iter++) 
+   {
+     G4cout << "Volume " << ((*iter).first)->GetName()
+            << " has the following list of auxiliary information: "
+            << G4endl << G4endl;
+     for (G4GDMLAuxListType::const_iterator vit=(*iter).second.begin();
+          vit!=(*iter).second.end();vit++)
+     {
+       if ((*vit).type=="SensDet")
+       {
+         G4cout << "Attaching sensitive detector " << (*vit).value
+                << " to volume " << ((*iter).first)->GetName()
+                <<  G4endl << G4endl;
+
+         G4VSensitiveDetector* mydet = SDman->FindSensitiveDetector((*vit).value);
+         if(mydet) 
+         {
+           G4LogicalVolume* myvol = (*iter).first;
+           myvol->SetSensitiveDetector(mydet);
+         }
+         else
+         {
+           G4cout << (*vit).value << " detector not found" << G4endl;
+         }
+       }
+     }
+   }
+    //
+    // End of Auxiliary Information block
+    //
+    ////////////////////////////////////////////////////////////////////////
 
 
    G4UImanager* UImanager = G4UImanager::GetUIpointer();

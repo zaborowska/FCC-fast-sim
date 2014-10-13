@@ -264,7 +264,10 @@ void Par01PhysicsList::AddParameterisation()
   // -- Fast simulation manager process for "mass geometry":
   G4FastSimulationManagerProcess* 
     fastSimProcess_massGeom     = new G4FastSimulationManagerProcess("G4FSMP_massGeom");
-
+  // -- Fast simulation manager process for "parallel geometry":
+  G4FastSimulationManagerProcess*
+    fastSimProcess_parallelGeom = new G4FastSimulationManagerProcess("G4FSMP_parallelGeom",
+                                                                     "pionGhostWorld");
   theParticleIterator->reset();
   while( (*theParticleIterator)() )
     {
@@ -275,7 +278,14 @@ void Par01PhysicsList::AddParameterisation()
           particle->GetParticleName() == "e-"  ||
           particle->GetParticleName() == "gamma") pmanager->
                                                     AddDiscreteProcess(fastSimProcess_massGeom);
-
+      // -- For the parallel geometry, G4FSMP is an Along+PostStep process, and ordering matters:
+      if (particle->GetParticleName() == "pi+" || 
+          particle->GetParticleName() == "pi-") 
+        {
+          pmanager->AddProcess(fastSimProcess_parallelGeom);
+          pmanager->SetProcessOrdering(fastSimProcess_parallelGeom, idxAlongStep, 1);
+          pmanager->SetProcessOrdering(fastSimProcess_parallelGeom, idxPostStep);
+        }
     }
 }
 

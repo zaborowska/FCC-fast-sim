@@ -55,7 +55,7 @@ H02PrimaryGeneratorMessenger::H02PrimaryGeneratorMessenger
   select= new G4UIcmdWithAString("/generator/select", this);
   select-> SetGuidance("select generator type");
   select-> SetParameterName("generator_type", false, false);
-  select-> SetCandidates("particleGun pythia8 hepmcAscii");
+  select-> SetCandidates("particleGun pythia8 hepmcRoot");
   select-> SetDefaultValue("particleGun");
 }
 
