@@ -14,3 +14,6 @@ std::map<std::string,unsigned long> dictf;
 std::map<int,HepMC::GenParticle*> dictg;
 std::map<int,int> dicth;
 std::map<std::string,unsigned long> dicti;
+std::pair<string,unsigned long> dictj;
+std::pair<int,HepMC::GenVertex*> dictk;
+std::pair<int,HepMC::GenParticle*> dictl;

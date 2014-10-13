@@ -36,7 +36,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 HepMCG4RootReader::HepMCG4RootReader()
-   : filename("hepmc.root"), verbose(0)
+   : verbose(0)
 {
    gSystem->Load("libHepMCdict");
    messenger= new HepMCG4RootReaderMessenger(this);
@@ -45,37 +45,33 @@ HepMCG4RootReader::HepMCG4RootReader()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 HepMCG4RootReader::~HepMCG4RootReader()
 {
-   delete rootInput;
+   //delete rootInput;
    delete messenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void HepMCG4RootReader::Initialize()
 {
-   // delete TFile and TList !!!  TODO
    G4cout << filename << G4endl;
    rootInput= new TFile(filename.c_str());
    if(verbose>0) rootInput->ls();
-   //lnk = (rootInput->GetListOfKeys())->FirstLink();
-   //rootIter = new rootIter(rootInput->GetListOfKeys());
+   rootLnk = (rootInput->GetListOfKeys())->FirstLink();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 HepMC::GenEvent* HepMCG4RootReader::GenerateHepMCEvent()
 {
-// TODO: rewrite so that it can outoput events one by one!
-   HepMC::GenEvent* evt =  new HepMC::GenEvent();
-   // TKey *key;
- // if (lnk)
-   //  {
-   //  key = (TKey*)rootIter();// lnk->GetObject();
-   //HepMC::GenEvent* evt = new HepMC::GenEvent()//*) key->ReadObj();//rootInput->Get(key->GetName());
-      rootInput->GetObject("Event_0",evt);
-      // G4cout << "Getting HepMC EVENT: " << key->GetName() << G4endl;
-     // lnk=lnk->Next();
+   HepMC::GenEvent* evt;
+   G4String keyName;
+   TKey* key;
+   while(rootLnk)
+   {
+      key = (TKey*)rootLnk->GetObject();
+      evt = (HepMC::GenEvent*) rootInput->Get(key->GetName());
+      if(verbose>0) G4cout << "Getting HepMC EVENT named: " << key->GetName() << G4endl;
+      rootLnk=rootLnk->Next();
       if(verbose>0) evt->print();
-      //}
-   G4cout << "End of GenerateEvent........................... "  << G4endl;
+   }
    //delete key;
    return evt;
 }
