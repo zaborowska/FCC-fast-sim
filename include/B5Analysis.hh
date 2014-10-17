@@ -23,42 +23,15 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: Par01ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
+// $Id: B5Analysis.hh 66536 2012-12-19 14:32:36Z ihrivnac $
 //
-/// \file Par01ActionInitialization.cc
-/// \brief Implementation of the Par01ActionInitialization class
+/// \file B5Analysis.hh
+/// \brief Selection of the analysis technology
 
-#include "Par01ActionInitialization.hh"
-#include "H02PrimaryGeneratorAction.hh"
-#include "FCCRunAction.hh"
-#include "FCCEventAction.hh"
-#include "FCCTrackingAction.hh"
+#ifndef B5Analysis_h
+#define B5Analysis_h 1
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include "g4root.hh"
+//#include "g4xml.hh"
 
-Par01ActionInitialization::Par01ActionInitialization()
- : G4VUserActionInitialization()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-Par01ActionInitialization::~Par01ActionInitialization()
-{;}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::BuildForMaster() const
-{
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::Build() const
-{
-  SetUserAction(new H02PrimaryGeneratorAction);
-  SetUserAction(new FCCRunAction);
-  SetUserAction(new FCCEventAction);
-  SetUserAction(new FCCTrackingAction);
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#endif

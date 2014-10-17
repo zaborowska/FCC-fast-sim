@@ -23,42 +23,55 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: Par01ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
-//
-/// \file Par01ActionInitialization.cc
-/// \brief Implementation of the Par01ActionInitialization class
+// $Id: FCCEventAction.cc 75604 2013-11-04 13:17:26Z gcosmo $
+// 
+/// \file FCCEventAction.cc
+/// \brief Implementation of the FCCEventAction class
 
-#include "Par01ActionInitialization.hh"
-#include "H02PrimaryGeneratorAction.hh"
-#include "FCCRunAction.hh"
 #include "FCCEventAction.hh"
-#include "FCCTrackingAction.hh"
+#include "FCCRunAction.hh"
+#include "B5Analysis.hh"
+
+#include "G4RunManager.hh"
+#include "G4Event.hh"
+#include "G4UnitsTable.hh"
+
+#include "Randomize.hh"
+#include <iomanip>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-Par01ActionInitialization::Par01ActionInitialization()
- : G4VUserActionInitialization()
+FCCEventAction::FCCEventAction()
+ : G4UserEventAction()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-Par01ActionInitialization::~Par01ActionInitialization()
-{;}
+FCCEventAction::~FCCEventAction()
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void Par01ActionInitialization::BuildForMaster() const
+void FCCEventAction::BeginOfEventAction(const G4Event* event)
 {
+   G4String evName = "Event_";
+   evName += G4UIcommand::ConvertToString(event->GetEventID());
+
+  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+  // Creating ntuple
+  //
+  analysisManager->CreateNtuple(evName, evName);
+  analysisManager->CreateNtupleIColumn("PID");  // column Id = 0
+  analysisManager->CreateNtupleDColumn("pX");  // column Id = 1
+  analysisManager->CreateNtupleDColumn("pY"); // column Id = 2
+  analysisManager->CreateNtupleDColumn("pZ"); // column Id = 3
+  analysisManager->FinishNtuple(event->GetEventID());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void Par01ActionInitialization::Build() const
-{
-  SetUserAction(new H02PrimaryGeneratorAction);
-  SetUserAction(new FCCRunAction);
-  SetUserAction(new FCCEventAction);
-  SetUserAction(new FCCTrackingAction);
+void FCCEventAction::EndOfEventAction(const G4Event* event){
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -1,0 +1,3 @@
+/gun/particle proton
+/gun/direction 0 0 1
+/run/beamOn 10
