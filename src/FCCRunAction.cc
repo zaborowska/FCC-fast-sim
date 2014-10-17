@@ -23,42 +23,67 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: Par01ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
+// $Id: FCCRunAction.cc 74204 2013-10-01 07:04:43Z ihrivnac $
 //
-/// \file Par01ActionInitialization.cc
-/// \brief Implementation of the Par01ActionInitialization class
+/// \file FCCRunAction.cc
+/// \brief Implementation of the FCCRunAction class
 
-#include "Par01ActionInitialization.hh"
-#include "H02PrimaryGeneratorAction.hh"
 #include "FCCRunAction.hh"
-#include "FCCEventAction.hh"
-#include "FCCTrackingAction.hh"
+#include "B5Analysis.hh"
+
+#include "G4Run.hh"
+#include "G4UnitsTable.hh"
+#include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-Par01ActionInitialization::Par01ActionInitialization()
- : G4VUserActionInitialization()
-{}
+FCCRunAction::FCCRunAction()
+ : G4UserRunAction()
+{ 
+  // Create analysis manager
+  // The choice of analysis technology is done via selectin of a namespace
+  // in B5Analysis.hh
+  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+  G4cout << "Using " << analysisManager->GetType() << G4endl;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+  // Default settings
+  analysisManager->SetVerboseLevel(1);
+  analysisManager->SetFileName("SimpleOutput");
 
-Par01ActionInitialization::~Par01ActionInitialization()
-{;}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::BuildForMaster() const
-{
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void Par01ActionInitialization::Build() const
+FCCRunAction::~FCCRunAction()
 {
-  SetUserAction(new H02PrimaryGeneratorAction);
-  SetUserAction(new FCCRunAction);
-  SetUserAction(new FCCEventAction);
-  SetUserAction(new FCCTrackingAction);
+  delete G4AnalysisManager::Instance();  
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCRunAction::BeginOfRunAction(const G4Run* /*run*/)
+{ 
+  //inform the runManager to save random number seed
+  //G4RunManager::GetRunManager()->SetRandomNumberStore(true);
+  
+  // Get analysis manager
+  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+
+  // Open an output file 
+  // The default file name is set in FCCRunAction::FCCRunAction(),
+  // it can be overwritten in a macro
+  analysisManager->OpenFile();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCRunAction::EndOfRunAction(const G4Run* /*run*/)
+{
+  // save histograms & ntuple
+  //
+  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+  analysisManager->Write();
+  analysisManager->CloseFile();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

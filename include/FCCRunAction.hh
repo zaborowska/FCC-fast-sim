@@ -23,42 +23,32 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: Par01ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
-//
-/// \file Par01ActionInitialization.cc
-/// \brief Implementation of the Par01ActionInitialization class
+// $Id: FCCRunAction.hh 74204 2013-10-01 07:04:43Z ihrivnac $
+// 
+/// \file FCCRunAction.hh
+/// \brief Definition of the FCCRunAction class
 
-#include "Par01ActionInitialization.hh"
-#include "H02PrimaryGeneratorAction.hh"
-#include "FCCRunAction.hh"
-#include "FCCEventAction.hh"
-#include "FCCTrackingAction.hh"
+#ifndef FCCRunAction_h
+#define FCCRunAction_h 1
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include "G4UserRunAction.hh"
+#include "globals.hh"
 
-Par01ActionInitialization::Par01ActionInitialization()
- : G4VUserActionInitialization()
-{}
+class G4Run;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+/// Run action class
 
-Par01ActionInitialization::~Par01ActionInitialization()
-{;}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void Par01ActionInitialization::BuildForMaster() const
+class FCCRunAction : public G4UserRunAction
 {
-}
+  public:
+    FCCRunAction();
+    virtual ~FCCRunAction();
+
+    virtual void BeginOfRunAction(const G4Run*);
+    virtual void   EndOfRunAction(const G4Run*);
+};
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void Par01ActionInitialization::Build() const
-{
-  SetUserAction(new H02PrimaryGeneratorAction);
-  SetUserAction(new FCCRunAction);
-  SetUserAction(new FCCEventAction);
-  SetUserAction(new FCCTrackingAction);
-}
+#endif
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
