@@ -23,24 +23,34 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/basic/B5/include/B5EmCalorimeterSD.hh
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_EM_CALORIMETER_SD_H
+#define FCC_EM_CALORIMETER_SD_H
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
+#include "G4VSensitiveDetector.hh"
+#include "FCCEmCalorimeterHit.hh"
 
-/// Event action
+class G4Step;
+class G4HCofThisEvent;
+class G4TouchableHistory;
 
-class FCCEventAction : public G4UserEventAction
+/// EM calorimeter sensitive detector
+
+class FCCEmCalorimeterSD : public G4VSensitiveDetector
 {
+
 public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+    FCCEmCalorimeterSD(G4String name);
+    virtual ~FCCEmCalorimeterSD();
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+    virtual void Initialize(G4HCofThisEvent*HCE);
+    virtual G4bool ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist);
 
+private:
+    FCCEmCalorimeterHitsCollection* fHitsCollection;
+    G4int fHCID;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

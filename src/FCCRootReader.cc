@@ -23,26 +23,53 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/src/HepMCG4AsciiReader.cc
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#include "FCCRootReader.hh"
+#include "FCCRootMessenger.hh"
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
-
-/// Event action
-
-class FCCEventAction : public G4UserEventAction
-{
-public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
-
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
-
-};
+#include <iostream>
+#include <fstream>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+FCCRootReader::FCCRootReader()
+   : verbose(0)
+{
+   gSystem->Load("libHepMCdict");
+   messenger= new FCCRootMessenger(this);
+}
 
-#endif
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+FCCRootReader::~FCCRootReader()
+{
+   //delete rootInput;
+   delete messenger;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCRootReader::Initialize()
+{
+   G4cout << filename << G4endl;
+   rootInput= new TFile(filename.c_str());
+   if(verbose>0) rootInput->ls();
+   rootLnk = (rootInput->GetListOfKeys())->FirstLink();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+HepMC::GenEvent* FCCRootReader::GenerateHepMCEvent()
+{
+   HepMC::GenEvent* evt;
+   G4String keyName;
+   TKey* key;
+   while(rootLnk)
+   {
+      key = (TKey*)rootLnk->GetObject();
+      evt = (HepMC::GenEvent*) rootInput->Get(key->GetName());
+      if(verbose>0) G4cout << "Getting HepMC EVENT named: " << key->GetName() << G4endl;
+      rootLnk=rootLnk->Next();
+      if(verbose>0) evt->print();
+   }
+   //delete key;
+   return evt;
+}

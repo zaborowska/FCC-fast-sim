@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-project(Par01)
+project(FCCfastsim)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
@@ -32,25 +32,23 @@ find_package(HepMC REQUIRED)
 #
 find_package(Pythia8 REQUIRED)
 if(PYTHIA8_FOUND)
-  message(STATUS "G4 Examples: Pythia8 -- found.") 
-  add_definitions(-DG4LIB_USE_PYTHIA8) 
+  add_definitions(-DG4LIB_USE_PYTHIA8)
 else()
-  message(STATUS "G4 Examples: Pythia8 -- NOT found.") 
+  message(STATUS "Pythia8 -- NOT found.")
   set(PYTHIA8_LIBRARY "")
   set(PYTHIA8_HEPMC_LIBRARY "")
   set(PYTHIA8_HAPDF_LIBRARY "")
 endif()
+
 #----------------------------------------------------------------------------
 # Find ROOT (required package)
 #
 find_package(ROOT REQUIRED)
-# if(NOT GCCXML)
-#    message(FATAL_ERROR "P01 requires GCCXML")
-# endif() 
+
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
-include_directories(${PROJECT_SOURCE_DIR}/include 
+include_directories(${PROJECT_SOURCE_DIR}/include
                     ${Geant4_INCLUDE_DIR}
                     ${HEPMC_INCLUDE_DIR}
                     ${PYTHIA8_INCLUDE_DIR}
@@ -59,17 +57,17 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 #----------------------------------------------------------------------------
-# Generate dictionaries, add ROOT libraries properties
+# Generate dictionaries
 #
-ROOT_GENERATE_DICTIONARY(HepMC include/HepMCClasses.hh  LINKDEF include/HepMCLinkDef.h )
+ROOT_GENERATE_DICTIONARY(HepMC include/FCCHepMCClasses.hh  LINKDEF include/FCCHepMCLinkDef.h )
 add_library(HepMCdict SHARED ${sources} HepMC.cxx)
 target_link_libraries(HepMCdict ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(examplePar01 examplePar01.cc ${sources} ${headers})
-target_link_libraries(examplePar01 ${Geant4_LIBRARIES}
+add_executable(FCCfastsim FCCmain.cc ${sources} ${headers})
+target_link_libraries(FCCfastsim ${Geant4_LIBRARIES}
                       ${HEPMC_LIBRARIES}
                        ${PYTHIA8_LIBRARY}
                        ${PYTHIA8_HEPMC_LIBRARY} ${PYTHIA8_HAPDF_LIBRARY}
@@ -80,11 +78,11 @@ target_link_libraries(examplePar01 ${Geant4_LIBRARIES}
 # build Par01. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-set(Par01_SCRIPTS
+set(FCCfastsim_SCRIPTS
     pythia.in root.in vis.mac gun.in
   )
 
-foreach(_script ${Par01_SCRIPTS})
+foreach(_script ${FCCfastsim_SCRIPTS})
   configure_file(
     ${PROJECT_SOURCE_DIR}/${_script}
     ${PROJECT_BINARY_DIR}/${_script}
@@ -95,6 +93,6 @@ endforeach()
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS examplePar01 DESTINATION bin)
+install(TARGETS FCCfastsim DESTINATION bin)
 
 

@@ -23,26 +23,26 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/extended/parametrisations/Par01/include/Par01ActionInitialization.hh
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_ACTION_INITIALIZATION_H
+#define FCC_ACTION_INITIALIZATION_H
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
+#include "G4VUserActionInitialization.hh"
 
-/// Event action
+/// Action initialization class.
+///
 
-class FCCEventAction : public G4UserEventAction
+class FCCActionInitialization : public G4VUserActionInitialization
 {
-public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  public:
+    FCCActionInitialization();
+    virtual ~FCCActionInitialization();
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
-
+    virtual void BuildForMaster() const;
+    virtual void Build() const;
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif
+

@@ -23,26 +23,43 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/extended/parametrisations/Par01/include/Par01EnergySpot.hh
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_ENERGY_SPOT_H
+#define FCC_ENERGY_SPOT_H
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
+#include "G4ThreeVector.hh"
 
-/// Event action
+class G4Colour;
 
-class FCCEventAction : public G4UserEventAction
+class FCCEnergySpot
 {
 public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  FCCEnergySpot();
+  FCCEnergySpot(const G4ThreeVector& point, G4double E);
+  ~FCCEnergySpot();
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+  inline void SetEnergy(const G4double& E) {fEnergy = E;}
+  inline G4double GetEnergy() const {return fEnergy;}
 
+  inline void SetPosition(const G4ThreeVector& point) {fPoint = point;}
+  inline G4ThreeVector GetPosition() const {return fPoint;}
+
+  G4int operator==(const FCCEnergySpot& eSpot) const
+  {
+    return (fEnergy==eSpot.fEnergy && fPoint==eSpot.fPoint) ? 1 : 0;
+  }
+
+  // Draw:
+  void Draw(G4Colour* color = 0);
+  // Print:
+  void Print();
+
+
+private:
+  G4double fEnergy;
+  G4ThreeVector fPoint;
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

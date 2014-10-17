@@ -23,53 +23,72 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/extended/eventgenerator/HepMC/HepMCEx02/src/H02PrimaryGeneratorMessenger.cc
+//
 
-#include "FCCTrackingAction.hh"
-
-#include "G4Track.hh"
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "g4root.hh"
-
-#include "Randomize.hh"
-#include <iomanip>
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCTrackingAction::FCCTrackingAction()
- : G4UserTrackingAction()
-{}
+#include "G4UIcmdWithABool.hh"
+#include "G4UIcmdWithAnInteger.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithoutParameter.hh"
+#include "G4UIcommand.hh"
+#include "G4UIdirectory.hh"
+#include "G4UIparameter.hh"
+#include "FCCPrimaryGeneratorMessenger.hh"
+#include "FCCPrimaryGeneratorAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCTrackingAction::~FCCTrackingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void FCCTrackingAction::PostUserTrackingAction(const G4Track* track)
+FCCPrimaryGeneratorMessenger::FCCPrimaryGeneratorMessenger
+                            (FCCPrimaryGeneratorAction* genaction)
+  : primaryAction(genaction)
 {
-   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-   G4int evNo = event->GetEventID();
-   //
-    // Fill histograms & ntuple
-    //
+  dir= new G4UIdirectory("/generator/");
+  dir-> SetGuidance("Control commands for primary generator");
 
-    // Get analysis manager
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    // Fill ntuple
-    G4int PID = track->GetDynamicParticle()->GetPDGcode();
-    G4ThreeVector P = track->GetMomentum();
-    if(P.x()!=0 && P.y()!=0 && P.z()!=0)
-    {
-       analysisManager->FillNtupleIColumn(evNo,0, PID);
-       analysisManager->FillNtupleDColumn(evNo,1, P.x());
-       analysisManager->FillNtupleDColumn(evNo,2, P.y());
-       analysisManager->FillNtupleDColumn(evNo,3, P.z());
-       analysisManager->AddNtupleRow(evNo);
-    }
+  //verbose= new G4UIcmdWithAnInteger("/generator/verbose", this);
+  //verbose-> SetGuidance("set verbose level (0,1,2)");
+  //verbose-> SetParameterName("verbose", false, false);
+  //verbose-> SetDefaultValue(0);
+  //verbose-> SetRange("verbose>=0 && verbose<=2");
 
+  select= new G4UIcmdWithAString("/generator/select", this);
+  select-> SetGuidance("select generator type");
+  select-> SetParameterName("generator_type", false, false);
+#ifdef G4LIB_USE_PYTHIA8
+  select-> SetCandidates("particleGun pythia8 hepmcRoot");
+#else
+  select-> SetCandidates("particleGun hepmcRoot");
+#endif
+  select-> SetDefaultValue("particleGun");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+FCCPrimaryGeneratorMessenger::~FCCPrimaryGeneratorMessenger()
+{
+  //delete verbose;
+  delete select;
+
+  delete dir;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
+                                              G4String newValues)
+{
+  if ( command==select) {
+    primaryAction-> SetGenerator(newValues);
+    G4cout << "current generator type: "
+            << primaryAction-> GetGeneratorName() << G4endl;
+  } else {
+  }
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4String FCCPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
+{
+  G4String cv, st;
+  if (command == select) {
+    cv= primaryAction-> GetGeneratorName();
+  }
+
+ return cv;
+}

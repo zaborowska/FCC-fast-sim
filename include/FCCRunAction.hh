@@ -23,13 +23,9 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: FCCRunAction.hh 74204 2013-10-01 07:04:43Z ihrivnac $
-// 
-/// \file FCCRunAction.hh
-/// \brief Definition of the FCCRunAction class
 
-#ifndef FCCRunAction_h
-#define FCCRunAction_h 1
+#ifndef FCC_RUN_ACTION_H
+#define FCC_RUN_ACTION_H
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"

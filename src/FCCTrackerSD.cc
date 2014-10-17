@@ -23,63 +23,85 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/basic/B2/B2a/src/B2TrackerSD.cc
+//
 
-#include "FCCRunAction.hh"
-#include "g4root.hh"
-
-#include "G4Run.hh"
-#include "G4UnitsTable.hh"
-#include "G4SystemOfUnits.hh"
+#include "FCCTrackerSD.hh"
+#include "G4HCofThisEvent.hh"
+#include "G4Step.hh"
+#include "G4ThreeVector.hh"
+#include "G4SDManager.hh"
+#include "G4ios.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCRunAction::FCCRunAction()
- : G4UserRunAction()
+FCCTrackerSD::FCCTrackerSD(const G4String& name,
+                         const G4String& hitsCollectionName) 
+ : G4VSensitiveDetector(name),
+   fHitsCollection(NULL)
 {
-  // Create analysis manager
-  // The choice of analysis technology is done via selectin of a namespace
-  // in B5Analysis.hh
-  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  G4cout << "Using " << analysisManager->GetType() << G4endl;
-
-  // Default settings
-  analysisManager->SetVerboseLevel(1);
-  analysisManager->SetFileName("SimpleOutput");
-
+  collectionName.insert(hitsCollectionName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCRunAction::~FCCRunAction()
+FCCTrackerSD::~FCCTrackerSD() 
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCTrackerSD::Initialize(G4HCofThisEvent* hce)
 {
-  delete G4AnalysisManager::Instance();
+  // Create hits collection
+
+  fHitsCollection 
+    = new FCCTrackerHitsCollection(SensitiveDetectorName, collectionName[0]); 
+
+  // Add this collection in hce
+
+  G4int hcID 
+    = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
+  hce->AddHitsCollection( hcID, fHitsCollection ); 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCRunAction::BeginOfRunAction(const G4Run* /*run*/)
-{
-  //inform the runManager to save random number seed
-  //G4RunManager::GetRunManager()->SetRandomNumberStore(true);
+G4bool FCCTrackerSD::ProcessHits(G4Step* aStep, 
+                                     G4TouchableHistory*)
+{  
+  // energy deposit
+  G4double edep = aStep->GetTotalEnergyDeposit();
 
-  // Get analysis manager
-  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+  if (edep==0.) return false;
 
-  // Open an output file
-  // The default file name is set in FCCRunAction::FCCRunAction(),
-  // it can be overwritten in a macro
-  analysisManager->OpenFile();
+  FCCTrackerHit* newHit = new FCCTrackerHit();
+
+  //newHit->SetTrackID  (aStep->GetTrack()->GetTrackID());
+  //newHit->SetChamberNb(aStep->GetPreStepPoint()->GetTouchableHandle()
+  //                                             ->GetCopyNumber());
+  newHit->SetEdep(edep);
+  newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
+
+  //newHit->SetParentID(aStep->GetTrack()->GetParentID()); //Added by me!!
+  //newHit->SetParticleName(aStep->GetTrack()->GetDefinition()->GetParticleName());
+
+  fHitsCollection->insert( newHit );
+
+  //newHit->Print();
+
+  return true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCRunAction::EndOfRunAction(const G4Run* /*run*/)
+void FCCTrackerSD::EndOfEvent(G4HCofThisEvent*)
 {
-  // save histograms & ntuple
-  //
-  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  analysisManager->Write();
-  analysisManager->CloseFile();
+   if ( verboseLevel>1 ) { 
+      G4int nofHits = fHitsCollection->entries();
+      G4cout << "\n-------->Hits Collection: in this event they are " << nofHits 
+             << " hits in the tracker chambers: " << G4endl;
+      for ( G4int i=0; i<nofHits; i++ ) (*fHitsCollection)[i]->Print();
+   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

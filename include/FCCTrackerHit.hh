@@ -23,53 +23,84 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/basic/B2/B2a/include/B2TrackerHit.hh
+//
 
-#include "FCCTrackingAction.hh"
+#ifndef FCC_TRACKER_HIT_H
+#define FCC_TRACKER_HIT_H
 
-#include "G4Track.hh"
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "g4root.hh"
+#include "G4VHit.hh"
+#include "G4THitsCollection.hh"
+#include "G4Allocator.hh"
+#include "G4ThreeVector.hh"
+#include "tls.hh"
 
-#include "Randomize.hh"
-#include <iomanip>
+/// Tracker hit class
+///
+/// It defines data members to store the trackID, chamberNb, energy deposit,
+/// and position of charged particles in a selected volume:
+/// - fTrackID, fChamberNB, fEdep, fPos
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCTrackingAction::FCCTrackingAction()
- : G4UserTrackingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCTrackingAction::~FCCTrackingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void FCCTrackingAction::PostUserTrackingAction(const G4Track* track)
+class FCCTrackerHit : public G4VHit
 {
-   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-   G4int evNo = event->GetEventID();
-   //
-    // Fill histograms & ntuple
-    //
+  public:
+    FCCTrackerHit();
+    FCCTrackerHit(const FCCTrackerHit&);
+    virtual ~FCCTrackerHit();
 
-    // Get analysis manager
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    // Fill ntuple
-    G4int PID = track->GetDynamicParticle()->GetPDGcode();
-    G4ThreeVector P = track->GetMomentum();
-    if(P.x()!=0 && P.y()!=0 && P.z()!=0)
-    {
-       analysisManager->FillNtupleIColumn(evNo,0, PID);
-       analysisManager->FillNtupleDColumn(evNo,1, P.x());
-       analysisManager->FillNtupleDColumn(evNo,2, P.y());
-       analysisManager->FillNtupleDColumn(evNo,3, P.z());
-       analysisManager->AddNtupleRow(evNo);
-    }
+    // operators
+    const FCCTrackerHit& operator=(const FCCTrackerHit&);
+    G4int operator==(const FCCTrackerHit&) const;
 
+    inline void* operator new(size_t);
+    inline void  operator delete(void*);
+
+    // methods from base class
+    virtual void Draw();
+    virtual void Print();
+
+    // Set methods
+    void SetTrackID  (G4int track)      { fTrackID = track; };
+    void SetChamberNb(G4int chamb)      { fChamberNb = chamb; };
+    void SetEdep     (G4double de)      { fEdep = de; };
+    void SetPos      (G4ThreeVector xyz){ fPos = xyz; };
+
+    // Get methods
+    G4int GetTrackID() const     { return fTrackID; };
+    G4int GetChamberNb() const   { return fChamberNb; };
+    G4double GetEdep() const     { return fEdep; };
+    G4ThreeVector GetPos() const { return fPos; };
+
+  private:
+
+      G4int         fTrackID;
+      G4int         fChamberNb;
+      G4double      fEdep;
+      G4ThreeVector fPos;
+};
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+typedef G4THitsCollection<FCCTrackerHit> FCCTrackerHitsCollection;
+
+extern G4ThreadLocal G4Allocator<FCCTrackerHit>* FCCTrackerHitAllocator;
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+inline void* FCCTrackerHit::operator new(size_t)
+{
+  if(!FCCTrackerHitAllocator)
+      FCCTrackerHitAllocator = new G4Allocator<FCCTrackerHit>;
+  return (void *) FCCTrackerHitAllocator->MallocSingle();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+inline void FCCTrackerHit::operator delete(void *hit)
+{
+  FCCTrackerHitAllocator->FreeSingle((FCCTrackerHit*) hit);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+#endif

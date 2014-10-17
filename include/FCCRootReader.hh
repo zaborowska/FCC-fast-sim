@@ -23,26 +23,69 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReader.hh
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_ROOT_READER_H
+#define FCC_ROOT_READER_H
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
+#include "FCCHepMCInterface.hh"
+#include "TROOT.h"
+#include "TFile.h"
+#include "TList.h"
+#include "TSystem.h"
+#include "TKey.h"
 
-/// Event action
+class FCCRootMessenger;
 
-class FCCEventAction : public G4UserEventAction
-{
+class FCCRootReader : public FCCHepMCInterface {
+protected:
+  G4String filename;
+   TFile* rootInput;
+   TObjLink *rootLnk;
+
+  G4int verbose;
+  FCCRootMessenger* messenger;
+
+  virtual HepMC::GenEvent* GenerateHepMCEvent();
+
 public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  FCCRootReader();
+  ~FCCRootReader();
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+  // set/get methods
+  void SetFileName(G4String name);
+  G4String GetFileName() const;
 
+  void SetVerboseLevel(G4int i);
+  G4int GetVerboseLevel() const; 
+
+  // methods...
+  void Initialize();
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// ====================================================================
+// inline functions
+// ====================================================================
+
+inline void FCCRootReader::SetFileName(G4String name)
+{
+  filename= name;
+}
+
+inline G4String FCCRootReader::GetFileName() const
+{
+  return filename;
+}
+
+inline void FCCRootReader::SetVerboseLevel(G4int i)
+{
+  verbose= i;
+}
+
+inline G4int FCCRootReader::GetVerboseLevel() const
+{
+  return verbose;
+}
 
 #endif

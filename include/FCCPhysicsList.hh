@@ -23,26 +23,48 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/extended/parametrisations/Par01/include/Par01PhysicsList.hh
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_PHYSICS_LIST_H
+#define FCC_PHYSICS_LIST_H
 
-#include "G4UserEventAction.hh"
+#include "G4VUserPhysicsList.hh"
 #include "globals.hh"
 
-/// Event action
-
-class FCCEventAction : public G4UserEventAction
+class FCCPhysicsList: public G4VUserPhysicsList
 {
 public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  FCCPhysicsList();
+  virtual ~FCCPhysicsList();
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+protected:
+  // Construct particle and physics
+  virtual void ConstructParticle();
+  virtual void ConstructProcess();
 
+  //
+  virtual void SetCuts();
+
+protected:
+  // these methods Construct particles
+  virtual void ConstructBosons();
+  virtual void ConstructLeptons();
+  virtual void ConstructMesons();
+  virtual void ConstructBaryons();
+  virtual void ConstructIons();
+
+protected:
+  // these methods Construct physics processes and register them
+  void AddParameterisation();
+
+  virtual void ConstructGeneral();
+  virtual void ConstructEM();
+
+  virtual void AddTransportation();
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif
+
+
+

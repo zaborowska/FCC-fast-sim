@@ -23,26 +23,69 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+//
+// based on G4 examples/extended/parametrisations/Par01/src/Par01EnergySpot.cc
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#include "FCCEnergySpot.hh"
+#include "G4VisAttributes.hh"
+#include "G4Colour.hh"
+#include "G4Polyline.hh"
+#include "G4VVisManager.hh"
+#include "G4Step.hh"
+#include "G4SystemOfUnits.hh"
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
+FCCEnergySpot::FCCEnergySpot()
+{;}
 
-/// Event action
-
-class FCCEventAction : public G4UserEventAction
+FCCEnergySpot::FCCEnergySpot(const G4ThreeVector& point, G4double E)
 {
-public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  fPoint = point;
+  fEnergy = E;
+}
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+FCCEnergySpot::~FCCEnergySpot()
+{;}
 
-};
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCEnergySpot::Draw(G4Colour *color)
+{
+  G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
+  if (pVVisManager)
+    {
+      G4Polyline polyline;
+      G4Colour colour(1.,.5,.5);
+      if (color != 0) colour = *color;
+      polyline.SetVisAttributes(colour);
+      G4ThreeVector pp(fPoint);
+      // Draw a "home made" marker:
+      // Will be better by using a real Marker:
+      pp.setZ(pp.z()+1*cm);
+      polyline.push_back(pp);
+      pp.setZ(pp.z()-2*cm);
+      polyline.push_back(pp);
+      pp = fPoint;
+      polyline.push_back(pp);
+      pp.setX(pp.x()+1*cm);
+      polyline.push_back(pp);
+      pp.setX(pp.x()-2*cm);
+      polyline.push_back(pp);
+      pp = fPoint;
+      polyline.push_back(pp);
+      pp.setY(pp.y()+1*cm);
+      polyline.push_back(pp);
+      pp.setY(pp.y()-2*cm);
+      polyline.push_back(pp);
+      pVVisManager -> Draw(polyline);
+    }
+}
 
-#endif
+void FCCEnergySpot::Print()
+{
+  G4cout << " FCCEnergySpot {E = " << fEnergy << "; Position = " << fPoint << " }"<< G4endl;
+}
+
+
+
+
+

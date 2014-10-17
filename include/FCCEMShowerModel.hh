@@ -23,26 +23,65 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+//
+// based on G4 examples/extended/parametrisations/Par01/include/Par01EMShowerModel.hh
+//
+//----------------------------------------------
+// Parameterisation of e+/e-/gamma producing hits
+// The hits are the same as defined in the detailed
+// simulation.
+//----------------------------------------------
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_EM_SHOWER_MODEL_H
+#define FCC_EM_SHOWER_MODEL_H
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
+#include "FCCEnergySpot.hh"
+#include "G4VFastSimulationModel.hh"
+#include "G4Step.hh"
+#include "G4TouchableHandle.hh"
+#include <vector>
 
-/// Event action
-
-class FCCEventAction : public G4UserEventAction
+class FCCEMShowerModel : public G4VFastSimulationModel
 {
 public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  //-------------------------
+  // Constructor, destructor
+  //-------------------------
+  FCCEMShowerModel (G4String, G4Region*);
+  FCCEMShowerModel (G4String);
+  ~FCCEMShowerModel ();
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+  //------------------------------
+  // Virtual methods of the base
+  // class to be coded by the user
+  //------------------------------
+
+  // -- IsApplicable
+  virtual G4bool IsApplicable(const G4ParticleDefinition&);
+  // -- ModelTrigger
+  virtual G4bool ModelTrigger(const G4FastTrack &);
+  // -- User method DoIt
+  virtual void DoIt(const G4FastTrack&, G4FastStep&);
+
+private:
+  void AssignSpotAndCallHit(const FCCEnergySpot &eSpot);
+  void FillFakeStep(const FCCEnergySpot &eSpot);
+  void Explode(const G4FastTrack&);
+  void BuildDetectorResponse();
+
+private:
+  G4Step                         *fFakeStep;
+  G4StepPoint                    *fFakePreStepPoint, *fFakePostStepPoint;
+  G4TouchableHandle              fTouchableHandle;
+  G4Navigator                    *fpNavigator;
+  G4bool                         fNaviSetup;
+  G4Material*                    fCsI;
+
+  std::vector<FCCEnergySpot> feSpotList;
 
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif
+
+
+
+

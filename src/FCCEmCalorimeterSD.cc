@@ -23,53 +23,77 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/basic/B5/src/B5EmCalorimeterSD.cc
+//
 
-#include "FCCTrackingAction.hh"
-
+#include "FCCEmCalorimeterSD.hh"
+#include "FCCEmCalorimeterHit.hh"
+#include "G4HCofThisEvent.hh"
+#include "G4TouchableHistory.hh"
 #include "G4Track.hh"
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "g4root.hh"
-
-#include "Randomize.hh"
-#include <iomanip>
+#include "G4Step.hh"
+#include "G4SDManager.hh"
+#include "G4ios.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCTrackingAction::FCCTrackingAction()
- : G4UserTrackingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCTrackingAction::~FCCTrackingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void FCCTrackingAction::PostUserTrackingAction(const G4Track* track)
+FCCEmCalorimeterSD::FCCEmCalorimeterSD(G4String name)
+: G4VSensitiveDetector(name), fHitsCollection(0), fHCID(-1)
 {
-   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-   G4int evNo = event->GetEventID();
-   //
-    // Fill histograms & ntuple
-    //
+    collectionName.insert("EMcalorimeterColl");
+}
 
-    // Get analysis manager
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    // Fill ntuple
-    G4int PID = track->GetDynamicParticle()->GetPDGcode();
-    G4ThreeVector P = track->GetMomentum();
-    if(P.x()!=0 && P.y()!=0 && P.z()!=0)
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+FCCEmCalorimeterSD::~FCCEmCalorimeterSD()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCEmCalorimeterSD::Initialize(G4HCofThisEvent* hce)
+{
+    fHitsCollection
+      = new FCCEmCalorimeterHitsCollection(SensitiveDetectorName,collectionName[0]);
+    if (fHCID<0)
+    { fHCID = G4SDManager::GetSDMpointer()->GetCollectionID(fHitsCollection); }
+    hce->AddHitsCollection(fHCID,fHitsCollection);
+
+    // fill calorimeter hits with zero energy deposition
+    for (G4int i=0;i<80;i++)
     {
-       analysisManager->FillNtupleIColumn(evNo,0, PID);
-       analysisManager->FillNtupleDColumn(evNo,1, P.x());
-       analysisManager->FillNtupleDColumn(evNo,2, P.y());
-       analysisManager->FillNtupleDColumn(evNo,3, P.z());
-       analysisManager->AddNtupleRow(evNo);
+        FCCEmCalorimeterHit* hit = new FCCEmCalorimeterHit(i);
+        fHitsCollection->insert(hit);
     }
+}
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4bool FCCEmCalorimeterSD::ProcessHits(G4Step*step, G4TouchableHistory*)
+{
+    G4double edep = step->GetTotalEnergyDeposit();
+    if (edep==0.) return true;
+
+    G4TouchableHistory* touchable
+      = (G4TouchableHistory*)(step->GetPreStepPoint()->GetTouchable());
+    G4VPhysicalVolume* physical = touchable->GetVolume();
+    G4int copyNo = physical->GetCopyNo();
+
+    FCCEmCalorimeterHit* hit = (*fHitsCollection)[copyNo];
+    // check if it is first touch
+    if (!(hit->GetLogV()))
+    {
+        // fill volume information
+        hit->SetLogV(physical->GetLogicalVolume());
+        G4AffineTransform transform
+          = touchable->GetHistory()->GetTopTransform();
+        transform.Invert();
+        hit->SetRot(transform.NetRotation());
+        hit->SetPos(transform.NetTranslation());
+    }
+    // add energy deposition
+    hit->AddEdep(edep);
+
+    return true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

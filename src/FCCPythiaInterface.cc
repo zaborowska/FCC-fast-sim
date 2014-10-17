@@ -23,53 +23,87 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/src/HepMCG4PythiaInterface.cc
+//
 
-#include "FCCTrackingAction.hh"
+#ifdef G4LIB_USE_PYTHIA8
 
-#include "G4Track.hh"
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "g4root.hh"
+#include "FCCPythiaInterface.hh"
+#include "FCCPythiaMessenger.hh"
 
-#include "Randomize.hh"
-#include <iomanip>
+#include "HepMC/GenEvent.h"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCTrackingAction::FCCTrackingAction()
- : G4UserTrackingAction()
-{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCTrackingAction::~FCCTrackingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void FCCTrackingAction::PostUserTrackingAction(const G4Track* track)
+FCCPythiaInterface::FCCPythiaInterface()
+   : verbose(0)
 {
-   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-   G4int evNo = event->GetEventID();
-   //
-    // Fill histograms & ntuple
-    //
-
-    // Get analysis manager
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    // Fill ntuple
-    G4int PID = track->GetDynamicParticle()->GetPDGcode();
-    G4ThreeVector P = track->GetMomentum();
-    if(P.x()!=0 && P.y()!=0 && P.z()!=0)
-    {
-       analysisManager->FillNtupleIColumn(evNo,0, PID);
-       analysisManager->FillNtupleDColumn(evNo,1, P.x());
-       analysisManager->FillNtupleDColumn(evNo,2, P.y());
-       analysisManager->FillNtupleDColumn(evNo,3, P.z());
-       analysisManager->AddNtupleRow(evNo);
-    }
-
+  messenger= new FCCPythiaMessenger(this);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+FCCPythiaInterface::~FCCPythiaInterface()
+{
+  delete messenger;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCPythiaInterface::CallPythiaReadString(G4String par)
+{
+   pythia.readString(par);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCPythiaInterface::CallPythiaInit(G4int beam,
+                                        G4int target, G4double eCM)
+{
+   pythia.init(beam,target, eCM);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCPythiaInterface::CallPythiaStat()
+{
+   pythia.stat();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCPythiaInterface::SetRandomSeed(G4int iseed)
+{
+   pythia.readString("Random:setSeed = on");
+   ostringstream Seed;
+   Seed<<"Random:seed = "<<iseed;
+   pythia.readString(Seed.str());
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCPythiaInterface::PrintRandomStatus(std::ostream& /*ostr*/) const
+{
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCPythiaInterface::SetUserParameters()
+{
+  G4cout << "set user parameters of PYTHIA common." << G4endl
+         << "nothing to be done in default."
+         << G4endl;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+HepMC::GenEvent* FCCPythiaInterface::GenerateHepMCEvent()
+{
+   pythia.next();
+
+   HepMC::GenEvent* hepmcevt = new HepMC::GenEvent();
+   ToHepMC.fill_next_event( pythia, hepmcevt );
+   if(verbose>0) hepmcevt-> print();
+
+  return hepmcevt;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCPythiaInterface::Print() const
+{
+  G4cout << "PythiaInterface::Print()..." << G4endl;
+}
+
+#endif

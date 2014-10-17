@@ -23,53 +23,69 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/src/HepMCG4AsciiReaderMessenger.cc
+//
+#include "G4UIdirectory.hh"
+#include "G4UIcmdWithoutParameter.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithAnInteger.hh"
+#include "FCCRootMessenger.hh"
+#include "FCCRootReader.hh"
 
-#include "FCCTrackingAction.hh"
-
-#include "G4Track.hh"
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "g4root.hh"
-
-#include "Randomize.hh"
-#include <iomanip>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCTrackingAction::FCCTrackingAction()
- : G4UserTrackingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCTrackingAction::~FCCTrackingAction()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void FCCTrackingAction::PostUserTrackingAction(const G4Track* track)
+FCCRootMessenger::FCCRootMessenger
+                             (FCCRootReader* agen)
+  : gen(agen)
 {
-   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-   G4int evNo = event->GetEventID();
-   //
-    // Fill histograms & ntuple
-    //
+  dir= new G4UIdirectory("/generator/hepmcRoot/");
+  dir-> SetGuidance("Reading HepMC event from an Root file");
 
-    // Get analysis manager
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    // Fill ntuple
-    G4int PID = track->GetDynamicParticle()->GetPDGcode();
-    G4ThreeVector P = track->GetMomentum();
-    if(P.x()!=0 && P.y()!=0 && P.z()!=0)
-    {
-       analysisManager->FillNtupleIColumn(evNo,0, PID);
-       analysisManager->FillNtupleDColumn(evNo,1, P.x());
-       analysisManager->FillNtupleDColumn(evNo,2, P.y());
-       analysisManager->FillNtupleDColumn(evNo,3, P.z());
-       analysisManager->AddNtupleRow(evNo);
-    }
+  verbose=
+    new G4UIcmdWithAnInteger("/generator/hepmcRoot/verbose", this);
+  verbose-> SetGuidance("Set verbose level");
+  verbose-> SetParameterName("verboseLevel", false, false);
+  verbose-> SetRange("verboseLevel>=0 && verboseLevel<=1");
 
+  open= new G4UIcmdWithAString("/generator/hepmcRoot/open", this);
+  open-> SetGuidance("(re)open data file (HepMC Root format)");
+  open-> SetParameterName("input root file", true, true);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+FCCRootMessenger::~FCCRootMessenger()
+{
+  delete verbose;
+  delete open;
+
+  delete dir;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCRootMessenger::SetNewValue(G4UIcommand* command,
+                                              G4String newValues)
+{
+  if (command==verbose) {
+    int level= verbose-> GetNewIntValue(newValues);
+    gen-> SetVerboseLevel(level);
+  } else if (command==open) {
+    gen-> SetFileName(newValues);
+    G4cout << "HepMC Root inputfile: "
+           << gen-> GetFileName() << G4endl;
+    gen-> Initialize();
+  }
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4String FCCRootMessenger::GetCurrentValue(G4UIcommand* command)
+{
+  G4String cv;
+
+  if (command == verbose) {
+    cv= verbose-> ConvertToString(gen-> GetVerboseLevel());
+  } else  if (command == open) {
+    cv= gen-> GetFileName();
+  }
+  return cv;
+}

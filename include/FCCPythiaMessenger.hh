@@ -23,26 +23,40 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/eventgenerator/HepMC/HepMCEx01/include/HepMCG4PythiaMessenger.hh
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_PYTHIA_MESSENGER_H
+#define FCC_PYTHIA_MESSENGER_H
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
+#include "G4UImessenger.hh"
 
-/// Event action
+class FCCPythiaInterface;
+class G4UIdirectory;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithAString;
+class G4UIcmdWithAnInteger;
 
-class FCCEventAction : public G4UserEventAction
-{
+class FCCPythiaMessenger : public G4UImessenger {
+private:
+  FCCPythiaInterface* gen;
+
+  G4UIdirectory*           dir;
+  G4UIcmdWithAnInteger*    verbose;
+  G4UIcmdWithoutParameter* print;
+  G4UIcommand*             cpythiainit;
+  G4UIcmdWithoutParameter* cpythiastat;
+  G4UIcommand*             cpythiaread;
+  G4UIcommand*             setUserParameters;
+  G4UIcmdWithAnInteger*    setSeed;
+  G4UIcmdWithAString*      printRandomStatus;
+
 public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  FCCPythiaMessenger(FCCPythiaInterface* agen);
+  ~FCCPythiaMessenger();
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
-
+  void SetNewValue(G4UIcommand* command, G4String newValues);
+  G4String GetCurrentValue(G4UIcommand* command);
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

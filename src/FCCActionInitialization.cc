@@ -23,26 +23,40 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/extended/parametrisations/Par01/src/Par01ActionInitialization.cc
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
-
-#include "G4UserEventAction.hh"
-#include "globals.hh"
-
-/// Event action
-
-class FCCEventAction : public G4UserEventAction
-{
-public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
-
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
-
-};
+#include "FCCActionInitialization.hh"
+#include "FCCPrimaryGeneratorAction.hh"
+#include "FCCRunAction.hh"
+#include "FCCEventAction.hh"
+#include "FCCTrackingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+FCCActionInitialization::FCCActionInitialization()
+ : G4VUserActionInitialization()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+FCCActionInitialization::~FCCActionInitialization()
+{;}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCActionInitialization::BuildForMaster() const
+{
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCActionInitialization::Build() const
+{
+  SetUserAction(new FCCPrimaryGeneratorAction);
+  SetUserAction(new FCCRunAction);
+  SetUserAction(new FCCEventAction);
+  SetUserAction(new FCCTrackingAction);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -23,26 +23,35 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_ROOT_MESSENGER_H
+#define FCC_ROOT_MESSENGER_H
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
+#include "G4UImessenger.hh"
 
-/// Event action
+class FCCRootReader;
+class G4UIdirectory;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithAString;
+class G4UIcmdWithAnInteger;
 
-class FCCEventAction : public G4UserEventAction
-{
+class FCCRootMessenger : public G4UImessenger {
 public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  FCCRootMessenger(FCCRootReader* agen);
+  ~FCCRootMessenger();
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+  void SetNewValue(G4UIcommand* command, G4String newValues);
+  G4String GetCurrentValue(G4UIcommand* command);
+
+private:
+  FCCRootReader* gen;
+
+  G4UIdirectory* dir;
+  G4UIcmdWithAnInteger* verbose;
+  G4UIcmdWithAString* open;
 
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

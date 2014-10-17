@@ -23,26 +23,70 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/eventgenerator/HepMC/HepMCEx02/include/H02PrimaryGeneratorAction.hh
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_PRIMARY_GENERATOR_ACTION_H
+#define FCC_PRIMARY_GENERATOR_ACTION_H
 
-#include "G4UserEventAction.hh"
+#include <map>
 #include "globals.hh"
+#include "G4VUserPrimaryGeneratorAction.hh"
 
-/// Event action
+class G4Event;
+class G4VPrimaryGenerator;
+class FCCPrimaryGeneratorMessenger;
 
-class FCCEventAction : public G4UserEventAction
-{
+class FCCPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  FCCPrimaryGeneratorAction();
+  ~FCCPrimaryGeneratorAction();
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+  virtual void GeneratePrimaries(G4Event* anEvent);
+
+  void SetGenerator(G4VPrimaryGenerator* gen);
+  void SetGenerator(G4String genname);
+
+  G4VPrimaryGenerator* GetGenerator() const;
+  G4String GetGeneratorName() const;
+
+private:
+  G4VPrimaryGenerator* particleGun;
+  G4VPrimaryGenerator* pythia8Gen;
+  G4VPrimaryGenerator* hepmcRoot;
+
+  G4VPrimaryGenerator* currentGenerator;
+  G4String currentGeneratorName;
+  std::map<G4String, G4VPrimaryGenerator*> gentypeMap;
+
+  FCCPrimaryGeneratorMessenger* messenger;
 
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+inline void FCCPrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* gen)
+{
+  currentGenerator= gen;
+}
+
+inline void FCCPrimaryGeneratorAction::SetGenerator(G4String genname)
+{
+  std::map<G4String, G4VPrimaryGenerator*>::iterator
+       pos = gentypeMap.find(genname);
+  if(pos != gentypeMap.end()) {
+    currentGenerator= pos->second;
+    currentGeneratorName= genname;
+  }
+}
+
+inline G4VPrimaryGenerator* FCCPrimaryGeneratorAction::GetGenerator() const
+{
+  return currentGenerator;
+}
+
+inline G4String FCCPrimaryGeneratorAction::GetGeneratorName() const
+{
+  return currentGeneratorName;
+}
 
 #endif

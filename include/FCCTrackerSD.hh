@@ -23,24 +23,41 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/basic/B2/B2a/include/B2TrackerSD.hh
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_TRACKER_SD_H
+#define FCC_TRACKER_SD_H
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
+#include "G4VSensitiveDetector.hh"
+#include "FCCTrackerHit.hh"
+#include <vector>
 
-/// Event action
+class G4Step;
+class G4HCofThisEvent;
 
-class FCCEventAction : public G4UserEventAction
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/// FCCTracker sensitive detector class
+///
+/// The hits are accounted in hits in ProcessHits() function which is called
+/// by Geant4 kernel at each step. A hit is created with each step with non zero
+/// energy deposit.
+
+class FCCTrackerSD : public G4VSensitiveDetector
 {
-public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  public:
+    FCCTrackerSD(const G4String& name,
+                const G4String& hitsCollectionName);
+    virtual ~FCCTrackerSD();
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+    // methods from base class
+    virtual void   Initialize(G4HCofThisEvent* hitCollection);
+    virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
+    virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
 
+  private:
+    FCCTrackerHitsCollection* fHitsCollection;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

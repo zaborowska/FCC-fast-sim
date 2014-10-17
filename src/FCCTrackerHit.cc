@@ -23,53 +23,92 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/basic/B2/B2a/src/B2TrackerHit.cc
+//
 
-#include "FCCTrackingAction.hh"
-
-#include "G4Track.hh"
-#include "G4Event.hh"
-#include "G4RunManager.hh"
+#include "FCCTrackerHit.hh"
 #include "G4UnitsTable.hh"
-#include "g4root.hh"
+#include "G4VVisManager.hh"
+#include "G4Circle.hh"
+#include "G4Colour.hh"
+#include "G4VisAttributes.hh"
 
-#include "Randomize.hh"
 #include <iomanip>
 
+G4ThreadLocal G4Allocator<FCCTrackerHit>* FCCTrackerHitAllocator=0;
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCTrackingAction::FCCTrackingAction()
- : G4UserTrackingAction()
+FCCTrackerHit::FCCTrackerHit()
+ : G4VHit(),
+   fTrackID(-1),
+   fChamberNb(-1),
+   fEdep(0.),
+   fPos(G4ThreeVector())
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCTrackingAction::~FCCTrackingAction()
-{}
+FCCTrackerHit::~FCCTrackerHit() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCTrackingAction::PostUserTrackingAction(const G4Track* track)
+FCCTrackerHit::FCCTrackerHit(const FCCTrackerHit& right)
+  : G4VHit()
 {
-   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-   G4int evNo = event->GetEventID();
-   //
-    // Fill histograms & ntuple
-    //
+  fTrackID   = right.fTrackID;
+  fChamberNb = right.fChamberNb;
+  fEdep      = right.fEdep;
+  fPos       = right.fPos;
+}
 
-    // Get analysis manager
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    // Fill ntuple
-    G4int PID = track->GetDynamicParticle()->GetPDGcode();
-    G4ThreeVector P = track->GetMomentum();
-    if(P.x()!=0 && P.y()!=0 && P.z()!=0)
-    {
-       analysisManager->FillNtupleIColumn(evNo,0, PID);
-       analysisManager->FillNtupleDColumn(evNo,1, P.x());
-       analysisManager->FillNtupleDColumn(evNo,2, P.y());
-       analysisManager->FillNtupleDColumn(evNo,3, P.z());
-       analysisManager->AddNtupleRow(evNo);
-    }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+const FCCTrackerHit& FCCTrackerHit::operator=(const FCCTrackerHit& right)
+{
+  fTrackID   = right.fTrackID;
+  fChamberNb = right.fChamberNb;
+  fEdep      = right.fEdep;
+  fPos       = right.fPos;
+
+  return *this;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4int FCCTrackerHit::operator==(const FCCTrackerHit& right) const
+{
+  return ( this == &right ) ? 1 : 0;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCTrackerHit::Draw()
+{
+  G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
+  if(pVVisManager)
+  {
+    G4Circle circle(fPos);
+    circle.SetScreenSize(4.);
+    circle.SetFillStyle(G4Circle::filled);
+    G4Colour colour(1.,0.,0.);
+    G4VisAttributes attribs(colour);
+    circle.SetVisAttributes(attribs);
+    pVVisManager->Draw(circle);
+  }
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCTrackerHit::Print()
+{
+  G4cout
+     << "  trackID: " << fTrackID << " chamberNb: " << fChamberNb
+     << "Edep: "
+     << std::setw(7) << G4BestUnit(fEdep,"Energy")
+     << " Position: "
+     << std::setw(7) << G4BestUnit( fPos,"Length")
+     << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

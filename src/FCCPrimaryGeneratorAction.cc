@@ -23,26 +23,50 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
-
-#include "G4UserEventAction.hh"
-#include "globals.hh"
-
-/// Event action
-
-class FCCEventAction : public G4UserEventAction
-{
-public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
-
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
-
-};
+/// \file eventgenerator/HepMC/HepMCEx02/src/H02PrimaryGeneratorAction.cc
+//
+#include "G4Event.hh"
+#include "G4ParticleGun.hh"
+#include "FCCRootReader.hh"
+#include "FCCPythiaInterface.hh"
+#include "FCCPrimaryGeneratorAction.hh"
+#include "FCCPrimaryGeneratorMessenger.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+FCCPrimaryGeneratorAction::FCCPrimaryGeneratorAction()
+{
+  // default generator is particle gun.
+  currentGenerator= particleGun= new G4ParticleGun();
+  currentGeneratorName= "particleGun";
+  hepmcRoot = new FCCRootReader();
+#ifdef G4LIB_USE_PYTHIA8
+  pythia8Gen= new FCCPythiaInterface();
+#else
+  pythia8Gen= 0;
 #endif
+
+  gentypeMap["particleGun"]= particleGun;
+#ifdef G4LIB_USE_PYTHIA8
+  gentypeMap["pythia8"]= pythia8Gen;
+#endif
+  gentypeMap["hepmcRoot"]= hepmcRoot;
+
+  messenger= new FCCPrimaryGeneratorMessenger(this);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+FCCPrimaryGeneratorAction::~FCCPrimaryGeneratorAction()
+{
+  delete messenger;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+{
+  if(currentGenerator)
+    currentGenerator-> GeneratePrimaryVertex(anEvent);
+  else
+    G4Exception("FCCPrimaryGeneratorAction::GeneratePrimaries",
+                "InvalidSetup", FatalException,
+                "Generator is not instanciated.");
+}

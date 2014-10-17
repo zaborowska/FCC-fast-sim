@@ -23,26 +23,37 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/eventgenerator/HepMC/HepMCEx02/include/H02PrimaryGeneratorMessenger.hh
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_PRIMARY_GENERATOR_MESSENGER_H
+#define FCC_PRIMARY_GENERATOR_MESSENGER_H
 
-#include "G4UserEventAction.hh"
 #include "globals.hh"
+#include "G4UImessenger.hh"
 
-/// Event action
+class FCCPrimaryGeneratorAction;
+class G4UIdirectory;
+class G4UIcommand;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithABool;
+class G4UIcmdWithAnInteger;
+class G4UIcmdWithAString;
 
-class FCCEventAction : public G4UserEventAction
-{
+class FCCPrimaryGeneratorMessenger : public G4UImessenger {
 public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  FCCPrimaryGeneratorMessenger(FCCPrimaryGeneratorAction* genaction);
+  ~FCCPrimaryGeneratorMessenger();
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+  void SetNewValue(G4UIcommand* command, G4String newValues);
+  G4String GetCurrentValue(G4UIcommand* command);
+
+private:
+  FCCPrimaryGeneratorAction* primaryAction;
+
+  G4UIdirectory* dir;
+  G4UIcmdWithAString* select;
 
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

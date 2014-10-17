@@ -23,19 +23,13 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: FCCEventAction.cc 75604 2013-11-04 13:17:26Z gcosmo $
-// 
-/// \file FCCEventAction.cc
-/// \brief Implementation of the FCCEventAction class
 
 #include "FCCEventAction.hh"
 #include "FCCRunAction.hh"
-#include "B5Analysis.hh"
-
+#include "g4root.hh"
 #include "G4RunManager.hh"
 #include "G4Event.hh"
 #include "G4UnitsTable.hh"
-
 #include "Randomize.hh"
 #include <iomanip>
 

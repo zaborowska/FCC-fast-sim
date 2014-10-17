@@ -23,26 +23,33 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// based on G4 examples/persistency/gdml/G01/include/G01DetectorConstruction.hh
+//
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_DETECTOR_CONSTRUCTION_H
+#define FCC_DETECTOR_CONSTRUCTION_H
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
+#include "G4VUserDetectorConstruction.hh"
 
-/// Event action
+/// Detector construction allowing to use the geometry read from the GDML file
 
-class FCCEventAction : public G4UserEventAction
+class FCCDetectorConstruction : public G4VUserDetectorConstruction
 {
-public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+  public:
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+    FCCDetectorConstruction(G4VPhysicalVolume *setWorld = 0)
+    {
+      fWorld = setWorld;
+    }
 
+    virtual G4VPhysicalVolume *Construct()
+    {
+      return fWorld;
+    }
+
+  private:
+
+    G4VPhysicalVolume *fWorld;
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
