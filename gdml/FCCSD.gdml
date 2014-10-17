@@ -79,7 +79,7 @@
     <tube aunit="deg" deltaphi="360" lunit="mm" name="ECalForward_10x7ff5f9e7c050" rmax="3000" rmin="500" startphi="0" z="1000"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="ECalForward_20x7ff5f9e7c330" rmax="3000" rmin="500" startphi="0" z="1000"/>
 
-    <tube aunit="deg" deltaphi="360" lunit="mm" name="HcalBarrel0x7ff5f9e7cf80" rmax="8000" rmin="3000" startphi="0" z="6000"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="HCalBarrel0x7ff5f9e7cf80" rmax="8000" rmin="3000" startphi="0" z="6000"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="HCalEndCap_10x7ff5f9e7d3d0" rmax="8000" rmin="3000" startphi="0" z="2000"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="HCalEndCap_20x7ff5f9e7d6b0" rmax="8000" rmin="3000" startphi="0" z="2000"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="HCalForward_10x7ff5f9e7b840" rmax="4000" rmin="500" startphi="0" z="2000"/>
@@ -135,9 +135,9 @@
 
 <!-- Hadron Calorimeters -->
 
-    <volume name="HcalBarrel0x7ff5f9e7d060">
+    <volume name="HCalBarrel0x7ff5f9e7d060">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
-      <solidref ref="HcalBarrel0x7ff5f9e7cf80"/>
+      <solidref ref="HCalBarrel0x7ff5f9e7cf80"/>
       <auxiliary auxtype="SensDet" auxvalue="HCalBarrel"/>
     </volume>
     <volume name="HCalEndCap_10x7ff5f9e7d4b0">
@@ -254,8 +254,8 @@
 
 <!-- Hadron Calorimeters -->
 
-      <physvol name="HcalBarrel0x7ff5f9e7d190">
-        <volumeref ref="HcalBarrel0x7ff5f9e7d060"/>
+      <physvol name="HCalBarrel0x7ff5f9e7d190">
+        <volumeref ref="HCalBarrel0x7ff5f9e7d060"/>
       </physvol>
       <physvol name="HCalEndCap_10x7ff5f9e7d5e0">
         <volumeref ref="HCalEndCap_10x7ff5f9e7d4b0"/>

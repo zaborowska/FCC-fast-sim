@@ -24,16 +24,16 @@
 // ********************************************************************
 //
 //
-// $Id: FCCEMShowerModel.cc 77940 2013-11-29 15:15:17Z gcosmo $
+// $Id: FCCHadShowerModel.cc 77940 2013-11-29 15:15:17Z gcosmo $
 //
-#include "FCCEMShowerModel.hh"
+#include "FCCHadShowerModel.hh"
 #include "FCCEnergySpot.hh"
 
 #include "Randomize.hh"
 
-#include "G4Electron.hh"
-#include "G4Positron.hh"
-#include "G4Gamma.hh"
+#include "G4PionPlus.hh"
+#include "G4PionMinus.hh"
+#include "G4Eta.hh"
 #include "G4TransportationManager.hh"
 #include "G4VSensitiveDetector.hh"
 #include "G4TouchableHandle.hh"
@@ -41,7 +41,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4NistManager.hh"
 
-FCCEMShowerModel::FCCEMShowerModel(G4String modelName, G4Region* envelope)
+FCCHadShowerModel::FCCHadShowerModel(G4String modelName, G4Region* envelope)
 : G4VFastSimulationModel(modelName, envelope)
 {
   fFakeStep          = new G4Step();
@@ -53,7 +53,7 @@ FCCEMShowerModel::FCCEMShowerModel(G4String modelName, G4Region* envelope)
   fCsI               = 0;
 }
 
-FCCEMShowerModel::FCCEMShowerModel(G4String modelName)
+FCCHadShowerModel::FCCHadShowerModel(G4String modelName)
 : G4VFastSimulationModel(modelName)
 {
   fFakeStep          = new G4Step();
@@ -65,27 +65,27 @@ FCCEMShowerModel::FCCEMShowerModel(G4String modelName)
   fCsI               = 0;
 }
 
-FCCEMShowerModel::~FCCEMShowerModel()
+FCCHadShowerModel::~FCCHadShowerModel()
 {
   delete fFakeStep;
   delete fpNavigator;
 }
 
-G4bool FCCEMShowerModel::IsApplicable(const G4ParticleDefinition& particleType)
+G4bool FCCHadShowerModel::IsApplicable(const G4ParticleDefinition& particleType)
 {
   return 
-    &particleType == G4Electron::ElectronDefinition() ||
-    &particleType == G4Positron::PositronDefinition() ||
-    &particleType == G4Gamma::GammaDefinition();
+    &particleType == G4PionPlus::PionPlusDefinition() ||
+    &particleType == G4PionMinus::PionMinusDefinition() ||
+    &particleType == G4Eta::EtaDefinition();
 }
 
-G4bool FCCEMShowerModel::ModelTrigger(const G4FastTrack& fastTrack)
+G4bool FCCHadShowerModel::ModelTrigger(const G4FastTrack& fastTrack)
 {
   // Applies the parameterisation above 100 MeV:
   return fastTrack.GetPrimaryTrack()->GetKineticEnergy() > 100*MeV;
 }
 
-void FCCEMShowerModel::DoIt(const G4FastTrack& fastTrack, 
+void FCCHadShowerModel::DoIt(const G4FastTrack& fastTrack, 
                      G4FastStep& fastStep)
 {
   // Kill the parameterised particle:
@@ -102,7 +102,7 @@ void FCCEMShowerModel::DoIt(const G4FastTrack& fastTrack,
 }
 
 
-void FCCEMShowerModel::Explode(const G4FastTrack& fastTrack)
+void FCCHadShowerModel::Explode(const G4FastTrack& fastTrack)
 {
   //-----------------------------------------------------
   //
@@ -125,7 +125,7 @@ void FCCEMShowerModel::Explode(const G4FastTrack& fastTrack)
 }
 
 
-void FCCEMShowerModel::BuildDetectorResponse()
+void FCCHadShowerModel::BuildDetectorResponse()
 {
   // Does the assignation of the energy spots to the sensitive volumes:
   for (size_t i = 0; i < feSpotList.size(); i++)
@@ -141,7 +141,7 @@ void FCCEMShowerModel::BuildDetectorResponse()
 }
 
 
-void FCCEMShowerModel::AssignSpotAndCallHit(const FCCEnergySpot &eSpot)
+void FCCHadShowerModel::AssignSpotAndCallHit(const FCCEnergySpot &eSpot)
 {
   //
   // "converts" the energy spot into the fake
@@ -169,7 +169,7 @@ void FCCEMShowerModel::AssignSpotAndCallHit(const FCCEnergySpot &eSpot)
 }
 
 
-void FCCEMShowerModel::FillFakeStep(const FCCEnergySpot &eSpot)
+void FCCHadShowerModel::FillFakeStep(const FCCEnergySpot &eSpot)
 {
   //-----------------------------------------------------------
   // find in which volume the spot is.

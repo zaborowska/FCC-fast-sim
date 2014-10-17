@@ -51,6 +51,8 @@
 #include "FCCHadCalorimeterSD.hh"
 #include "G4SDManager.hh"
 
+#include "FCCSDInfo.hh"
+
 //-----------------------------------
 // PhysicsList
 //-----------------------------------
@@ -131,7 +133,11 @@ int main(int argc, char** argv)
    //------------------------------------------------ 
    // Sensitive detectors
    //------------------------------------------------ 
+
+   FCCSDInfo SensDetCreater(parser);
    
+
+/*
    G4SDManager* SDman = G4SDManager::GetSDMpointer();
    
 
@@ -282,7 +288,7 @@ int main(int argc, char** argv)
       new FCCEMShowerModel("emShowerModel",caloRegion);
 
    }
-
+*/
 
 
    G4UImanager* UImanager = G4UImanager::GetUIpointer();
