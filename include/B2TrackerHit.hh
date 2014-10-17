@@ -37,8 +37,6 @@
 #include "G4ThreeVector.hh"
 #include "tls.hh"
 
-#include "G4String.hh"  // Added Header
-
 /// Tracker hit class
 ///
 /// It defines data members to store the trackID, chamberNb, energy deposit,
@@ -69,19 +67,11 @@ class B2TrackerHit : public G4VHit
     void SetEdep     (G4double de)      { fEdep = de; };
     void SetPos      (G4ThreeVector xyz){ fPos = xyz; };
 
-    void SetParentID (G4int parent) { fParentID = parent; }; // Added by me!! 1/3
-    void SetParticleName (G4String particlename) { fParticleName = particlename; };
-
-
     // Get methods
     G4int GetTrackID() const     { return fTrackID; };
     G4int GetChamberNb() const   { return fChamberNb; };
     G4double GetEdep() const     { return fEdep; };
     G4ThreeVector GetPos() const { return fPos; };
-
-    G4int GetParentID() const  { return fParentID; }; // Added by me!! 2/3
-    G4String GetParticleName() const  { return fParticleName; };
-
 
   private:
 
@@ -89,10 +79,6 @@ class B2TrackerHit : public G4VHit
       G4int         fChamberNb;
       G4double      fEdep;
       G4ThreeVector fPos;
-
-      G4int         fParentID; //Added by me!! 3/3
-      G4String      fParticleName;
-
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

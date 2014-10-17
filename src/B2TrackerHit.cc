@@ -46,11 +46,7 @@ B2TrackerHit::B2TrackerHit()
    fTrackID(-1),
    fChamberNb(-1),
    fEdep(0.),
-   fPos(G4ThreeVector()),
-
-   fParentID(0),     // Added by me!! 1/4
-   fParticleName(G4String())   
-
+   fPos(G4ThreeVector())
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -66,8 +62,6 @@ B2TrackerHit::B2TrackerHit(const B2TrackerHit& right)
   fChamberNb = right.fChamberNb;
   fEdep      = right.fEdep;
   fPos       = right.fPos;
-  fParentID  = right.fParentID;  // Added by me!! 2/4
-  fParticleName  = right.fParticleName;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -78,8 +72,6 @@ const B2TrackerHit& B2TrackerHit::operator=(const B2TrackerHit& right)
   fChamberNb = right.fChamberNb;
   fEdep      = right.fEdep;
   fPos       = right.fPos;
-  fParentID  = right.fParentID;  // Added by me!! 3/4
-  fParticleName  = right.fParticleName;
 
   return *this;
 }
@@ -118,8 +110,6 @@ void B2TrackerHit::Print()
      << std::setw(7) << G4BestUnit(fEdep,"Energy")
      << " Position: "
      << std::setw(7) << G4BestUnit( fPos,"Length")
-     << "   ParentID:  " << fParentID      // Added by me!! 4/4
-     << "   ParticleName:  " << fParticleName
      << G4endl;
 }
 
