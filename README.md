@@ -65,18 +65,18 @@ simple.gdml - Simple box as a detector
 
     For a simple geometry (box):
 
-        ./examplePar01 ../gdml/simple.gdml pythia.in
+        ./FCCfastsim ../gdml/simple.gdml pythia.in
 
     For a complex geometry (with sensitive detectors):
 
-        ./examplePar01 ../gdml/FCCSD.gdml root.in
+        ./FCCfastsim ../gdml/FCCSD.gdml root.in
 
 4.2 With GUI
 
     For a simple geometry (box):
 
-        ./examplePar01 ../gdml/simple.gdml
+        ./FCCfastsim ../gdml/simple.gdml
 
     For a complex geometry (with sensitive detectors):
 
-        ./examplePar01 ../gdml/FCCSD.gdml
+        ./FCCfastsim ../gdml/FCCSD.gdml
