@@ -25,6 +25,7 @@ FCCTrackingAction::~FCCTrackingAction()
 void FCCTrackingAction::PostUserTrackingAction(const G4Track* track)
 {
    const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
+   G4int evNo = event->GetEventID();
    //
     // Fill histograms & ntuple
     //
@@ -36,11 +37,11 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* track)
     G4ThreeVector P = track->GetMomentum();
     if(P.x()!=0 && P.y()!=0 && P.z()!=0)
     {
-    analysisManager->FillNtupleIColumn(0, PID);
-    analysisManager->FillNtupleDColumn(1, P.x());
-    analysisManager->FillNtupleDColumn(2, P.y());
-    analysisManager->FillNtupleDColumn(3, P.z());
-    analysisManager->AddNtupleRow(event->GetEventID());
+       analysisManager->FillNtupleIColumn(evNo,0, PID);
+       analysisManager->FillNtupleDColumn(evNo,1, P.x());
+       analysisManager->FillNtupleDColumn(evNo,2, P.y());
+       analysisManager->FillNtupleDColumn(evNo,3, P.z());
+       analysisManager->AddNtupleRow(evNo);
     }
 
 }
