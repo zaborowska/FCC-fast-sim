@@ -65,6 +65,8 @@
 
 // Sensitive Detector
 #include "B2TrackerSD.hh"
+#include "B5EmCalorimeterSD.hh"
+#include "B5HadCalorimeterSD.hh"
 #include "G4SDManager.hh"
 
 #include "G4UImanager.hh"
@@ -145,25 +147,101 @@ int main(int argc, char** argv)
    G4SDManager* SDman = G4SDManager::GetSDMpointer();
    
 
-   G4String trackerChamberSDname = "Tracker";
-   B2TrackerSD* aTrackerSD = new B2TrackerSD(trackerChamberSDname, "Tracker");
+//EM Calorimeters
+   B5EmCalorimeterSD* aTrackerSD = new B5EmCalorimeterSD("ECalBarrel");
    SDman->AddNewDetector( aTrackerSD );
+
+   B5EmCalorimeterSD* aTrackerSD2 = new B5EmCalorimeterSD("ECalEndCap1");
+   SDman->AddNewDetector( aTrackerSD2 );
+
+   B5EmCalorimeterSD* aTrackerSD3 = new B5EmCalorimeterSD("ECalEndCap2");
+   SDman->AddNewDetector( aTrackerSD3 );
+
+   B5EmCalorimeterSD* aTrackerSD4 = new B5EmCalorimeterSD("ECalForward1");
+   SDman->AddNewDetector( aTrackerSD4 );
+
+   B5EmCalorimeterSD* aTrackerSD5 = new B5EmCalorimeterSD("ECalForward2");
+   SDman->AddNewDetector( aTrackerSD5 );
+
+
+//Hadron Calorimeters
+   B5EmCalorimeterSD* aTrackerSD6 = new B5EmCalorimeterSD("HCalBarrel");
+   SDman->AddNewDetector( aTrackerSD6 );
+
+   B5EmCalorimeterSD* aTrackerSD7 = new B5EmCalorimeterSD("HCalEndCap1");
+   SDman->AddNewDetector( aTrackerSD7 );
+
+   B5EmCalorimeterSD* aTrackerSD8 = new B5EmCalorimeterSD("HCalEndCap2");
+   SDman->AddNewDetector( aTrackerSD8 );
+
+   B5EmCalorimeterSD* aTrackerSD9 = new B5EmCalorimeterSD("HCalForward1");
+   SDman->AddNewDetector( aTrackerSD9 );
+
+   B5EmCalorimeterSD* aTrackerSD10 = new B5EmCalorimeterSD("HCalForward2");
+   SDman->AddNewDetector( aTrackerSD10 );
+
+
+//Muon
+
+   B2TrackerSD* aTrackerSD11 = new B2TrackerSD("MuonEndCap1", "MuonEndCap1");
+   SDman->AddNewDetector( aTrackerSD11 );
+
+   B2TrackerSD* aTrackerSD12 = new B2TrackerSD("MuonEndCap2", "MuonEndCap2");
+   SDman->AddNewDetector( aTrackerSD12 );
+
+   B2TrackerSD* aTrackerSD13 = new B2TrackerSD("MuonEndCap3", "MuonEndCap3");
+   SDman->AddNewDetector( aTrackerSD13 );
+
+   B2TrackerSD* aTrackerSD14 = new B2TrackerSD("MuonEndCap4", "MuonEndCap4");
+   SDman->AddNewDetector( aTrackerSD14 );
+
+   B2TrackerSD* aTrackerSD15 = new B2TrackerSD("MuonEndCap5", "MuonEndCap5");
+   SDman->AddNewDetector( aTrackerSD15 );
+
+   B2TrackerSD* aTrackerSD16 = new B2TrackerSD("MuonEndCap6", "MuonEndCap6");
+   SDman->AddNewDetector( aTrackerSD16 );
+
+   B2TrackerSD* aTrackerSD17 = new B2TrackerSD("MuonForward1", "MuonForward1");
+   SDman->AddNewDetector( aTrackerSD17 );
+
+   B2TrackerSD* aTrackerSD18 = new B2TrackerSD("MuonForward2", "MuonForward2");
+   SDman->AddNewDetector( aTrackerSD18 );
+
+   B2TrackerSD* aTrackerSD19 = new B2TrackerSD("MuonForward3", "MuonForward3");
+   SDman->AddNewDetector( aTrackerSD19 );
+
+   B2TrackerSD* aTrackerSD20 = new B2TrackerSD("MuonForward4", "MuonForward4");
+   SDman->AddNewDetector( aTrackerSD20 );
+
+   B2TrackerSD* aTrackerSD21 = new B2TrackerSD("MuonForward5", "MuonForward5");
+   SDman->AddNewDetector( aTrackerSD21 );
+
+   B2TrackerSD* aTrackerSD22 = new B2TrackerSD("MuonForward6", "MuonForward6");
+   SDman->AddNewDetector( aTrackerSD22 );
+
+
+
+
+
 
 
     ///////////////////////////////////////////////////////////////////////
     //
     // Example how to retrieve Auxiliary Information
     //
+ 
 
-   G4LogicalVolume* myvol; 
+   std::vector<G4LogicalVolume*> LogVolList;
 
    const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
    std::cout << "Found " << auxmap->size()
              << " volume(s) with auxiliary information."
              << G4endl << G4endl;
 
+
    // The same as above, but now we are looking for
    // sensitive detectors setting them for the volumes
+
 
    for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin();
        iter!=auxmap->end(); iter++) 
@@ -183,8 +261,9 @@ int main(int argc, char** argv)
          G4VSensitiveDetector* mydet = SDman->FindSensitiveDetector((*vit).value);
          if(mydet) 
          {
-           myvol = (*iter).first; 
+           G4LogicalVolume* myvol = (*iter).first; 
            myvol->SetSensitiveDetector(mydet);
+           LogVolList.push_back(myvol);
          }
          else
          {
@@ -198,17 +277,27 @@ int main(int argc, char** argv)
     //
     ////////////////////////////////////////////////////////////////////////
 
-  // -- Makes the calorimeterLog volume becoming a G4Region: 
-   G4Region* caloRegion = new G4Region("EM_calo_region");
-   caloRegion->AddRootLogicalVolume(myvol); 
+
+// ADDING 2ND REGION
 
    std::vector<double> cuts; 
    cuts.push_back(1.0*mm);cuts.push_back(1.0*mm);cuts.push_back(1.0*mm);cuts.push_back(1.0*mm);
-   caloRegion->SetProductionCuts(new G4ProductionCuts());
-   caloRegion->GetProductionCuts()->SetProductionCuts(cuts);
 
-   new Par01EMShowerModel("emShowerModel",caloRegion);
 
+   for (G4int SensDetCounter=0; SensDetCounter<G4int(LogVolList.size()); SensDetCounter++){
+
+       //std::vector<G4Region*> RegionList;
+       char RegionName[50];
+       sprintf(RegionName, "EM_calo_region%d", SensDetCounter); 
+       G4Region* caloRegion = new G4Region(RegionName);
+       caloRegion->AddRootLogicalVolume(LogVolList[SensDetCounter]); 
+
+       caloRegion->SetProductionCuts(new G4ProductionCuts());
+       caloRegion->GetProductionCuts()->SetProductionCuts(cuts); 
+
+       new Par01EMShowerModel("emShowerModel",caloRegion);
+
+    }
 
 
 
