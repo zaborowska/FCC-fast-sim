@@ -24,55 +24,27 @@
 // ********************************************************************
 //
 
-//-------------------
 // Generator action:
-//-------------------
 #include "FCCActionInitialization.hh"
-
-//---------------------------
 // Parameterisation manager:
-//---------------------------
 #include "G4GlobalFastSimulationManager.hh"
-
-//------------
 // Geometry:
-//------------
 #include "FCCDetectorConstruction.hh"
-#include "G4GDMLParser.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4TransportationManager.hh"
-#include "G4RegionStore.hh"
-
-//-----------------------------------
 //Sensitive Detectors
-//-----------------------------------
-#include "FCCTrackerSD.hh"
-#include "FCCEmCalorimeterSD.hh"
-#include "FCCHadCalorimeterSD.hh"
-#include "G4SDManager.hh"
-
 #include "FCCSDInfo.hh"
-
-//-----------------------------------
 // PhysicsList
-//-----------------------------------
 #include "FCCPhysicsList.hh"
-#include "FCCEMShowerModel.hh"
 #include "FTFP_BERT.hh"
-
-
+// UI
 #include "G4UImanager.hh"
-
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
 #else
 #include "G4RunManager.hh"
 #endif
-
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
 #endif
-
 #ifdef G4UI_USE
 #include "G4UIExecutive.hh"
 #endif
@@ -130,7 +102,7 @@ int main(int argc, char** argv)
    runManager->Initialize();
 
 
-   //------------------------------------------------ 
+   //-------------------------------
    // Sensitive detectors
    //------------------------------------------------ 
 
@@ -138,7 +110,9 @@ int main(int argc, char** argv)
    FCCSDInfo SensDetCreater(auxmap);
    
 
-
+   //-------------------------------
+   // UI
+   //-------------------------------
    G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
    if(argc==2)
