@@ -1,0 +1,4 @@
+/build/**
+*.cc~
+*.hh~
+*.gdml~

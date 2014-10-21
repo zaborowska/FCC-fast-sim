@@ -37,7 +37,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCSDInfo::FCCSDInfo(G4GDMLParser parser) 
+FCCSDInfo::FCCSDInfo(const G4GDMLAuxMapType* auxmap) 
 
 {
 
@@ -135,7 +135,7 @@ FCCSDInfo::FCCSDInfo(G4GDMLParser parser)
    std::vector<G4LogicalVolume*> HCalList;
    std::vector<G4LogicalVolume*> MuonList;
 
-   const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
+
    std::cout << "Found " << auxmap->size()
              << " volume(s) with auxiliary information."
              << G4endl << G4endl;

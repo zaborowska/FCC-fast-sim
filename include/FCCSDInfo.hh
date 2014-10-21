@@ -8,7 +8,7 @@
 class FCCSDInfo
 {
   public:
-    FCCSDInfo(G4GDMLParser parser);
+    FCCSDInfo(const G4GDMLAuxMapType* auxmap);
     virtual ~FCCSDInfo();
   
     
