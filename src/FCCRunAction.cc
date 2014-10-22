@@ -25,6 +25,7 @@
 //
 
 #include "FCCRunAction.hh"
+#include "AtlfastMuonMatrixManager.hh"
 #include "g4root.hh"
 
 #include "G4Run.hh"
@@ -41,6 +42,9 @@ FCCRunAction::FCCRunAction()
   // in B5Analysis.hh
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
   G4cout << "Using " << analysisManager->GetType() << G4endl;
+
+  Atlfast::MuonMatrixManager* muonMatrixManager = Atlfast::MuonMatrixManager::Instance();
+  muonMatrixManager->initialise("data/Atlfast_MuonResParam_CSC.dat",time(NULL));
 
   // Default settings
   analysisManager->SetVerboseLevel(1);

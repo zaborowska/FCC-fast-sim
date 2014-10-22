@@ -36,9 +36,11 @@ class FCCTrackingAction : public G4UserTrackingAction
     FCCTrackingAction();
     virtual ~FCCTrackingAction();
 
+   virtual void  PreUserTrackingAction(const G4Track* track);
    virtual void  PostUserTrackingAction(const G4Track* track);
 
-  private:
+   G4Track* Smear(const G4Track*);
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -25,6 +25,9 @@
 //
 
 #include "FCCTrackingAction.hh"
+#include "FCCEventInformation.hh"
+
+#include "AtlfastMuonMatrixManager.hh"
 
 #include "G4Track.hh"
 #include "G4Event.hh"
@@ -34,11 +37,12 @@
 
 #include "Randomize.hh"
 #include <iomanip>
+#include <vector>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 FCCTrackingAction::FCCTrackingAction()
- : G4UserTrackingAction()
+   : G4UserTrackingAction()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -48,28 +52,96 @@ FCCTrackingAction::~FCCTrackingAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCTrackingAction::PostUserTrackingAction(const G4Track* track)
+void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-   G4int evNo = event->GetEventID();
-   //
-    // Fill histograms & ntuple
-    //
+}
 
-    // Get analysis manager
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    // Fill ntuple
-    G4int PID = track->GetDynamicParticle()->GetPDGcode();
-    G4ThreeVector P = track->GetMomentum();
-    if(P.x()!=0 && P.y()!=0 && P.z()!=0)
-    {
-       analysisManager->FillNtupleIColumn(evNo,0, PID);
-       analysisManager->FillNtupleDColumn(evNo,1, P.x());
-       analysisManager->FillNtupleDColumn(evNo,2, P.y());
-       analysisManager->FillNtupleDColumn(evNo,3, P.z());
-       analysisManager->AddNtupleRow(evNo);
-    }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
+// This method is called not only once at the end of the life of
+// a track, but also each time it is suspended, as it happens
+// in the case of neutrons with _HP Physics Lists.
+// To be sure that we collect information about a track only once
+// when its life comes to the end, we have to require that its
+// status is "fStopAndKill".
+{
+   if ( aTrack->GetTrackStatus() == fStopAndKill )
+   {
+      const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
+      G4int evNo = event->GetEventID();
+      G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+
+      // Fill ntuple with G4 original data
+      G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
+      G4ThreeVector P = aTrack->GetMomentum();
+      if(P.x()!=0 && P.y()!=0 && P.z()!=0  && aTrack->GetDynamicParticle()->GetCharge() && abs(PID) == 13)
+      {
+         analysisManager->FillNtupleIColumn(evNo, 0, PID);
+         analysisManager->FillNtupleDColumn(evNo, 1, P.x());
+         analysisManager->FillNtupleDColumn(evNo, 2, P.y());
+         analysisManager->FillNtupleDColumn(evNo, 3, P.z());
+         if(((FCCEventInformation*)event->GetUserInformation())->GetDoSmearing())
+         {
+            G4Track* trackSmeared;
+            trackSmeared = Smear(aTrack);
+            delete trackSmeared;
+         }
+         analysisManager->AddNtupleRow(evNo);
+      }
+   }
 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4Track* FCCTrackingAction::Smear(const G4Track* aTrackOriginal)
+{
+   G4Track* trackSmeared = new G4Track();//(*aTrackOriginal);
+   CLHEP::HepSymMatrix sigma; // smear matrix for track
+   Atlfast::MuonMatrixManager* muonMatrixManager = Atlfast::MuonMatrixManager::Instance();
+   std::vector<double> smearVariables;   // Vector of correlated gaussian variables
+   smearVariables = muonMatrixManager->getVariables( *aTrackOriginal, sigma );
+
+   // helpful variables
+   double originPhi = aTrackOriginal->GetMomentum().phi();
+   double originTheta = aTrackOriginal->GetMomentum().theta();
+   double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
+   double originPt = aTrackOriginal->GetMomentum().perp();
+
+   // Atlfast smeared variables
+   double impactParameter; // [0]
+   double zPerigee; //[1]
+   double Phi = originPhi +  smearVariables[2]; //[2]
+   if(Phi<-M_PI)
+      while(Phi<M_PI)
+         Phi+=2*M_PI;
+   else if(Phi>M_PI)
+      while(Phi>M_PI)
+         Phi-=2*M_PI;
+   double cotTheta = 1/tan(originTheta) + smearVariables[3] ; //[3]
+   double invPtCharge = originCharge/(abs(originCharge)*originPt) +  smearVariables[4]; // q/pT where q = q/|q| (just sign) //[4]
+
+   // back to P
+   double Px = abs(1./invPtCharge)*sin(Phi);
+   double Py = abs(1./invPtCharge)*cos(Phi);
+   double Pz = abs(1./invPtCharge)/sin( atan(1./cotTheta) );
+
+   //saving to ntuple
+   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
+   G4int evNo = event->GetEventID();
+   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+   analysisManager->FillNtupleIColumn(evNo, 4, aTrackOriginal->GetDynamicParticle()->GetPDGcode());
+   analysisManager->FillNtupleDColumn(evNo, 5, Px);
+   analysisManager->FillNtupleDColumn(evNo, 6, Py);
+   analysisManager->FillNtupleDColumn(evNo, 7, Pz);
+
+   G4cout<<"____Current particle : "<<aTrackOriginal->GetDefinition()->GetParticleName()<<" with ID  "<<aTrackOriginal->GetTrackID()<<G4endl;
+//   if (Phi==Phi)
+ G4cout<<" PHI : "<<originPhi<<" ->  "<<Phi<<G4endl;
+//   if (cotTheta==cotTheta) 
+G4cout<<" THETA : "<<originTheta<<" ->  "<<atan(1./cotTheta)<<G4endl;
+//   if (invPtCharge==invPtCharge) 
+G4cout<<" invPtCharge : "<<originPt<<" ->  "<<abs(1./invPtCharge)<<G4endl;
+
+   return trackSmeared;
+}

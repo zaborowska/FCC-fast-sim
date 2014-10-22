@@ -25,6 +25,7 @@
 //
 
 #include "FCCEventAction.hh"
+#include "FCCEventInformation.hh"
 #include "FCCRunAction.hh"
 #include "g4root.hh"
 #include "G4RunManager.hh"
@@ -48,6 +49,10 @@ FCCEventAction::~FCCEventAction()
 
 void FCCEventAction::BeginOfEventAction(const G4Event* event)
 {
+//New event, add the user information object
+//if set to false -> no track smearing. if true -> smear tracks
+  G4EventManager::GetEventManager()->SetUserInformation(new FCCEventInformation(true));
+
    G4String evName = "Event_";
    evName += G4UIcommand::ConvertToString(event->GetEventID());
 
@@ -59,6 +64,14 @@ void FCCEventAction::BeginOfEventAction(const G4Event* event)
   analysisManager->CreateNtupleDColumn("pX");  // column Id = 1
   analysisManager->CreateNtupleDColumn("pY"); // column Id = 2
   analysisManager->CreateNtupleDColumn("pZ"); // column Id = 3
+
+  if(((FCCEventInformation*)event->GetUserInformation())->GetDoSmearing())
+  {
+     analysisManager->CreateNtupleIColumn("PIDsmeared");  // column Id = 0
+     analysisManager->CreateNtupleDColumn("pXsmeared");  // column Id = 1
+     analysisManager->CreateNtupleDColumn("pYsmeared"); // column Id = 2
+     analysisManager->CreateNtupleDColumn("pZsmeared"); // column Id = 3
+  }
   analysisManager->FinishNtuple(event->GetEventID());
 }
 

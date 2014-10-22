@@ -24,23 +24,26 @@
 // ********************************************************************
 //
 
-#ifndef FCC_EVENT_ACTION_H
-#define FCC_EVENT_ACTION_H
+#ifndef FCC_EVENT_INFORMATION_H
+#define FCC_EVENT_INFORMATION_H
 
-#include "G4UserEventAction.hh"
+#include "G4VUserEventInformation.hh"
 #include "globals.hh"
 
-class FCCEventAction : public G4UserEventAction
+class FCCEventInformation: public G4VUserEventInformation
 {
 public:
-    FCCEventAction();
-    virtual ~FCCEventAction();
+   FCCEventInformation();
+   FCCEventInformation(G4bool);
+   virtual ~FCCEventInformation();
+   virtual void Print() const;
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+   void SetDoSmearing(G4bool);
+   G4bool GetDoSmearing();
 
+private:
+   G4bool fDoSmearing;
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif
+
