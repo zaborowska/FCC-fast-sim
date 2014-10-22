@@ -28,12 +28,21 @@
 #include "FCCEventInformation.hh"
 
 #include "AtlfastMuonMatrixManager.hh"
+#include "AtlfastPionMatrixManager.hh"
+#include "AtlfastElectronMatrixManager.hh"
 
 #include "G4Track.hh"
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4UnitsTable.hh"
 #include "g4root.hh"
+
+#include "G4MuonPlus.hh"
+#include "G4MuonMinus.hh"
+#include "G4PionPlus.hh"
+#include "G4PionMinus.hh"
+#include "G4Electron.hh"
+#include "G4Positron.hh"
 
 #include "Randomize.hh"
 #include <iomanip>
@@ -75,13 +84,13 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       // Fill ntuple with G4 original data
       G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
       G4ThreeVector P = aTrack->GetMomentum();
-      if(P.x()!=0 && P.y()!=0 && P.z()!=0  && aTrack->GetDynamicParticle()->GetCharge() && abs(PID) == 13)
+      if(P.x()!=0 && P.y()!=0 && P.z()!=0  && aTrack->GetDynamicParticle()->GetCharge())
       {
          analysisManager->FillNtupleIColumn(evNo, 0, PID);
          analysisManager->FillNtupleDColumn(evNo, 1, P.x());
          analysisManager->FillNtupleDColumn(evNo, 2, P.y());
          analysisManager->FillNtupleDColumn(evNo, 3, P.z());
-         if(((FCCEventInformation*)event->GetUserInformation())->GetDoSmearing())
+         if(((FCCEventInformation*)event->GetUserInformation())->GetDoSmearing() && (abs(PID) == 13 || abs(PID) == 11 || abs(PID) == 211) )
          {
             G4Track* trackSmeared;
             trackSmeared = Smear(aTrack);
@@ -89,6 +98,7 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
          }
          analysisManager->AddNtupleRow(evNo);
       }
+      // else if(PID!=11)G4cout<<" particle "<<PID<<" with 0 momentum..."<<G4endl;
    }
 
 }
@@ -98,10 +108,28 @@ G4Track* FCCTrackingAction::Smear(const G4Track* aTrackOriginal)
 {
    G4Track* trackSmeared = new G4Track();//(*aTrackOriginal);
    CLHEP::HepSymMatrix sigma; // smear matrix for track
-   Atlfast::MuonMatrixManager* muonMatrixManager = Atlfast::MuonMatrixManager::Instance();
    std::vector<double> smearVariables;   // Vector of correlated gaussian variables
-   smearVariables = muonMatrixManager->getVariables( *aTrackOriginal, sigma );
-
+   if (aTrackOriginal->GetDefinition() == G4MuonPlus::MuonPlusDefinition() ||
+       aTrackOriginal->GetDefinition() == G4MuonMinus::MuonMinusDefinition())
+   {
+      Atlfast::MuonMatrixManager* muonMatrixManager = Atlfast::MuonMatrixManager::Instance();
+      smearVariables = muonMatrixManager->getVariables( *aTrackOriginal, sigma );
+      //G4cout<<" Smearing done according to MUON data file" <<G4endl;
+   }
+   if (aTrackOriginal->GetDefinition() == G4Electron::ElectronDefinition() ||
+       aTrackOriginal->GetDefinition() == G4Positron::PositronDefinition())
+   {
+      Atlfast::ElectronMatrixManager* electronMatrixManager = Atlfast::ElectronMatrixManager::Instance();
+      smearVariables = electronMatrixManager->getVariables( *aTrackOriginal, sigma );
+      //G4cout<<" Smearing done according to ELECTRON data file" <<G4endl;
+   }
+   if (aTrackOriginal->GetDefinition() == G4PionPlus::PionPlusDefinition() ||
+       aTrackOriginal->GetDefinition() == G4PionMinus::PionMinusDefinition())
+   {
+      Atlfast::PionMatrixManager* pionMatrixManager = Atlfast::PionMatrixManager::Instance();
+      smearVariables = pionMatrixManager->getVariables( *aTrackOriginal, sigma );
+      //G4cout<<" Smearing done according to PION data file" <<G4endl;
+   }
    // helpful variables
    double originPhi = aTrackOriginal->GetMomentum().phi();
    double originTheta = aTrackOriginal->GetMomentum().theta();
@@ -119,7 +147,7 @@ G4Track* FCCTrackingAction::Smear(const G4Track* aTrackOriginal)
       while(Phi>M_PI)
          Phi-=2*M_PI;
    double cotTheta = 1/tan(originTheta) + smearVariables[3] ; //[3]
-   double invPtCharge = originCharge/(abs(originCharge)*originPt) +  smearVariables[4]; // q/pT where q = q/|q| (just sign) //[4]
+   double invPtCharge = (double)((double)originCharge/(abs((double)originCharge)*originPt)) +  smearVariables[4]; // q/pT where q = q/|q| (just sign) //[4]
 
    // back to P
    double Px = abs(1./invPtCharge)*sin(Phi);
@@ -135,13 +163,13 @@ G4Track* FCCTrackingAction::Smear(const G4Track* aTrackOriginal)
    analysisManager->FillNtupleDColumn(evNo, 6, Py);
    analysisManager->FillNtupleDColumn(evNo, 7, Pz);
 
-   G4cout<<"____Current particle : "<<aTrackOriginal->GetDefinition()->GetParticleName()<<" with ID  "<<aTrackOriginal->GetTrackID()<<G4endl;
-//   if (Phi==Phi)
- G4cout<<" PHI : "<<originPhi<<" ->  "<<Phi<<G4endl;
-//   if (cotTheta==cotTheta) 
-G4cout<<" THETA : "<<originTheta<<" ->  "<<atan(1./cotTheta)<<G4endl;
-//   if (invPtCharge==invPtCharge) 
-G4cout<<" invPtCharge : "<<originPt<<" ->  "<<abs(1./invPtCharge)<<G4endl;
+//     G4cout<<"____Current particle : "<<aTrackOriginal->GetDefinition()->GetParticleName()<<" with ID  "<<aTrackOriginal->GetTrackID()<<G4endl;
+// //   if (Phi==Phi)
+//  G4cout<<" PHI : "<<originPhi<<" ->  "<<Phi<<G4endl;
+// //   if (cotTheta==cotTheta) 
+// G4cout<<" THETA : "<<originTheta<<" ->  "<<atan(1./cotTheta)<<G4endl;
+// //   if (invPtCharge==invPtCharge) 
+// G4cout<<" invPtCharge : "<<originPt<<" ->  "<<((double)(1./(double)invPtCharge))<<G4endl<<G4endl;
 
    return trackSmeared;
 }

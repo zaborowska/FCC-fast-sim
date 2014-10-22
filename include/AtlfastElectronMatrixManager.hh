@@ -1,9 +1,10 @@
-#ifndef ATLFAST_MUONMATRIXMANAGER_H
-#define ATLFAST_MUONMATRIXMANAGER_H
+#ifndef ATLFAST_ELECTRONMATRIXMANAGER_H
+#define ATLFAST_ELECTRONMATRIXMANAGER_H
 
-#include "AtlfastMuonBinData.hh"
+#include "AtlfastElectronBinData.hh"
 #include "G4Track.hh"
 
+#include "AtlfastBremMatrixManager.hh"
 #include "AtlfastBinID.hh"
 #include "AtlfastCorrelatedData.hh"
 
@@ -30,36 +31,41 @@ namespace Atlfast
 
    /** @brief Provides smear matrices corresponding to given track trajectories.
     *
-    * Used by Atlfast::Tracksmearer. It reads a flat file containing smear matrix
+    * Used by Atlfast::TrackSmearer. It reads a flat file containing smear matrix
     * data and creates a BinData object for every eta/rT bin.
     */
-   class MuonMatrixManager
+   class ElectronMatrixManager
    {
-
    public:
 
-      static MuonMatrixManager* Instance();
-      /** reads file, creates BinData objects and asks them to calculate their matrices */
-      void initialise(string, int);
+      static ElectronMatrixManager* Instance();
 
+      /** reads file, creates BinData objects and asks them to calculate their matrices */
+      void initialise(string, string, int);
       /** returns correlation matrix corresponding to given track trajectory */
       vector<double> getVariables( const G4Track& track,
                                    CLHEP::HepSymMatrix& usedSigma ) const;
 
    protected:
       /** Default Constructor */
-      MuonMatrixManager( );
+      ElectronMatrixManager( );
 
       /** Default Destructor */
-      ~MuonMatrixManager();
+      virtual ~ElectronMatrixManager();
+
    private:
       void fillVector( ifstream&, vector< vector<double> >&, int );
 
       /** returns BinData object corresponding to track trajectory */
       IBinData* getBinData( const G4Track& track ) const;
 
-      /** name of flat file containing smear matrix data. */
-      string m_file;
+      /** name of flat files containing bremsstrahlung corrections and smear matrix data. */
+      string m_bremFile, m_file;
+
+      /** matrix manager for bremsstrahlung corrections */
+      BremMatrixManager* m_bremMgr;
+
+      static ElectronMatrixManager* fElectronMatrixManager;
 
       /** BinData objects, paired to a BinID */
       map<BinID, IBinData*> m_binData;
@@ -73,11 +79,8 @@ namespace Atlfast
       int m_nRTBins;
       int m_nEtaBins;
 
-      static MuonMatrixManager* fMuonMatrixManager;
-
    };
 
 }
 
 #endif
-

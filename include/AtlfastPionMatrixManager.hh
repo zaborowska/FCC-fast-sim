@@ -1,7 +1,7 @@
-#ifndef ATLFAST_MUONMATRIXMANAGER_H
-#define ATLFAST_MUONMATRIXMANAGER_H
+#ifndef ATLFAST_PIONMATRIXMANAGER_H
+#define ATLFAST_PIONMATRIXMANAGER_H
 
-#include "AtlfastMuonBinData.hh"
+#include "AtlfastPionBinData.hh"
 #include "G4Track.hh"
 
 #include "AtlfastBinID.hh"
@@ -20,39 +20,47 @@
 //  corresponding to a given track trajectory
 //
 //===========================================================
+// RMS 26/4/2001
+// Modified to use parametrisation provided by
+// Armin Nairz
+//===========================================================
+
 
 
 namespace Atlfast
 {
-   using std::string;
-   using std::ifstream;
-   using std::map;
+  using std::string;
+  using std::ifstream;
+  using std::map;
 
-   /** @brief Provides smear matrices corresponding to given track trajectories.
-    *
-    * Used by Atlfast::Tracksmearer. It reads a flat file containing smear matrix
-    * data and creates a BinData object for every eta/rT bin.
-    */
-   class MuonMatrixManager
-   {
+  /** @brief Used by tracksmearer to provide smear matrices .
+  
+   * corresponding to given track trajectories. It reads a flat
+   * file containing smear matrix data and creates a BinData object for
+   * every eta/rT bin.
+   */
+  class PionMatrixManager
+  {
 
-   public:
+    public:
 
-      static MuonMatrixManager* Instance();
+     static PionMatrixManager* Instance();
+
       /** reads file, creates BinData objects and asks them to calculate their matrices */
-      void initialise(string, int);
+     void initialise(string,int);
 
       /** returns correlation matrix corresponding to given track trajectory */
       vector<double> getVariables( const G4Track& track,
-                                   CLHEP::HepSymMatrix& usedSigma ) const;
+				   CLHEP::HepSymMatrix& usedSigma ) const;
 
-   protected:
+  protected:
       /** Default Constructor */
-      MuonMatrixManager( );
+     PionMatrixManager( );
 
       /** Default Destructor */
-      ~MuonMatrixManager();
-   private:
+      virtual ~PionMatrixManager();
+
+    private:
       void fillVector( ifstream&, vector< vector<double> >&, int );
 
       /** returns BinData object corresponding to track trajectory */
@@ -73,11 +81,10 @@ namespace Atlfast
       int m_nRTBins;
       int m_nEtaBins;
 
-      static MuonMatrixManager* fMuonMatrixManager;
+      static PionMatrixManager* fPionMatrixManager;
 
-   };
+  };
 
 }
 
 #endif
-

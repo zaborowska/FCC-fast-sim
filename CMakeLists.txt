@@ -80,6 +80,8 @@ target_link_libraries(FCCfastsim ${Geant4_LIBRARIES}
 #
 set(FCCfastsim_SCRIPTS
     pythia.in root.in vis.mac gun.in data/Atlfast_MuonResParam_CSC.dat
+    data/Atlfast_PionResParam_DC1_NewUnits.dat data/Atlfast_ElectronBremParam_CSC.dat
+    data/Atlfast_ElectronResParam_CSC.dat
   )
 
 foreach(_script ${FCCfastsim_SCRIPTS})

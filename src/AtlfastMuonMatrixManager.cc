@@ -19,7 +19,6 @@ namespace Atlfast
   //-----------------------------------------------------------
    MuonMatrixManager::MuonMatrixManager()
   {
-    m_correlatedData = new CorrelatedData(m_randSeed);
     G4cout  << "Constructed MuonMatrixManager" << G4endl;
   }
 
@@ -37,12 +36,13 @@ namespace Atlfast
   }
 
   //------------------------------------------------------------
-  // PRIVATE: initialise : read file and construct data bins
+  // PUBLIC: initialise : read file and construct data bins
   //------------------------------------------------------------
    void MuonMatrixManager::initialise(string aFileName, int aRandSeed)
   {
      m_randSeed = aRandSeed;
      m_file = aFileName;
+    m_correlatedData = new CorrelatedData(m_randSeed);
     // open file
     ifstream input;
     input.open( m_file.c_str() );

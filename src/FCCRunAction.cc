@@ -26,6 +26,8 @@
 
 #include "FCCRunAction.hh"
 #include "AtlfastMuonMatrixManager.hh"
+#include "AtlfastPionMatrixManager.hh"
+#include "AtlfastElectronMatrixManager.hh"
 #include "g4root.hh"
 
 #include "G4Run.hh"
@@ -38,13 +40,18 @@ FCCRunAction::FCCRunAction()
  : G4UserRunAction()
 {
   // Create analysis manager
-  // The choice of analysis technology is done via selectin of a namespace
-  // in B5Analysis.hh
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
   G4cout << "Using " << analysisManager->GetType() << G4endl;
 
+  //Create mangers for smeaing muons, pions and electrons
   Atlfast::MuonMatrixManager* muonMatrixManager = Atlfast::MuonMatrixManager::Instance();
   muonMatrixManager->initialise("data/Atlfast_MuonResParam_CSC.dat",time(NULL));
+
+  Atlfast::PionMatrixManager* pionMatrixManager = Atlfast::PionMatrixManager::Instance();
+  pionMatrixManager->initialise("data/Atlfast_PionResParam_DC1_NewUnits.dat",time(NULL));
+
+  Atlfast::ElectronMatrixManager* electronMatrixManager = Atlfast::ElectronMatrixManager::Instance();
+  electronMatrixManager->initialise("data/Atlfast_ElectronResParam_CSC.dat","data/Atlfast_ElectronBremParam_CSC.dat",time(NULL));
 
   // Default settings
   analysisManager->SetVerboseLevel(1);

@@ -43,35 +43,28 @@ namespace Atlfast{
 
       double v, x, y, q;
       bool success = false;
-      std::ofstream pass, fail;
+      // std::ofstream pass, fail;
 
       //some maths stuff
       v = 1.7156*(randoms.second - 0.5);
       x = randoms.first - m_stFactors.first;
       y = abs(v) - m_stFactors.second;
       q = x*x + y*( (m_abFactors.first)*y - (m_abFactors.second)*x);
-
-//      std::cout<<
-//         "\t\tv = "<< v<< " x = " <<x << " y = " << y << "  q = "<<q <<std::endl;
       if (  (q <= m_ellipse.second) &&
             (v*v <= -4*log( (randoms.first) ) * (randoms.first) * (randoms.first) )
          ) success = true;
       if ( (q < m_ellipse.first) || success )
       {
          deviate = v/(randoms.first);
-//         std::cout<<
-//            "\t\tdeviate = "<< deviate<< " return = true "<<std::endl;
-         pass.open ("pass.dat", std::ofstream::out | std::ofstream::app);
-         pass<<v<<"\t"<<x<<"\t"<<y<<"\t"<<q<<"\t"<<randoms.first<<"\t"<<randoms.second<<"\t"<<deviate<<std::endl;
-         pass.close();
+         // pass.open ("pass.dat", std::ofstream::out | std::ofstream::app);
+         // pass<<v<<"\t"<<x<<"\t"<<y<<"\t"<<q<<"\t"<<randoms.first<<"\t"<<randoms.second<<"\t"<<deviate<<std::endl;
+         // pass.close();
          return true;}
       else
       {
-//         std::cout<<            "\t\t return = false "<<std::endl;
-
-         fail.open ("fail.dat", std::ofstream::out | std::ofstream::app);
-         fail<<v<<"\t"<<x<<"\t"<<y<<"\t"<<q<<"\t"<<randoms.first<<"\t"<<randoms.second<<"\t"<<deviate<<std::endl;
-         fail.close();
+         // fail.open ("fail.dat", std::ofstream::out | std::ofstream::app);
+         // fail<<v<<"\t"<<x<<"\t"<<y<<"\t"<<q<<"\t"<<randoms.first<<"\t"<<randoms.second<<"\t"<<deviate<<std::endl;
+         // fail.close();
          return false;}
    }
 
