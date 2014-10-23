@@ -84,7 +84,7 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       // Fill ntuple with G4 original data
       G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
       G4ThreeVector P = aTrack->GetMomentum();
-      if(P.x()!=0 && P.y()!=0 && P.z()!=0  && aTrack->GetDynamicParticle()->GetCharge())
+      if(P.x()!=0 && P.y()!=0 && P.z()!=0  && aTrack->GetDynamicParticle()->GetCharge() && !aTrack->GetParentID() )
       {
          analysisManager->FillNtupleIColumn(evNo, 0, PID);
          analysisManager->FillNtupleDColumn(evNo, 1, P.x());
@@ -98,7 +98,6 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
          }
          analysisManager->AddNtupleRow(evNo);
       }
-      // else if(PID!=11)G4cout<<" particle "<<PID<<" with 0 momentum..."<<G4endl;
    }
 
 }

@@ -21,8 +21,8 @@ namespace Atlfast {
 
   /** @brief Class to hold smearing matrix data
    *
-   * The data is provided through the constructor 
-   * in the format found in the flat file and the 
+   * The data is provided through the constructor
+   * in the format found in the flat file and the
    * correlation matrix corresponding to the bin
    * can be calculated and returned via public methods.
    */
@@ -30,7 +30,7 @@ namespace Atlfast {
 
 
   class MuonBinData: public IBinData {
-  
+
   public:
     /** Constructor from flat file contents */
     MuonBinData( BinID&,
@@ -46,14 +46,14 @@ namespace Atlfast {
      * as argument
      */
     CLHEP::HepSymMatrix getMatrix( const G4Track& track ) const;
-    
-  private:
+
+     private:
     BinID m_id;
-    
+
     vector< ParameterResolutions* >  m_sigmas;
     vector< ParameterResolutions* >  m_correlations;
   };
-  
+
 }
 
 #endif

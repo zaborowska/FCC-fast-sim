@@ -65,7 +65,7 @@ namespace Atlfast
   //       by Common Tracking, i.e. (d0, z0, phi0, theta0, q/p),
   //       when it is written to CBNTs or AODs.
   //--------------------------------------------------------------------
-  CLHEP::HepSymMatrix PionBinData::getMatrix( const G4Track& traj ) const
+  CLHEP::HepSymMatrix PionBinData::getMatrix( const G4Track& track ) const
   {
     CLHEP::HepSymMatrix Sigma(5,0);
 
@@ -82,11 +82,11 @@ namespace Atlfast
     // diagonals
     for ( int param = 0; param < 5; param++ )
     {
-      fraction = m_fractions[param]->resolution(traj);
+      fraction = m_fractions[param]->resolution(track);
       if ( fraction > 1.0 )  fraction = 1.0;
       Sigma[param][param] = ( random[param] < fraction )  ?
-                            std::pow( m_cores[param]->resolution(traj), 2 )  :
-                            std::pow( m_tails[param]->resolution(traj), 2 );
+                            std::pow( m_cores[param]->resolution(track), 2 )  :
+                            std::pow( m_tails[param]->resolution(track), 2 );
     }
 
     // off-diagonals
@@ -95,9 +95,9 @@ namespace Atlfast
     // (1,3) ... cov(d0,phi0)
     // (1,5) ... cov(d0,q/pT)
     // (3,5) ... cov(phi0,q/pT)
-    double rho13 = m_correlations[0]->resolution(traj);
-    double rho15 = m_correlations[1]->resolution(traj);
-    double rho35 = m_correlations[2]->resolution(traj);
+    double rho13 = m_correlations[0]->resolution(track);
+    double rho15 = m_correlations[1]->resolution(track);
+    double rho35 = m_correlations[2]->resolution(track);
 
     // covariance sub-matrix of transverse parameters needs to be positive definite
     // in order that its square root (cf. PionMatrixManager) exists
@@ -115,7 +115,7 @@ namespace Atlfast
 
 
     // (2,4) ... cov(z0,cot(theta0))
-    double rho24 = m_correlations[3]->resolution(traj);
+    double rho24 = m_correlations[3]->resolution(track);
     // make sure that correlation coefficient stays within [-1,+1]
     if ( std::abs(rho24) > 1 )  rho24 *= 0.99 / std::abs(rho24);
     Sigma(2,4) = Sigma(4,2) = rho24 * std::sqrt( Sigma(2,2) * Sigma(4,4) );

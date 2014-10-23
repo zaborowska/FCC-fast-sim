@@ -27,6 +27,7 @@
 //
 
 #include "FCCHepMCInterface.hh"
+#include "FCCPrimaryParticleInformation.hh"
 #include "G4RunManager.hh"
 #include "G4LorentzVector.hh"
 #include "G4Event.hh"
@@ -101,10 +102,14 @@ void FCCHepMCInterface::HepMC2G4(const HepMC::GenEvent* hepmcevt,
 
       G4int pdgcode= (*vpitr)-> pdg_id();
       pos= (*vpitr)-> momentum();
+      HepMC::FourVector vert= (*vpitr)->production_vertex()->position();
       G4LorentzVector p(pos.px(), pos.py(), pos.pz(), pos.e());
       G4PrimaryParticle* g4prim=
         new G4PrimaryParticle(pdgcode, p.x()*GeV, p.y()*GeV, p.z()*GeV);
-
+      g4prim->SetUserInformation(new FCCPrimaryParticleInformation(
+                    vert.x(), vert.y(), vert.z(), vert.t(),
+                    pos.px(), pos.py(), pos.pz(), pos.e()
+                    ));
       g4vtx-> SetPrimary(g4prim);
     }
     g4event-> AddPrimaryVertex(g4vtx);

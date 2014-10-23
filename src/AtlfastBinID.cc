@@ -8,8 +8,8 @@ namespace Atlfast {
    * Works with any number of dimensions.
    */
 
-/** Constructor for 1D bin*/ 
-BinID::BinID(int intID, double low1, double high1): m_int(intID) { 
+/** Constructor for 1D bin*/
+BinID::BinID(int intID, double low1, double high1): m_int(intID) {
   m_lowEdge.push_back(low1);
   m_highEdge.push_back(high1);
 }
@@ -25,7 +25,7 @@ BinID::BinID(int intID, double low1, double high1, double low2,double high2):
 BinID::BinID(int intID, std::vector<double> low, std::vector<double> high):
   m_int(intID), m_lowEdge(low), m_highEdge(high) {}
 
-/** Returns low edge of bin in nth dimension */    
+/** Returns low edge of bin in nth dimension */
 double BinID::low(int n) const {return m_lowEdge[n];}
 /** Returns high edge of bin in nth dimension */
 double BinID::high(int n) const {return m_highEdge[n];}
@@ -40,13 +40,13 @@ bool BinID::isInBin(const std::vector<double>& var) const{
   std::vector<double>::const_iterator vEnd = var.end();
   std::vector<double>::const_iterator lowIter = m_lowEdge.begin();
   std::vector<double>::const_iterator highIter = m_highEdge.begin();
-  
+
   assert(var.size() <=m_lowEdge.size() );
 
   for (;vIter != vEnd; ++vIter) {
     if ( (*vIter) < (*lowIter) || (*vIter) > (*highIter) ) {
       return false;
-    }	
+    }
     ++lowIter;
     ++highIter;
   }

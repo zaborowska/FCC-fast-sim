@@ -56,7 +56,6 @@ FCCRunAction::FCCRunAction()
   // Default settings
   analysisManager->SetVerboseLevel(1);
   analysisManager->SetFileName("SimpleOutput");
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
