@@ -28,6 +28,15 @@
 //
 #include "FCCEMShowerModel.hh"
 #include "FCCEnergySpot.hh"
+#include "FCCPrimaryParticleInformation.hh"
+#include "FCCEventInformation.hh"
+
+#include "AtlfastElectronMatrixManager.hh"
+
+#include "G4Track.hh"
+#include "G4Event.hh"
+#include "G4RunManager.hh"
+#include "g4root.hh"
 
 #include "Randomize.hh"
 
@@ -42,163 +51,228 @@
 #include "G4NistManager.hh"
 
 FCCEMShowerModel::FCCEMShowerModel(G4String modelName, G4Region* envelope)
-: G4VFastSimulationModel(modelName, envelope)
+  : G4VFastSimulationModel(modelName, envelope)
 {
-  fFakeStep          = new G4Step();
-  fFakePreStepPoint  = fFakeStep->GetPreStepPoint();
-  fFakePostStepPoint = fFakeStep->GetPostStepPoint();
-  fTouchableHandle   = new G4TouchableHistory();
-  fpNavigator        = new G4Navigator();
-  fNaviSetup         = false;
-  fCsI               = 0;
+   fFakeStep          = new G4Step();
+   fFakePreStepPoint  = fFakeStep->GetPreStepPoint();
+   fFakePostStepPoint = fFakeStep->GetPostStepPoint();
+   fTouchableHandle   = new G4TouchableHistory();
+   fpNavigator        = new G4Navigator();
+   fNaviSetup         = false;
+   fCsI               = 0;
 }
 
 FCCEMShowerModel::FCCEMShowerModel(G4String modelName)
-: G4VFastSimulationModel(modelName)
+  : G4VFastSimulationModel(modelName)
 {
-  fFakeStep          = new G4Step();
-  fFakePreStepPoint  = fFakeStep->GetPreStepPoint();
-  fFakePostStepPoint = fFakeStep->GetPostStepPoint();
-  fTouchableHandle   = new G4TouchableHistory();
-  fpNavigator        = new G4Navigator();
-  fNaviSetup         = false;
-  fCsI               = 0;
+   fFakeStep          = new G4Step();
+   fFakePreStepPoint  = fFakeStep->GetPreStepPoint();
+   fFakePostStepPoint = fFakeStep->GetPostStepPoint();
+   fTouchableHandle   = new G4TouchableHistory();
+   fpNavigator        = new G4Navigator();
+   fNaviSetup         = false;
+   fCsI               = 0;
 }
 
 FCCEMShowerModel::~FCCEMShowerModel()
 {
-  delete fFakeStep;
-  delete fpNavigator;
+   delete fFakeStep;
+   delete fpNavigator;
 }
 
 G4bool FCCEMShowerModel::IsApplicable(const G4ParticleDefinition& particleType)
 {
-  return 
-    &particleType == G4Electron::ElectronDefinition() ||
-    &particleType == G4Positron::PositronDefinition() ||
-    &particleType == G4Gamma::GammaDefinition();
+   return
+      &particleType == G4Electron::ElectronDefinition() ||
+      &particleType == G4Positron::PositronDefinition() ||
+      &particleType == G4Gamma::GammaDefinition();
 }
 
 G4bool FCCEMShowerModel::ModelTrigger(const G4FastTrack& fastTrack)
 {
-  // Applies the parameterisation above 100 MeV:
-  return fastTrack.GetPrimaryTrack()->GetKineticEnergy() > 100*MeV;
+   // Applies the parameterisation above 100 MeV:
+   return fastTrack.GetPrimaryTrack()->GetKineticEnergy() > 100*MeV;
 }
 
-void FCCEMShowerModel::DoIt(const G4FastTrack& fastTrack, 
-                     G4FastStep& fastStep)
+void FCCEMShowerModel::DoIt(const G4FastTrack& fastTrack,
+                            G4FastStep& fastStep)
 {
-  // Kill the parameterised particle:
-  fastStep.KillPrimaryTrack();
-  fastStep.ProposePrimaryTrackPathLength(0.0);
-  fastStep.ProposeTotalEnergyDeposited(fastTrack.GetPrimaryTrack()->GetKineticEnergy());
+   // G4cout<<" Killing the e-+ gamma !!"<<G4endl;
 
-  // split into "energy spots" energy according to the shower shape:
-  Explode(fastTrack);
-  
-  // and put those energy spots into the crystals:
-  BuildDetectorResponse();
-  
+   // Kill the parameterised particle:
+   fastStep.KillPrimaryTrack();
+   fastStep.ProposePrimaryTrackPathLength(0.0);
+   fastStep.ProposeTotalEnergyDeposited(fastTrack.GetPrimaryTrack()->GetKineticEnergy());
+
+   // split into "energy spots" energy according to the shower shape:
+   Explode(fastTrack);
+
+   // and put those energy spots into the crystals:
+   BuildDetectorResponse();
+
+   if ( !fastTrack.GetPrimaryTrack()->GetParentID() ) SaveParticle(fastTrack.GetPrimaryTrack());
 }
 
 
 void FCCEMShowerModel::Explode(const G4FastTrack& fastTrack)
 {
-  //-----------------------------------------------------
-  //
-  //-----------------------------------------------------
+   //-----------------------------------------------------
+   //
+   //-----------------------------------------------------
 
-  FCCEnergySpot eSpot;
+   FCCEnergySpot eSpot;
 
-  //Put all kinetic energy of particle into one spot 
-  G4double Energy = fastTrack.GetPrimaryTrack()->GetKineticEnergy();
-  eSpot.SetEnergy(Energy);
+   //Put all kinetic energy of particle into one spot
+   G4double Energy = fastTrack.GetPrimaryTrack()->GetKineticEnergy();
+   eSpot.SetEnergy(Energy);
 
-  // point of entry of the particle is also position of the spot
-  G4ThreeVector StartPosition = fastTrack.GetPrimaryTrack()->GetPosition();
+   // point of entry of the particle is also position of the spot
+   G4ThreeVector StartPosition = fastTrack.GetPrimaryTrack()->GetPosition();
 
-  eSpot.SetPosition(StartPosition);
+   eSpot.SetPosition(StartPosition);
 
-  feSpotList.clear();
-  feSpotList.push_back(eSpot);
+   feSpotList.clear();
+   feSpotList.push_back(eSpot);
 
 }
 
 
 void FCCEMShowerModel::BuildDetectorResponse()
 {
-  // Does the assignation of the energy spots to the sensitive volumes:
-  for (size_t i = 0; i < feSpotList.size(); i++)
-    {
+   // Does the assignation of the energy spots to the sensitive volumes:
+   for (size_t i = 0; i < feSpotList.size(); i++)
+   {
       // Draw the energy spot:
       feSpotList[i].Draw();
       //      feSpotList[i].Print();
-      
+
       // "converts" the energy spot into the fake
       // G4Step to pass to sensitive detector:
       AssignSpotAndCallHit(feSpotList[i]);
-    }
+   }
 }
 
 
 void FCCEMShowerModel::AssignSpotAndCallHit(const FCCEnergySpot &eSpot)
 {
-  //
-  // "converts" the energy spot into the fake
-  // G4Step to pass to sensitive detector:
-  //
-  FillFakeStep(eSpot);
+   //
+   // "converts" the energy spot into the fake
+   // G4Step to pass to sensitive detector:
+   //
+   FillFakeStep(eSpot);
 
-  //
-  // call sensitive part: taken/adapted from the stepping:
-  // Send G4Step information to Hit/Dig if the volume is sensitive
-  //
-  G4VPhysicalVolume* pCurrentVolume = 
-    fFakeStep->GetPreStepPoint()->GetPhysicalVolume();
-  G4VSensitiveDetector* pSensitive;
-  
-  if( pCurrentVolume != 0 )
-    {
+   //
+   // call sensitive part: taken/adapted from the stepping:
+   // Send G4Step information to Hit/Dig if the volume is sensitive
+   //
+   G4VPhysicalVolume* pCurrentVolume =
+      fFakeStep->GetPreStepPoint()->GetPhysicalVolume();
+   G4VSensitiveDetector* pSensitive;
+
+   if( pCurrentVolume != 0 )
+   {
       pSensitive = pCurrentVolume->GetLogicalVolume()->
-        GetSensitiveDetector();
+         GetSensitiveDetector();
       if( pSensitive != 0 )
-        {
-          pSensitive->Hit(fFakeStep);
-        }
-    }
+      {
+         pSensitive->Hit(fFakeStep);
+      }
+   }
 }
 
 
 void FCCEMShowerModel::FillFakeStep(const FCCEnergySpot &eSpot)
 {
-  //-----------------------------------------------------------
-  // find in which volume the spot is.
-  //-----------------------------------------------------------
-  if (!fNaviSetup)
-    {
+   //-----------------------------------------------------------
+   // find in which volume the spot is.
+   //-----------------------------------------------------------
+   if (!fNaviSetup)
+   {
       fpNavigator->
-        SetWorldVolume(G4TransportationManager::GetTransportationManager()->
-                       GetNavigatorForTracking()->GetWorldVolume());
+         SetWorldVolume(G4TransportationManager::GetTransportationManager()->
+                        GetNavigatorForTracking()->GetWorldVolume());
       fpNavigator->
-        LocateGlobalPointAndUpdateTouchableHandle(eSpot.GetPosition(),
-                                            G4ThreeVector(0.,0.,0.),
-                                            fTouchableHandle,
-                                            false);
+         LocateGlobalPointAndUpdateTouchableHandle(eSpot.GetPosition(),
+                                                   G4ThreeVector(0.,0.,0.),
+                                                   fTouchableHandle,
+                                                   false);
       fNaviSetup = true;
-    }
-  else
-    {
+   }
+   else
+   {
       fpNavigator->
-        LocateGlobalPointAndUpdateTouchableHandle(eSpot.GetPosition(),
-                                            G4ThreeVector(0.,0.,0.),
-                                            fTouchableHandle);
-     }
-  //--------------------------------------
-  // Fills attribute of the G4Step needed
-  // by our sensitive detector:
-  //-------------------------------------
-  // set touchable volume at PreStepPoint:
-  fFakePreStepPoint->SetTouchableHandle(fTouchableHandle);
-  // set total energy deposit:
-  fFakeStep->SetTotalEnergyDeposit(eSpot.GetEnergy());
+         LocateGlobalPointAndUpdateTouchableHandle(eSpot.GetPosition(),
+                                                   G4ThreeVector(0.,0.,0.),
+                                                   fTouchableHandle);
+   }
+   //--------------------------------------
+   // Fills attribute of the G4Step needed
+   // by our sensitive detector:
+   //-------------------------------------
+   // set touchable volume at PreStepPoint:
+   fFakePreStepPoint->SetTouchableHandle(fTouchableHandle);
+   // set total energy deposit:
+   fFakeStep->SetTotalEnergyDeposit(eSpot.GetEnergy());
+}
+
+void FCCEMShowerModel::SaveParticle(const G4Track* aTrackOriginal)
+{
+   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
+   G4int evNo = event->GetEventID();
+   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+
+   if(aTrackOriginal->GetDefinition() == G4Gamma::GammaDefinition())
+   {
+      //saving to ntuple
+      analysisManager->FillNtupleIColumn(2*evNo+1, 0, ((FCCPrimaryParticleInformation*) aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID()   );
+      analysisManager->FillNtupleIColumn(2*evNo+1, 1, aTrackOriginal->GetDynamicParticle()->GetPDGcode());
+      analysisManager->FillNtupleDColumn(2*evNo+1, 2, aTrackOriginal->GetMomentum().x());
+      analysisManager->FillNtupleDColumn(2*evNo+1, 3, aTrackOriginal->GetMomentum().y());
+      analysisManager->FillNtupleDColumn(2*evNo+1, 4, aTrackOriginal->GetMomentum().z());
+      analysisManager->AddNtupleRow(2*evNo+1);
+      return;
+   }
+   CLHEP::HepSymMatrix sigma; // smear matrix for track
+   std::vector<double> smearVariables;   // Vector of correlated gaussian variables
+
+   Atlfast::ElectronMatrixManager* electronMatrixManager = Atlfast::ElectronMatrixManager::Instance();
+   smearVariables = electronMatrixManager->getVariables( *aTrackOriginal, sigma );
+
+   // helpful variables
+   double originPhi = aTrackOriginal->GetMomentum().phi();
+   double originTheta = aTrackOriginal->GetMomentum().theta();
+   double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
+   double originPt = aTrackOriginal->GetMomentum().perp();
+
+   // Atlfast smeared variables
+   double impactParameter; // [0]
+   double zPerigee; //[1]
+   double Phi = originPhi +  smearVariables[2]; //[2]
+   if(Phi<-M_PI)
+      while(Phi<M_PI)
+         Phi+=2*M_PI;
+   else if(Phi>M_PI)
+      while(Phi>M_PI)
+         Phi-=2*M_PI;
+   double cotTheta = 1/tan(originTheta) + smearVariables[3] ; //[3]
+   double invPtCharge = (double)((double)originCharge/(abs((double)originCharge)*originPt)) +  smearVariables[4]; // q/pT where q = q/|q| (just sign) //[4]
+
+   // back to P
+   double Px = abs(1./invPtCharge)*sin(Phi);
+   double Py = abs(1./invPtCharge)*cos(Phi);
+   double Pz = abs(1./invPtCharge)/sin( atan(1./cotTheta) );
+
+   //saving to ntuple
+   analysisManager->FillNtupleIColumn(1+2*evNo, 0, ((FCCPrimaryParticleInformation*) aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID()   );
+   analysisManager->FillNtupleIColumn(1+2*evNo, 1, aTrackOriginal->GetDynamicParticle()->GetPDGcode());
+   analysisManager->FillNtupleDColumn(1+2*evNo, 2, Px);
+   analysisManager->FillNtupleDColumn(1+2*evNo, 3, Py);
+   analysisManager->FillNtupleDColumn(1+2*evNo, 4, Pz);
+   analysisManager->AddNtupleRow(1+2*evNo);
+
+   // G4cout<<"____Current particle : "<<aTrackOriginal->GetDefinition()->GetParticleName()<<" with ID  "<<aTrackOriginal->GetTrackID()<<G4endl;
+   // G4cout<<" PHI : "<<originPhi<<" ->  "<<Phi<<G4endl;
+   // G4cout<<" THETA : "<<originTheta<<" ->  "<<atan(1./cotTheta)<<G4endl;
+   // G4cout<<" invPtCharge : "<<originPt<<" ->  "<<((double)(1./(double)invPtCharge))<<G4endl<<G4endl;
+
 }

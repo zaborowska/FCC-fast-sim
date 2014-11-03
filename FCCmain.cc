@@ -33,7 +33,6 @@
 //Sensitive Detectors
 #include "FCCSDInfo.hh"
 // PhysicsList
-#include "FCCPhysicsList.hh"
 #include "FTFP_BERT.hh"
 // UI
 #include "G4UImanager.hh"
@@ -90,7 +89,7 @@ int main(int argc, char** argv)
    runManager->SetUserInitialization(detector);
   
    // PhysicsList (including G4FastSimulationManagerProcess)
-   G4VUserPhysicsList* physicsList = new FCCPhysicsList;//FTFP_BERT;
+   G4VUserPhysicsList* physicsList = new FTFP_BERT;// FCCPhysicsList;
    runManager->SetUserInitialization(physicsList);
 
    //-------------------------------
@@ -106,9 +105,8 @@ int main(int argc, char** argv)
    // Sensitive detectors
    //------------------------------------------------ 
 
-   const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
-   FCCSDInfo SensDetCreater(auxmap);
-   
+   // const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
+   // FCCSDInfo SensDetCreater(auxmap);
 
    //-------------------------------
    // UI

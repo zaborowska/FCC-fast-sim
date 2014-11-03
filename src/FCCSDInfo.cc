@@ -1,4 +1,4 @@
-   
+
 
 #include "FCCSDInfo.hh"
 
@@ -37,18 +37,18 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCSDInfo::FCCSDInfo(const G4GDMLAuxMapType* auxmap) 
+FCCSDInfo::FCCSDInfo(const G4GDMLAuxMapType* auxmap)
 
 {
 
 
-   //------------------------------------------------ 
+   //------------------------------------------------
    // Sensitive detectors
-   //------------------------------------------------ 
-   
+   //------------------------------------------------
+
    //SDman = G4SDManager::GetSDMpointer();
-   G4SDManager* SDman = G4SDManager::GetSDMpointer(); 
-   
+   G4SDManager* SDman = G4SDManager::GetSDMpointer();
+
 
 
 //EM Calorimeters
@@ -129,7 +129,7 @@ FCCSDInfo::FCCSDInfo(const G4GDMLAuxMapType* auxmap)
    //
    // Retrieving Auxiliary Information
    //
- 
+
 
    std::vector<G4LogicalVolume*> ECalList;
    std::vector<G4LogicalVolume*> HCalList;
@@ -146,7 +146,7 @@ FCCSDInfo::FCCSDInfo(const G4GDMLAuxMapType* auxmap)
 
 
    for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin();
-       iter!=auxmap->end(); iter++) 
+       iter!=auxmap->end(); iter++)
    {
       G4cout << "Volume " << ((*iter).first)->GetName()
              << " has the following list of auxiliary information: "
@@ -161,9 +161,9 @@ FCCSDInfo::FCCSDInfo(const G4GDMLAuxMapType* auxmap)
                    <<  G4endl << G4endl;
 
             G4VSensitiveDetector* mydet = SDman->FindSensitiveDetector((*vit).value);
-         if(mydet) 
+         if(mydet)
          {
-           G4LogicalVolume* myvol = (*iter).first; 
+           G4LogicalVolume* myvol = (*iter).first;
            myvol->SetSensitiveDetector(mydet);
            if ((myvol->GetName()).find("HCal") != std::string::npos){
                HCalList.push_back(myvol);
@@ -191,19 +191,26 @@ FCCSDInfo::FCCSDInfo(const G4GDMLAuxMapType* auxmap)
    ////////////////////////////////////////////////////////////////////////
 
 
-   std::vector<double> cuts; 
-   cuts.push_back(1.0*mm);cuts.push_back(1.0*mm);cuts.push_back(1.0*mm);cuts.push_back(1.0*mm);
-
+   G4double cutsECal = 1*m;
+   G4double cutsHCal = 1*m;
+   G4double cutsMuon = 1*m;
+   // if(!ECalList.empty())
+   //    cutsECal = ECalList[0]->GetMaterial()->GetRadlen();
+   // if(!HCalList.empty())
+   //    cutsHCal = HCalList[0]->GetMaterial()->GetRadlen();
+   // if(!MuonList.empty())
+   //    cutsECal = MuonList[0]->GetMaterial()->GetRadlen();
+   G4cout<<" Setting production cuts to: "<<cutsECal<<G4endl;
 
    for (G4int ECalCounter=0; ECalCounter<G4int(ECalList.size()); ECalCounter++){
 
        char RegionName[50];
-       sprintf(RegionName, "EM_calo_region%d", ECalCounter); 
+       sprintf(RegionName, "EM_calo_region%d", ECalCounter);
        G4Region* caloRegion = new G4Region(RegionName);
-       caloRegion->AddRootLogicalVolume(ECalList[ECalCounter]); 
+       caloRegion->AddRootLogicalVolume(ECalList[ECalCounter]);
 
        caloRegion->SetProductionCuts(new G4ProductionCuts());
-       caloRegion->GetProductionCuts()->SetProductionCuts(cuts); 
+       caloRegion->GetProductionCuts()->SetProductionCut(cutsECal);
 
        new FCCEMShowerModel("emShowerModel",caloRegion);
 
@@ -212,28 +219,28 @@ FCCSDInfo::FCCSDInfo(const G4GDMLAuxMapType* auxmap)
    for (G4int HCalCounter=0; HCalCounter<G4int(HCalList.size()); HCalCounter++){
 
        char RegionName[50];
-       sprintf(RegionName, "H_calo_region%d", HCalCounter); 
+       sprintf(RegionName, "H_calo_region%d", HCalCounter);
        G4Region* caloRegion = new G4Region(RegionName);
-       caloRegion->AddRootLogicalVolume(HCalList[HCalCounter]); 
+       caloRegion->AddRootLogicalVolume(HCalList[HCalCounter]);
 
        caloRegion->SetProductionCuts(new G4ProductionCuts());
-       caloRegion->GetProductionCuts()->SetProductionCuts(cuts);
- 
-       new FCCHadShowerModel("HadShowerModel",caloRegion); 
+       caloRegion->GetProductionCuts()->SetProductionCut(cutsHCal);
+
+       new FCCHadShowerModel("HadShowerModel",caloRegion);
 
     }
 
    for (G4int MuonCounter=0; MuonCounter<G4int(MuonList.size()); MuonCounter++){
 
        char RegionName[50];
-       sprintf(RegionName, "Muon_calo_region%d", MuonCounter); 
+       sprintf(RegionName, "Muon_calo_region%d", MuonCounter);
        G4Region* caloRegion = new G4Region(RegionName);
-       caloRegion->AddRootLogicalVolume(MuonList[MuonCounter]); 
+       caloRegion->AddRootLogicalVolume(MuonList[MuonCounter]);
 
        caloRegion->SetProductionCuts(new G4ProductionCuts());
-       caloRegion->GetProductionCuts()->SetProductionCuts(cuts);
- 
-       new FCCMuonShowerModel("MuonShowerModel",caloRegion); 
+       caloRegion->GetProductionCuts()->SetProductionCut(cutsMuon);
+
+       new FCCMuonShowerModel("MuonShowerModel",caloRegion);
 
     }
 
@@ -246,6 +253,6 @@ FCCSDInfo::FCCSDInfo(const G4GDMLAuxMapType* auxmap)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
-FCCSDInfo::~FCCSDInfo() 
+FCCSDInfo::~FCCSDInfo()
 {}
 

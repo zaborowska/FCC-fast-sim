@@ -1,4 +1,5 @@
 #include "AtlfastCorrelatedData.hh"
+#include "G4ios.hh"
 #include <cmath>
 
 namespace Atlfast{
@@ -133,6 +134,26 @@ namespace Atlfast{
          }
 
       }
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+   G4cout<<"=================================ROOT"<<G4endl;
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+   for(int i=0;i<size;i++)
+   {
+      for(int j=0;j<size;j++)
+         G4cout<<sqRoot[i][j]<<"   ";
+      G4cout<<G4endl;
+   }
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+
       return sqRoot;
    }
 

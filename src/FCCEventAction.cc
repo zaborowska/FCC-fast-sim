@@ -59,20 +59,24 @@ void FCCEventAction::BeginOfEventAction(const G4Event* event)
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
   // Creating ntuple
   //
-  analysisManager->CreateNtuple(evName, evName);
-  analysisManager->CreateNtupleIColumn("PID");  // column Id = 0
-  analysisManager->CreateNtupleDColumn("pX");  // column Id = 1
-  analysisManager->CreateNtupleDColumn("pY"); // column Id = 2
-  analysisManager->CreateNtupleDColumn("pZ"); // column Id = 3
+  analysisManager->CreateNtuple(evName+"_MC", evName+"_MC");
+  analysisManager->CreateNtupleIColumn("particleID");  // column Id = 0
+  analysisManager->CreateNtupleIColumn("PID");  // column Id = 1
+  analysisManager->CreateNtupleDColumn("pX");  // column Id = 2
+  analysisManager->CreateNtupleDColumn("pY"); // column Id = 3
+  analysisManager->CreateNtupleDColumn("pZ"); // column Id = 4
+  analysisManager->FinishNtuple(2*event->GetEventID());
 
   if(((FCCEventInformation*)event->GetUserInformation())->GetDoSmearing())
   {
-     analysisManager->CreateNtupleIColumn("PIDsmeared");  // column Id = 0
-     analysisManager->CreateNtupleDColumn("pXsmeared");  // column Id = 1
-     analysisManager->CreateNtupleDColumn("pYsmeared"); // column Id = 2
-     analysisManager->CreateNtupleDColumn("pZsmeared"); // column Id = 3
-  }
-  analysisManager->FinishNtuple(event->GetEventID());
+     analysisManager->CreateNtuple(evName+"_smeared", evName+"_smeared");
+     analysisManager->CreateNtupleIColumn("particleID");  // column Id = 5
+     analysisManager->CreateNtupleIColumn("PID");  // column Id = 6
+     analysisManager->CreateNtupleDColumn("pX");  // column Id = 7
+     analysisManager->CreateNtupleDColumn("pY"); // column Id = 8
+     analysisManager->CreateNtupleDColumn("pZ"); // column Id = 9
+     analysisManager->FinishNtuple(2*event->GetEventID() + 1);
+     }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

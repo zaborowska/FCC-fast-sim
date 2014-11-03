@@ -62,14 +62,10 @@ HepMC::GenEvent* FCCRootReader::GenerateHepMCEvent()
    HepMC::GenEvent* evt;
    G4String keyName;
    TKey* key;
-   while(rootLnk)
-   {
-      key = (TKey*)rootLnk->GetObject();
-      evt = (HepMC::GenEvent*) rootInput->Get(key->GetName());
-      if(verbose>0) G4cout << "Getting HepMC EVENT named: " << key->GetName() << G4endl;
-      rootLnk=rootLnk->Next();
-      if(verbose>0) evt->print();
-   }
-   //delete key;
+   key = (TKey*)rootLnk->GetObject();
+   evt = (HepMC::GenEvent*) rootInput->Get(key->GetName());
+   if(verbose>0) G4cout << "Getting HepMC EVENT named: " << key->GetName() << G4endl;
+   rootLnk=rootLnk->Next();
+   if(verbose>0) evt->print();
    return evt;
 }

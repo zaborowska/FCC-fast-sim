@@ -11,6 +11,6 @@
 /generator/pythia8/init 2212 2212 14000.
 
 #/hits/verbose 2
-/run/beamOn 3
+/run/beamOn 1
 /generator/pythia8/stat
 

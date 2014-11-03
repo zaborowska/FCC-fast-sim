@@ -14,7 +14,6 @@ namespace Atlfast
       // have to interpolate eta between bin edges for coefficients
       double eta = std::abs( info->GetMomentumProduction()->pseudoRapidity() );
       double pT  = info->GetMomentumProduction()->perp();
-      G4cout<<" pT: "<<pT<<"  eta = "<<eta<<G4endl;
 
       std::vector<BinID>::const_iterator iter = m_coefficientBins.begin();
       std::vector<BinID>::const_iterator end  = m_coefficientBins.end();

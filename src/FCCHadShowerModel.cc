@@ -82,12 +82,14 @@ G4bool FCCHadShowerModel::IsApplicable(const G4ParticleDefinition& particleType)
 G4bool FCCHadShowerModel::ModelTrigger(const G4FastTrack& fastTrack)
 {
   // Applies the parameterisation above 100 MeV:
-  return fastTrack.GetPrimaryTrack()->GetKineticEnergy() > 100*MeV;
+   return fastTrack.GetPrimaryTrack()->GetKineticEnergy() > 100*MeV;
 }
 
 void FCCHadShowerModel::DoIt(const G4FastTrack& fastTrack, 
                      G4FastStep& fastStep)
 {
+   G4cout<<" Killing the pion-+ eta !!"<<G4endl;
+
   // Kill the parameterised particle:
   fastStep.KillPrimaryTrack();
   fastStep.ProposePrimaryTrackPathLength(0.0);

@@ -107,6 +107,7 @@ void FCCHepMCInterface::HepMC2G4(const HepMC::GenEvent* hepmcevt,
       G4PrimaryParticle* g4prim=
         new G4PrimaryParticle(pdgcode, p.x()*GeV, p.y()*GeV, p.z()*GeV);
       g4prim->SetUserInformation(new FCCPrimaryParticleInformation(
+                    (*vpitr)->barcode(),
                     vert.x(), vert.y(), vert.z(), vert.t(),
                     pos.px(), pos.py(), pos.pz(), pos.e()
                     ));
@@ -114,6 +115,7 @@ void FCCHepMCInterface::HepMC2G4(const HepMC::GenEvent* hepmcevt,
     }
     g4event-> AddPrimaryVertex(g4vtx);
   }
+  G4cout<<" HepMC Event has "<<hepmcevt->particles_size()<< " particles"<<G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

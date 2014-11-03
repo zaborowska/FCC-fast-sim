@@ -68,6 +68,7 @@ private:
   void FillFakeStep(const FCCEnergySpot &eSpot);
   void Explode(const G4FastTrack&);
   void BuildDetectorResponse();
+   void SaveParticle(const G4Track*);
 
 private:
   G4Step                         *fFakeStep;

@@ -250,7 +250,6 @@ namespace Atlfast
    //-----------------------------------------------------------
    BremBinData* BremMatrixManager::getBinData( const G4Track& track ) const
    {
-
       FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*) track.GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
       vector<double> rTEta;
       double rT = abs( info->GetVertexProduction()->perp() );
