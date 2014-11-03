@@ -26,12 +26,14 @@
 
 // Generator action:
 #include "FCCActionInitialization.hh"
+#include "B1ActionInitialization.hh"
 // Parameterisation manager:
 #include "G4GlobalFastSimulationManager.hh"
 // Geometry:
 #include "FCCDetectorConstruction.hh"
 //Sensitive Detectors
-#include "FCCSDInfo.hh"
+// #include "FCCSDInfo.hh"
+#include "G4GDMLParser.hh"
 // PhysicsList
 #include "FTFP_BERT.hh"
 // UI
@@ -83,11 +85,8 @@ int main(int argc, char** argv)
 
    // Detector/mass geometry and parallel geometry(ies):
    G4VUserDetectorConstruction* detector = new FCCDetectorConstruction(parser.GetWorldVolume());
-
-   // --  The name passed must be the same passed to the
-   // -- G4FastSimulationManagerProcess attached to the pions
    runManager->SetUserInitialization(detector);
-  
+
    // PhysicsList (including G4FastSimulationManagerProcess)
    G4VUserPhysicsList* physicsList = new FTFP_BERT;// FCCPhysicsList;
    runManager->SetUserInitialization(physicsList);
@@ -95,7 +94,7 @@ int main(int argc, char** argv)
    //-------------------------------
    // UserAction classes
    //-------------------------------
-   runManager->SetUserInitialization( new FCCActionInitialization );
+   runManager->SetUserInitialization( new B1ActionInitialization );
 
    // Initialize Run manager
    runManager->Initialize();

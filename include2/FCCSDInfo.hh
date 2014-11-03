@@ -10,8 +10,6 @@ class FCCSDInfo
   public:
     FCCSDInfo(const G4GDMLAuxMapType* auxmap);
     virtual ~FCCSDInfo();
-  
-    
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

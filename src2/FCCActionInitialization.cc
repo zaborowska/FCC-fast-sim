@@ -28,9 +28,9 @@
 
 #include "FCCActionInitialization.hh"
 #include "FCCPrimaryGeneratorAction.hh"
-#include "FCCRunAction.hh"
-#include "FCCEventAction.hh"
-#include "FCCTrackingAction.hh"
+// #include "FCCRunAction.hh"
+// #include "FCCEventAction.hh"
+// #include "FCCTrackingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -54,9 +54,9 @@ void FCCActionInitialization::BuildForMaster() const
 void FCCActionInitialization::Build() const
 {
   SetUserAction(new FCCPrimaryGeneratorAction);
-  SetUserAction(new FCCRunAction);
-  SetUserAction(new FCCEventAction);
-  SetUserAction(new FCCTrackingAction);
+  // SetUserAction(new FCCRunAction);
+  // SetUserAction(new FCCEventAction);
+  // SetUserAction(new FCCTrackingAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
