@@ -22,8 +22,8 @@ BinID::BinID(int intID, double low1, double high1, double low2,double high2):
   m_highEdge.push_back(high2);
 }
 /** Constructor for any-dimensional bin */
-BinID::BinID(int intID, std::vector<double> low, std::vector<double> high):
-  m_int(intID), m_lowEdge(low), m_highEdge(high) {}
+BinID::BinID(int intID, std::vector<double> lowvector, std::vector<double> highvector):
+  m_int(intID), m_lowEdge(lowvector), m_highEdge(highvector) {}
 
 /** Returns low edge of bin in nth dimension */
 double BinID::low(int n) const {return m_lowEdge[n];}

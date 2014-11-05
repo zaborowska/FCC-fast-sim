@@ -31,25 +31,26 @@
 
 #include "G4VUserDetectorConstruction.hh"
 
+#include "globals.hh"
+
+class G4VPhysicalVolume;
+class G4LogicalVolume;
+
 /// Detector construction allowing to use the geometry read from the GDML file
 
 class FCCDetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
 
-    FCCDetectorConstruction(G4VPhysicalVolume *setWorld = 0)
-    {
-      fWorld = setWorld;
-    }
+    FCCDetectorConstruction();
 
-    virtual G4VPhysicalVolume *Construct()
-    {
-      return fWorld;
-    }
+    virtual G4VPhysicalVolume *Construct();
 
   private:
 
     G4VPhysicalVolume *fWorld;
+
+    // Is there a need for scoring volume??
 };
 
 #endif

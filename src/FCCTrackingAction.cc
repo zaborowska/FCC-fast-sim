@@ -61,7 +61,8 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 
    // Fill ntuple with G4 original data
    G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
-   G4int particleID = ((FCCPrimaryParticleInformation*) aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID();
+   //G4int particleID = ((FCCPrimaryParticleInformation*) aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID();
+   G4int particleID = aTrack->GetTrackID();
    G4ThreeVector P = aTrack->GetMomentum();
    if(P.x()!=0 && P.y()!=0 && P.z()!=0 )
    {

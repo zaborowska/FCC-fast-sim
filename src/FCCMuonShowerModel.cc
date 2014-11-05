@@ -251,7 +251,8 @@ void FCCMuonShowerModel::SaveParticle(const G4Track* aTrackOriginal)
    double Pz = abs(1./invPtCharge)/sin( atan(1./cotTheta) );
 
    //saving to ntuple
-   analysisManager->FillNtupleIColumn((-1)*evNo, 0, ((FCCPrimaryParticleInformation*) aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID()   );
+   //analysisManager->FillNtupleIColumn((-1)*evNo, 0, ((FCCPrimaryParticleInformation*) aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID()   );
+   analysisManager->FillNtupleIColumn((-1)*evNo, 0, aTrackOriginal->GetTrackID()   );
    analysisManager->FillNtupleIColumn((-1)*evNo, 1, aTrackOriginal->GetDynamicParticle()->GetPDGcode());
    analysisManager->FillNtupleDColumn((-1)*evNo, 2, Px);
    analysisManager->FillNtupleDColumn((-1)*evNo, 3, Py);

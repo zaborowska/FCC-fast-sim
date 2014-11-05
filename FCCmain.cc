@@ -30,10 +30,10 @@
 #include "G4GlobalFastSimulationManager.hh"
 // Geometry:
 #include "FCCDetectorConstruction.hh"
-//Sensitive Detectors
-#include "FCCSDInfo.hh"
+
 // PhysicsList
 #include "FTFP_BERT.hh"
+#include "FCCPhysicsList.hh"
 // UI
 #include "G4UImanager.hh"
 #ifdef G4MULTITHREADED
@@ -51,6 +51,8 @@
 
 int main(int argc, char** argv)
 {
+
+/*
    if (argc<2)
    {
       G4cout << G4endl;
@@ -61,10 +63,8 @@ int main(int argc, char** argv)
       G4cout << G4endl;
       return -1;
    }
-   G4GDMLParser parser;
-   // Load geometry
-   G4cout << "Geometry loaded from  file ......." << argv[1]<<G4endl;
-   parser.Read(argv[1]);
+*/
+
    //-------------------------------
    // Initialization of Run manager
    //-------------------------------
@@ -82,14 +82,11 @@ int main(int argc, char** argv)
 #endif
 
    // Detector/mass geometry and parallel geometry(ies):
-   G4VUserDetectorConstruction* detector = new FCCDetectorConstruction(parser.GetWorldVolume());
 
-   // --  The name passed must be the same passed to the
-   // -- G4FastSimulationManagerProcess attached to the pions
-   runManager->SetUserInitialization(detector);
+   runManager->SetUserInitialization(new FCCDetectorConstruction());
   
    // PhysicsList (including G4FastSimulationManagerProcess)
-   G4VUserPhysicsList* physicsList = new FTFP_BERT;// FCCPhysicsList;
+   G4VUserPhysicsList* physicsList = new FCCPhysicsList; //FTFP_BERT OR FCCPhysicsList;
    runManager->SetUserInitialization(physicsList);
 
    //-------------------------------
@@ -97,23 +94,21 @@ int main(int argc, char** argv)
    //-------------------------------
    runManager->SetUserInitialization( new FCCActionInitialization );
 
+
    // Initialize Run manager
    runManager->Initialize();
-
 
    //-------------------------------
    // Sensitive detectors
    //------------------------------------------------ 
 
-   // const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
-   // FCCSDInfo SensDetCreater(auxmap);
 
    //-------------------------------
    // UI
    //-------------------------------
    G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-   if(argc==2)
+   if(argc==1)
    {
       //--------------------------
       // Define (G)UI
@@ -135,7 +130,7 @@ int main(int argc, char** argv)
    else
    {
       G4String command = "/control/execute ";
-      G4String fileName = argv[2];
+      G4String fileName = argv[1];
       UImanager->ApplyCommand(command+fileName);
    }
 

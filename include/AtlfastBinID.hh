@@ -24,7 +24,7 @@ namespace Atlfast{
     /** Constructor for 2D bin */
     BinID(int intID, double low1, double high1, double low2,double high2);
     /** Constructor for any-dimensional bin */
-    BinID(int intID, std::vector<double> low, std::vector<double> high);
+    BinID(int intID, std::vector<double> lowvector, std::vector<double> highvector);
  
     /** Returns low edge of bin in nth dimension */
     double  low(int n=0) const;

@@ -38,17 +38,17 @@ namespace Atlfast
    double ParameterResolutions::calculateResolution( double pT, const std::vector<double>& coefficients ) const
    {
       if ( pT == 0 ) return 0;
-      double resolution = 0;
+      double ResolutionTemp = 0;
       std::vector<double>::const_iterator powerSeries = m_powerSeries.begin();
       std::vector<double>::const_iterator iter = coefficients.begin();
       std::vector<double>::const_iterator end  = coefficients.end();
 
       for ( ; iter != end; ++iter )
       {
-         resolution += (*iter) / std::pow( pT, (*powerSeries) );
+         ResolutionTemp += (*iter) / std::pow( pT, (*powerSeries) );
          ++powerSeries;
       }
-      return resolution;
+      return ResolutionTemp;
    }
 
 }
