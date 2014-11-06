@@ -30,14 +30,12 @@
 #include "G4GlobalFastSimulationManager.hh"
 // Geometry:
 #include "FCCDetectorConstruction.hh"
-#include "B3DetectorConstruction.hh"
 //Sensitive Detectors
 #include "G4GDMLParser.hh"
 #include "FCCSmearModel.hh"
 // PhysicsList
 #include "FCCPhysicsList.hh"
 #include "FTFP_BERT.hh"
-#include "G4PhysListFactory.hh"
 // UI
 #include "G4UImanager.hh"
 #ifdef G4MULTITHREADED
@@ -51,8 +49,6 @@
 #ifdef G4UI_USE
 #include "G4UIExecutive.hh"
 #endif
-
-#include "FCCPhysicsConstructor.hh"
 
 
 int main(int argc, char** argv)
@@ -90,18 +86,11 @@ int main(int argc, char** argv)
    G4cout<<"+-------------------------------------------------------+"<<G4endl;
 #endif
 
-   // Detector/mass geometry and parallel geometry(ies):
-   // G4VUserDetectorConstruction* detector = new B3DetectorConstruction()     ;
+   // Geometry:
    G4VUserDetectorConstruction* detector = new FCCDetectorConstruction(parser.GetWorldVolume());
    runManager->SetUserInitialization(detector);
 
    // PhysicsList (including G4FastSimulationManagerProcess)
-   // G4PhysListFactory factory;
-   // G4VModularPhysicsList* physicsList = factory.GetReferencePhysList("FTFP_BERT");
-   // FCCPhysicsConstructor* physicsParam = new FCCPhysicsConstructor();
-   // physicsList->RegisterPhysics(physicsParam);
-   // G4VUserPhysicsList* physicsList = new FTFP_BERT;
-
    G4VUserPhysicsList* physicsList = new FCCPhysicsList();
     runManager->SetUserInitialization(physicsList);
    G4Gamma::GammaDefinition()->SetApplyCutsFlag(TRUE);
