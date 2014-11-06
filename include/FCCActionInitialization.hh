@@ -30,6 +30,7 @@
 #define FCC_ACTION_INITIALIZATION_H
 
 #include "G4VUserActionInitialization.hh"
+#include "globals.hh"
 
 /// Action initialization class.
 ///
@@ -37,11 +38,14 @@
 class FCCActionInitialization : public G4VUserActionInitialization
 {
   public:
+    FCCActionInitialization(const G4String);
     FCCActionInitialization();
     virtual ~FCCActionInitialization();
 
     virtual void BuildForMaster() const;
     virtual void Build() const;
+private:
+   G4String fFileName;
 };
 
 #endif

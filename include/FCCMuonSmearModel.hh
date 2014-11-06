@@ -24,67 +24,47 @@
 // ********************************************************************
 //
 //
-// based on G4 examples/extended/parametrisations/Par01/src/Par01EnergySpot.cc
+// based on G4 examples/extended/parametrisations/Par01/include/Par01EMShowerModel.hh
 //
+//----------------------------------------------
+// Parameterisation of e+/e-/gamma producing hits
+// The hits are the same as defined in the detailed
+// simulation.
+//----------------------------------------------
 
-#include "FCCEnergySpot.hh"
-#include "G4VisAttributes.hh"
-#include "G4Colour.hh"
-#include "G4Polyline.hh"
-#include "G4VVisManager.hh"
+#ifndef FCC_MUON_SMEAR_MODEL_H
+#define FCC_MUON_SMEAR_MODEL_H
+
+#include "G4VFastSimulationModel.hh"
 #include "G4Step.hh"
-#include "G4SystemOfUnits.hh"
 
-FCCEnergySpot::FCCEnergySpot()
-{;}
-
-FCCEnergySpot::FCCEnergySpot(const G4ThreeVector& point, G4double E)
+class FCCMuonSmearModel : public G4VFastSimulationModel
 {
-  fPoint = point;
-  fEnergy = E;
-}
+public:
+  //-------------------------
+  // Constructor, destructor
+  //-------------------------
+  FCCMuonSmearModel (G4String, G4Region*);
+  FCCMuonSmearModel (G4String);
+  ~FCCMuonSmearModel ();
 
-FCCEnergySpot::~FCCEnergySpot()
-{;}
+  //------------------------------
+  // Virtual methods of the base
+  // class to be coded by the user
+  //------------------------------
 
+  // -- IsApplicable
+  virtual G4bool IsApplicable(const G4ParticleDefinition&);
+  // -- ModelTrigger
+  virtual G4bool ModelTrigger(const G4FastTrack &);
+  // -- User method DoIt
+  virtual void DoIt(const G4FastTrack&, G4FastStep&);
 
-void FCCEnergySpot::Draw(G4Colour *color)
-{
-  G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
-  if (pVVisManager)
-    {
-      G4Polyline polyline;
-      G4Colour colour(1.,.5,.5);
-      if (color != 0) colour = *color;
-      polyline.SetVisAttributes(colour);
-      G4ThreeVector pp(fPoint);
-      // Draw a "home made" marker:
-      // Will be better by using a real Marker:
-      pp.setZ(pp.z()+1*cm);
-      polyline.push_back(pp);
-      pp.setZ(pp.z()-2*cm);
-      polyline.push_back(pp);
-      pp = fPoint;
-      polyline.push_back(pp);
-      pp.setX(pp.x()+1*cm);
-      polyline.push_back(pp);
-      pp.setX(pp.x()-2*cm);
-      polyline.push_back(pp);
-      pp = fPoint;
-      polyline.push_back(pp);
-      pp.setY(pp.y()+1*cm);
-      polyline.push_back(pp);
-      pp.setY(pp.y()-2*cm);
-      polyline.push_back(pp);
-      pVVisManager -> Draw(polyline);
-    }
-}
+private:
+  void SaveParticle(const G4Track*);
 
-void FCCEnergySpot::Print()
-{
-  G4cout << " FCCEnergySpot {E = " << fEnergy << "; Position = " << fPoint << " }"<< G4endl;
-}
-
+};
+#endif
 
 
 

@@ -68,6 +68,9 @@ G4bool FCCHepMCInterface::CheckVertexInsideWorld
 void FCCHepMCInterface::HepMC2G4(const HepMC::GenEvent* hepmcevt,
                                 G4Event* g4event)
 {
+
+G4cout << "Default units: " << HepMC::Units::name(HepMC::Units::default_momentum_unit())
+      << " " << HepMC::Units::name(HepMC::Units::default_length_unit()) << G4endl;
   for(HepMC::GenEvent::vertex_const_iterator vitr= hepmcevt->vertices_begin();
       vitr != hepmcevt->vertices_end(); ++vitr ) { // loop for vertex ...
 

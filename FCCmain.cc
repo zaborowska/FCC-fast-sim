@@ -31,8 +31,10 @@
 // Geometry:
 #include "FCCDetectorConstruction.hh"
 //Sensitive Detectors
-#include "FCCSDInfo.hh"
+#include "G4GDMLParser.hh"
+#include "FCCSmearModel.hh"
 // PhysicsList
+#include "FCCPhysicsList.hh"
 #include "FTFP_BERT.hh"
 // UI
 #include "G4UImanager.hh"
@@ -54,17 +56,20 @@ int main(int argc, char** argv)
    if (argc<2)
    {
       G4cout << G4endl;
-      G4cout << "Error! Mandatory input file is not specified!" << G4endl;
+      G4cout << "Error! Mandatory input files are not specified!" << G4endl;
       G4cout << G4endl;
-      G4cout << "Usage: "<<argv[0]<<" <intput_gdml:mandatory>"
+      G4cout << "Usage: "<<argv[0]<<" <intput_gdml:mandatory>"<<" <output_root_filename:mandatory>"
              << " <macro_with_pythia_settings:optional>" << G4endl;
       G4cout << G4endl;
       return -1;
    }
+
    G4GDMLParser parser;
    // Load geometry
    G4cout << "Geometry loaded from  file ......." << argv[1]<<G4endl;
    parser.Read(argv[1]);
+
+
    //-------------------------------
    // Initialization of Run manager
    //-------------------------------
@@ -81,21 +86,20 @@ int main(int argc, char** argv)
    G4cout<<"+-------------------------------------------------------+"<<G4endl;
 #endif
 
-   // Detector/mass geometry and parallel geometry(ies):
+   // Geometry:
    G4VUserDetectorConstruction* detector = new FCCDetectorConstruction(parser.GetWorldVolume());
-
-   // --  The name passed must be the same passed to the
-   // -- G4FastSimulationManagerProcess attached to the pions
    runManager->SetUserInitialization(detector);
-  
+
    // PhysicsList (including G4FastSimulationManagerProcess)
-   G4VUserPhysicsList* physicsList = new FTFP_BERT;// FCCPhysicsList;
-   runManager->SetUserInitialization(physicsList);
+   G4VUserPhysicsList* physicsList = new FCCPhysicsList();
+    runManager->SetUserInitialization(physicsList);
+   G4Gamma::GammaDefinition()->SetApplyCutsFlag(TRUE);
+
 
    //-------------------------------
    // UserAction classes
    //-------------------------------
-   runManager->SetUserInitialization( new FCCActionInitialization );
+   runManager->SetUserInitialization( new FCCActionInitialization(argv[2]) );
 
    // Initialize Run manager
    runManager->Initialize();
@@ -103,17 +107,17 @@ int main(int argc, char** argv)
 
    //-------------------------------
    // Sensitive detectors
-   //------------------------------------------------ 
+   //------------------------------------------------
 
-   // const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
-   // FCCSDInfo SensDetCreater(auxmap);
+   const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
+   FCCSmearModel SmearModel(auxmap);
 
    //-------------------------------
    // UI
    //-------------------------------
    G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-   if(argc==2)
+   if(argc==3)
    {
       //--------------------------
       // Define (G)UI
@@ -135,7 +139,7 @@ int main(int argc, char** argv)
    else
    {
       G4String command = "/control/execute ";
-      G4String fileName = argv[2];
+      G4String fileName = argv[3];
       UImanager->ApplyCommand(command+fileName);
    }
 

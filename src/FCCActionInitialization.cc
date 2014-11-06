@@ -30,12 +30,17 @@
 #include "FCCPrimaryGeneratorAction.hh"
 #include "FCCRunAction.hh"
 #include "FCCEventAction.hh"
-#include "FCCTrackingAction.hh"
+ #include "FCCTrackingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 FCCActionInitialization::FCCActionInitialization()
- : G4VUserActionInitialization()
+   : G4VUserActionInitialization(), fFileName("SImpleOutput")
+{}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+FCCActionInitialization::FCCActionInitialization(const G4String OutName)
+   : G4VUserActionInitialization(), fFileName(OutName)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -54,9 +59,9 @@ void FCCActionInitialization::BuildForMaster() const
 void FCCActionInitialization::Build() const
 {
   SetUserAction(new FCCPrimaryGeneratorAction);
-  SetUserAction(new FCCRunAction);
+  SetUserAction(new FCCRunAction(fFileName));
   SetUserAction(new FCCEventAction);
-  SetUserAction(new FCCTrackingAction);
+   SetUserAction(new FCCTrackingAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

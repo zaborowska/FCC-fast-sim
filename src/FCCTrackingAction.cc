@@ -53,6 +53,15 @@ FCCTrackingAction::~FCCTrackingAction()
 
 void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
+   G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
+   if(
+      !( // (abs(PID)==11 || abs(PID)==211 || abs(PID)==13) && // to reject other particles that are not registered
+         abs(aTrack->GetMomentum().pseudoRapidity())<5.5
+         ))
+   {
+    ((G4Track*)aTrack)->SetTrackStatus(fStopAndKill);
+   }
+
    if(aTrack->GetParentID()) return;
    // filling data only for primary particles
    const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
@@ -60,17 +69,17 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
 
    // Fill ntuple with G4 original data
-   G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
    G4int particleID = ((FCCPrimaryParticleInformation*) aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID();
+   if(PID == 13) G4cout<<" MUON !!!!!!!!!!!!!!!!!!"<<G4endl;
    G4ThreeVector P = aTrack->GetMomentum();
    if(P.x()!=0 && P.y()!=0 && P.z()!=0 )
    {
-      analysisManager->FillNtupleIColumn(evNo, 0, particleID);
-      analysisManager->FillNtupleIColumn(evNo, 1, PID);
-      analysisManager->FillNtupleDColumn(evNo, 2, P.x());
-      analysisManager->FillNtupleDColumn(evNo, 3, P.y());
-      analysisManager->FillNtupleDColumn(evNo, 4, P.z());
-      analysisManager->AddNtupleRow(evNo);
+      analysisManager->FillNtupleIColumn(2*evNo, 0, particleID);
+      analysisManager->FillNtupleIColumn(2*evNo, 1, PID);
+      analysisManager->FillNtupleDColumn(2*evNo, 2, P.x());
+      analysisManager->FillNtupleDColumn(2*evNo, 3, P.y());
+      analysisManager->FillNtupleDColumn(2*evNo, 4, P.z());
+      analysisManager->AddNtupleRow(2*evNo);
    }
 }
 

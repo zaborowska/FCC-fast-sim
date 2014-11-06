@@ -23,43 +23,50 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/basic/B2/B2a/include/B2TrackerSD.hh
 //
+// based on G4 examples/extended/parametrisations/Par01/include/Par01EMShowerModel.hh
+//
+//----------------------------------------------
+// Parameterisation of e+/e-/gamma producing hits
+// The hits are the same as defined in the detailed
+// simulation.
+//----------------------------------------------
 
-#ifndef FCC_TRACKER_SD_H
-#define FCC_TRACKER_SD_H
+#ifndef FCC_HAD_SMEAR_MODEL_H
+#define FCC_HAD_SMEAR_MODEL_H
 
-#include "G4VSensitiveDetector.hh"
-#include "FCCTrackerHit.hh"
-#include <vector>
+#include "G4VFastSimulationModel.hh"
+#include "G4Step.hh"
 
-class G4Step;
-class G4HCofThisEvent;
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/// FCCTracker sensitive detector class
-///
-/// The hits are accounted in hits in ProcessHits() function which is called
-/// by Geant4 kernel at each step. A hit is created with each step with non zero
-/// energy deposit.
-
-class FCCTrackerSD : public G4VSensitiveDetector
+class FCCHadSmearModel : public G4VFastSimulationModel
 {
-  public:
-    FCCTrackerSD(const G4String& name,
-                const G4String& hitsCollectionName);
-    virtual ~FCCTrackerSD();
+public:
+  //-------------------------
+  // Constructor, destructor
+  //-------------------------
+  FCCHadSmearModel (G4String, G4Region*);
+  FCCHadSmearModel (G4String);
+  ~FCCHadSmearModel ();
 
-    // methods from base class
-    virtual void   Initialize(G4HCofThisEvent* hitCollection);
-    virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
-    virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
+  //------------------------------
+  // Virtual methods of the base
+  // class to be coded by the user
+  //------------------------------
 
-  private:
-    FCCTrackerHitsCollection* fHitsCollection;
+  // -- IsApplicable
+  virtual G4bool IsApplicable(const G4ParticleDefinition&);
+  // -- ModelTrigger
+  virtual G4bool ModelTrigger(const G4FastTrack &);
+  // -- User method DoIt
+  virtual void DoIt(const G4FastTrack&, G4FastStep&);
+
+private:
+   void SaveParticle(const G4Track*);
+
+
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif
+
+
+
+

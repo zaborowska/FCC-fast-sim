@@ -23,36 +23,50 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/basic/B5/include/B5EmCalorimeterSD.hh
 //
+// based on G4 examples/extended/parametrisations/Par01/include/Par01EMShowerModel.hh
+//
+//----------------------------------------------
+// Parameterisation of e+/e-/gamma producing hits
+// The hits are the same as defined in the detailed
+// simulation.
+//----------------------------------------------
 
-#ifndef FCC_EM_CALORIMETER_SD_H
-#define FCC_EM_CALORIMETER_SD_H
+#ifndef FCC_EM_SMEAR_MODEL_H
+#define FCC_EM_SMEAR_MODEL_H
 
-#include "G4VSensitiveDetector.hh"
-#include "FCCEmCalorimeterHit.hh"
+#include "G4VFastSimulationModel.hh"
+#include "G4Step.hh"
 
-class G4Step;
-class G4HCofThisEvent;
-class G4TouchableHistory;
-
-/// EM calorimeter sensitive detector
-
-class FCCEmCalorimeterSD : public G4VSensitiveDetector
+class FCCEmSmearModel : public G4VFastSimulationModel
 {
-
 public:
-    FCCEmCalorimeterSD(G4String name);
-    virtual ~FCCEmCalorimeterSD();
+  //-------------------------
+  // Constructor, destructor
+  //-------------------------
+  FCCEmSmearModel (G4String, G4Region*);
+  FCCEmSmearModel (G4String);
+  ~FCCEmSmearModel ();
 
-    virtual void Initialize(G4HCofThisEvent*HCE);
-    virtual G4bool ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist);
+  //------------------------------
+  // Virtual methods of the base
+  // class to be coded by the user
+  //------------------------------
+
+  // -- IsApplicable
+  virtual G4bool IsApplicable(const G4ParticleDefinition&);
+  // -- ModelTrigger
+  virtual G4bool ModelTrigger(const G4FastTrack &);
+  // -- User method DoIt
+  virtual void DoIt(const G4FastTrack&, G4FastStep&);
 
 private:
-    FCCEmCalorimeterHitsCollection* fHitsCollection;
-    G4int fHCID;
+   void SaveParticle(const G4Track*);
+
+
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif
+
+
+
+

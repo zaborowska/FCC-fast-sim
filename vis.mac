@@ -23,9 +23,15 @@
 #
 # Set specific colour for identification : ghost parallel geometry envelope ("ghost") as yellow
 /vis/geometry/set/colour GhostLogical ! yellow
+/vis/geometry/set/colour Ring ! blue
+/vis/geometry/set/colour CrystalLV ! yellow
+# /vis/geometry/set/colour PatientLV ! red
+/vis/geometry/set/forceAuxEdgeVisible all
+/vis/geometry/set/colour EM_calo_region ! red
 #
 # Specify view angle:
-/vis/viewer/set/viewpointThetaPhi -90 0 deg
+#/vis/viewer/set/viewpointThetaPhi -90 0 deg
+/vis/viewer/set/viewpointThetaPhi 0 0
 #
 # Specify zoom value:
 /vis/viewer/zoom 1.5

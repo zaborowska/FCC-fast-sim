@@ -23,35 +23,42 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/basic/B5/include/B5HadCalorimeterSD.hh
 //
+// $Id: Par01EnergySpot.hh 70911 2013-06-07 11:05:37Z mverderi $
+//
+#ifndef Par01EnergySpot_h
+#define Par01EnergySpot_h
 
-#ifndef FCC_HAD_CALORIMETER_SD_H
-#define FCC_HAD_CALORIMETER_SD_H
+#include "G4ThreeVector.hh"
+class G4Colour;
 
-#include "G4VSensitiveDetector.hh"
-#include "FCCHadCalorimeterHit.hh"
-
-class G4Step;
-class G4HCofThisEvent;
-class G4TouchableHistory;
-
-/// Hadron calorimeter sensitive detector
-
-class FCCHadCalorimeterSD : public G4VSensitiveDetector
+class Par01EnergySpot
 {
 public:
-    FCCHadCalorimeterSD(G4String name);
-    virtual ~FCCHadCalorimeterSD();
+  Par01EnergySpot();
+  Par01EnergySpot(const G4ThreeVector& point, G4double E);
+  ~Par01EnergySpot();
 
-    virtual void Initialize(G4HCofThisEvent*HCE);
-    virtual G4bool ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist);
+  inline void SetEnergy(const G4double& E) {fEnergy = E;}
+  inline G4double GetEnergy() const {return fEnergy;}
+
+  inline void SetPosition(const G4ThreeVector& point) {fPoint = point;}
+  inline G4ThreeVector GetPosition() const {return fPoint;}
+
+  G4int operator==(const Par01EnergySpot& eSpot) const
+  {
+    return (fEnergy==eSpot.fEnergy && fPoint==eSpot.fPoint) ? 1 : 0;
+  }
+
+  // Draw:
+  void Draw(G4Colour* color = 0);
+  // Print:
+  void Print();
+
 
 private:
-    FCCHadCalorimeterHitsCollection* fHitsCollection;
-    G4int fHCID;
+  G4double fEnergy;
+  G4ThreeVector fPoint;
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

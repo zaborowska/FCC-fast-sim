@@ -74,15 +74,14 @@
 
   <solids>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="ECalBarrel0x7ff5f9e7b300" rmax="2990" rmin="1500" startphi="0" z="6000"/>
-    <box lunit="mm" name="world_volume0x7ff5f9e788a0" x="100000" y="100000" z="200000"/>
+    <box lunit="mm" name="world_volume0x7ff5f9e788a0" x="10000" y="10000" z="20000"/>
   </solids>
 
   <structure>
     <volume name="ECalBarrel0x7ff5f9e7b420">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="ECalBarrel0x7ff5f9e7b300"/>
-      <auxiliary auxtype="SensDet" auxvalue="Tracker"/>
-      <auxiliary auxtype="Color" auxvalue="Blue"/>
+      <auxiliary auxtype="SensDet" auxvalue="ECalBarrel"/>
     </volume>
     <volume name="world_volume0x7ff5f9e77ca0">
       <materialref ref="Air0x7ff5f9e72ea0"/>

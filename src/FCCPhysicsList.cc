@@ -36,12 +36,14 @@
 #include "G4Material.hh"
 #include "G4MaterialTable.hh"
 #include "G4ios.hh"
+#include "G4SystemOfUnits.hh"
 #include <iomanip>
 #include "G4FastSimulationManagerProcess.hh"
 
 FCCPhysicsList::FCCPhysicsList():  G4VUserPhysicsList()
 {
   SetVerboseLevel(1);
+  defaultCutValue = 0.1*m;
 }
 
 FCCPhysicsList::~FCCPhysicsList()
@@ -258,7 +260,7 @@ void FCCPhysicsList::AddParameterisation()
 {
   // -- Fast simulation manager process for "mass geometry":
   G4FastSimulationManagerProcess*
-    fastSimProcess_massGeom     = new G4FastSimulationManagerProcess("G4FSMP_massGeom");
+    fastSimProcess_massGeom     = new G4FastSimulationManagerProcess("G4FSMP");
 
   theParticleIterator->reset();
   while( (*theParticleIterator)() )
@@ -266,9 +268,13 @@ void FCCPhysicsList::AddParameterisation()
       G4ParticleDefinition* particle = theParticleIterator->value();
       G4ProcessManager* pmanager = particle->GetProcessManager();
       // -- For the mass geometry, G4FSMP is a PostStep process, ordering does not matter:
-      if (particle->GetParticleName() == "e+"  ||
+      if (particle->GetParticleName() == "pi+"  ||
+          particle->GetParticleName() == "pi-"  ||
+          particle->GetParticleName() == "mu+"  ||
+          particle->GetParticleName() == "mu-"  ||
+          particle->GetParticleName() == "e+"  ||
           particle->GetParticleName() == "e-"  ||
-          particle->GetParticleName() == "gamma") pmanager->
+          particle->GetParticleName() == "gamma"  ) pmanager->
                                                     AddDiscreteProcess(fastSimProcess_massGeom);
 
     }

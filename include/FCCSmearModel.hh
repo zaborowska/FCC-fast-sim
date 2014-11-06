@@ -23,65 +23,57 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-// based on G4 examples/extended/parametrisations/Par01/include/Par01EMShowerModel.hh
-//
-//----------------------------------------------
-// Parameterisation of e+/e-/gamma producing hits
-// The hits are the same as defined in the detailed
-// simulation.
-//----------------------------------------------
+#ifndef FCC_SMEAR_MODEL_H
+#define FCC_SMEAR_MODEL_H
 
-#ifndef FCC_Had_SHOWER_MODEL_H
-#define FCC_Had_SHOWER_MODEL_H
-
-#include "FCCEnergySpot.hh"
-#include "G4VFastSimulationModel.hh"
-#include "G4Step.hh"
-#include "G4TouchableHandle.hh"
 #include <vector>
+//------------
+// Geometry:
+//------------
+#include "FCCDetectorConstruction.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4TransportationManager.hh"
+#include "G4RegionStore.hh"
+#include "G4GDMLParser.hh"
+//-----------------------------------
+//Sensitive Detectors
+//-----------------------------------
+#include "G4SDManager.hh"
 
-class FCCHadShowerModel : public G4VFastSimulationModel
+//-----------------------------------
+// PhysicsList
+//-----------------------------------
+#include "FCCPhysicsList.hh"
+#include "FCCEmSmearModel.hh"
+#include "FCCHadSmearModel.hh"
+#include "FCCMuonSmearModel.hh"
+#include "FTFP_BERT.hh"
+//---------------------------
+// Parameterisation manager:
+//---------------------------
+#include "G4GlobalFastSimulationManager.hh"
+
+#include "G4UserLimits.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+class FCCSmearModel
 {
-public:
-  //-------------------------
-  // Constructor, destructor
-  //-------------------------
-  FCCHadShowerModel (G4String, G4Region*);
-  FCCHadShowerModel (G4String);
-  ~FCCHadShowerModel ();
-
-  //------------------------------
-  // Virtual methods of the base
-  // class to be coded by the user
-  //------------------------------
-
-  // -- IsApplicable
-  virtual G4bool IsApplicable(const G4ParticleDefinition&);
-  // -- ModelTrigger
-  virtual G4bool ModelTrigger(const G4FastTrack &);
-  // -- User method DoIt
-  virtual void DoIt(const G4FastTrack&, G4FastStep&);
+  public:
+    FCCSmearModel(const G4GDMLAuxMapType* auxmap);
+    ~FCCSmearModel();
 
 private:
-  void AssignSpotAndCallHit(const FCCEnergySpot &eSpot);
-  void FillFakeStep(const FCCEnergySpot &eSpot);
-  void Explode(const G4FastTrack&);
-  void BuildDetectorResponse();
 
-private:
-  G4Step                         *fFakeStep;
-  G4StepPoint                    *fFakePreStepPoint, *fFakePostStepPoint;
-  G4TouchableHandle              fTouchableHandle;
-  G4Navigator                    *fpNavigator;
-  G4bool                         fNaviSetup;
-  G4Material*                    fCsI;
-
-  std::vector<FCCEnergySpot> feSpotList;
-
+   std::vector<G4Region*> fECalList;
+   std::vector<G4Region*> fHCalList;
+   std::vector<G4Region*> fMuonList;
+   //G4UserLimits* fStepLimit;
+   std::vector<FCCEmSmearModel*> fECalSmearModel;
+   std::vector<FCCHadSmearModel*> fHCalSmearModel;
+   std::vector<FCCMuonSmearModel*> fMuonSmearModel;
 };
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 #endif
-
-
-
-
