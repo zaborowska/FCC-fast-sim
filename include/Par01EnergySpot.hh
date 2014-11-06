@@ -23,40 +23,42 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B1ActionInitialization.cc 68058 2013-03-13 14:47:43Z gcosmo $
 //
-/// \file B1ActionInitialization.cc
-/// \brief Implementation of the B1ActionInitialization class
+// $Id: Par01EnergySpot.hh 70911 2013-06-07 11:05:37Z mverderi $
+//
+#ifndef Par01EnergySpot_h
+#define Par01EnergySpot_h
 
-#include "B1ActionInitialization.hh"
-#include "B1PrimaryGeneratorAction.hh"
-#include "B1RunAction.hh"
-#include "B1EventAction.hh"
-#include "B1SteppingAction.hh"
+#include "G4ThreeVector.hh"
+class G4Colour;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-B1ActionInitialization::B1ActionInitialization()
- : G4VUserActionInitialization()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-B1ActionInitialization::~B1ActionInitialization()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void B1ActionInitialization::BuildForMaster() const
+class Par01EnergySpot
 {
-  SetUserAction(new B1RunAction);
-}
+public:
+  Par01EnergySpot();
+  Par01EnergySpot(const G4ThreeVector& point, G4double E);
+  ~Par01EnergySpot();
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+  inline void SetEnergy(const G4double& E) {fEnergy = E;}
+  inline G4double GetEnergy() const {return fEnergy;}
 
-void B1ActionInitialization::Build() const
-{
-  SetUserAction(new B1PrimaryGeneratorAction);
-}  
+  inline void SetPosition(const G4ThreeVector& point) {fPoint = point;}
+  inline G4ThreeVector GetPosition() const {return fPoint;}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+  G4int operator==(const Par01EnergySpot& eSpot) const
+  {
+    return (fEnergy==eSpot.fEnergy && fPoint==eSpot.fPoint) ? 1 : 0;
+  }
+
+  // Draw:
+  void Draw(G4Colour* color = 0);
+  // Print:
+  void Print();
+
+
+private:
+  G4double fEnergy;
+  G4ThreeVector fPoint;
+};
+
+#endif

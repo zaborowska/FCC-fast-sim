@@ -23,26 +23,42 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/extended/parametrisations/Par01/include/Par01ActionInitialization.hh
+// $Id: B3DetectorConstruction.hh 71323 2013-06-13 16:54:23Z gcosmo $
 //
+/// \file B3DetectorConstruction.hh
+/// \brief Definition of the B3DetectorConstruction class
 
-#ifndef FCC_ACTION_INITIALIZATION_H
-#define FCC_ACTION_INITIALIZATION_H
+#ifndef B3DetectorConstruction_h
+#define B3DetectorConstruction_h 1
 
-#include "G4VUserActionInitialization.hh"
+#include "G4VUserDetectorConstruction.hh"
+#include "globals.hh"
 
-/// Action initialization class.
+class G4VPhysicalVolume;
+class G4LogicalVolume;
+
+/// Detector construction class to define materials and geometry.
 ///
+/// Crystals are positioned in Ring, with an appropriate rotation matrix. 
+/// Several copies of Ring are placed in the full detector.
 
-class FCCActionInitialization : public G4VUserActionInitialization
+class B3DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
-    FCCActionInitialization();
-    virtual ~FCCActionInitialization();
+    B3DetectorConstruction();
+    virtual ~B3DetectorConstruction();
 
-    virtual void BuildForMaster() const;
-    virtual void Build() const;
+  public:
+    virtual G4VPhysicalVolume* Construct();
+    virtual void ConstructSDandField();
+               
+  private:
+    void DefineMaterials();
+
+    G4bool  fCheckOverlaps;
 };
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
 

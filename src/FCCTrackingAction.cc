@@ -23,92 +23,77 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/basic/B2/B2a/src/B2TrackerHit.cc
-//
 
-#include "FCCTrackerHit.hh"
+#include "FCCTrackingAction.hh"
+#include "FCCEventInformation.hh"
+#include "FCCPrimaryParticleInformation.hh"
+
+#include "G4Track.hh"
+#include "G4Event.hh"
+#include "G4RunManager.hh"
 #include "G4UnitsTable.hh"
-#include "G4VVisManager.hh"
-#include "G4Circle.hh"
-#include "G4Colour.hh"
-#include "G4VisAttributes.hh"
+#include "g4root.hh"
 
+#include "Randomize.hh"
 #include <iomanip>
-
-G4ThreadLocal G4Allocator<FCCTrackerHit>* FCCTrackerHitAllocator=0;
+#include <vector>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCTrackerHit::FCCTrackerHit()
- : G4VHit(),
-   fTrackID(-1),
-   fChamberNb(-1),
-   fEdep(0.),
-   fPos(G4ThreeVector())
+FCCTrackingAction::FCCTrackingAction()
+   : G4UserTrackingAction()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCTrackerHit::~FCCTrackerHit() {}
+FCCTrackingAction::~FCCTrackingAction()
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCTrackerHit::FCCTrackerHit(const FCCTrackerHit& right)
-  : G4VHit()
+void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-  fTrackID   = right.fTrackID;
-  fChamberNb = right.fChamberNb;
-  fEdep      = right.fEdep;
-  fPos       = right.fPos;
+   G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
+   if(
+      !( // (abs(PID)==11 || abs(PID)==211 || abs(PID)==13) && // to reject other particles that are not registered
+         abs(aTrack->GetMomentum().pseudoRapidity())<5.5
+         ))
+   {
+    ((G4Track*)aTrack)->SetTrackStatus(fStopAndKill);
+   }
+
+   if(aTrack->GetParentID()) return;
+   // filling data only for primary particles
+   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
+   G4int evNo = event->GetEventID();
+   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+
+   // Fill ntuple with G4 original data
+   G4int particleID = ((FCCPrimaryParticleInformation*) aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID();
+   if(PID == 13) G4cout<<" MUON !!!!!!!!!!!!!!!!!!"<<G4endl;
+   G4ThreeVector P = aTrack->GetMomentum();
+   if(P.x()!=0 && P.y()!=0 && P.z()!=0 )
+   {
+      analysisManager->FillNtupleIColumn(2*evNo, 0, particleID);
+      analysisManager->FillNtupleIColumn(2*evNo, 1, PID);
+      analysisManager->FillNtupleDColumn(2*evNo, 2, P.x());
+      analysisManager->FillNtupleDColumn(2*evNo, 3, P.y());
+      analysisManager->FillNtupleDColumn(2*evNo, 4, P.z());
+      analysisManager->AddNtupleRow(2*evNo);
+   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-const FCCTrackerHit& FCCTrackerHit::operator=(const FCCTrackerHit& right)
+void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
+// This method is called not only once at the end of the life of
+// a track, but also each time it is suspended, as it happens
+// in the case of neutrons with _HP Physics Lists.
+// To be sure that we collect information about a track only once
+// when its life comes to the end, we have to require that its
+// status is "fStopAndKill".
 {
-  fTrackID   = right.fTrackID;
-  fChamberNb = right.fChamberNb;
-  fEdep      = right.fEdep;
-  fPos       = right.fPos;
 
-  return *this;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-G4int FCCTrackerHit::operator==(const FCCTrackerHit& right) const
-{
-  return ( this == &right ) ? 1 : 0;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void FCCTrackerHit::Draw()
-{
-  G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
-  if(pVVisManager)
-  {
-    G4Circle circle(fPos);
-    circle.SetScreenSize(4.);
-    circle.SetFillStyle(G4Circle::filled);
-    G4Colour colour(1.,0.,0.);
-    G4VisAttributes attribs(colour);
-    circle.SetVisAttributes(attribs);
-    pVVisManager->Draw(circle);
-  }
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void FCCTrackerHit::Print()
-{
-  G4cout
-     << "  trackID: " << fTrackID << " chamberNb: " << fChamberNb
-     << "Edep: "
-     << std::setw(7) << G4BestUnit(fEdep,"Energy")
-     << " Position: "
-     << std::setw(7) << G4BestUnit( fPos,"Length")
-     << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

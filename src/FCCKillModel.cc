@@ -23,30 +23,52 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: B1ActionInitialization.hh 68058 2013-03-13 14:47:43Z gcosmo $
 //
-/// \file B1ActionInitialization.hh
-/// \brief Definition of the B1ActionInitialization class
+// $Id: FCCKillModel.cc 77940 2013-11-29 15:15:17Z gcosmo $
+//
+#include "FCCKillModel.hh"
 
-#ifndef B1ActionInitialization_h
-#define B1ActionInitialization_h 1
+#include "G4Track.hh"
+#include "G4Event.hh"
+#include "G4RunManager.hh"
+#include "g4root.hh"
 
-#include "G4VUserActionInitialization.hh"
+#include "Randomize.hh"
 
-/// Action initialization class.
-
-class B1ActionInitialization : public G4VUserActionInitialization
+FCCKillModel::FCCKillModel(G4String modelName, G4Region* envelope)
+  : G4VFastSimulationModel(modelName, envelope)
 {
-  public:
-    B1ActionInitialization();
-    virtual ~B1ActionInitialization();
+   G4cout<<"+++++++++++++ creating model attached to "<<envelope->GetName()<<G4endl;
+}
 
-    virtual void BuildForMaster() const;
-    virtual void Build() const;
-};
+FCCKillModel::FCCKillModel(G4String modelName)
+  : G4VFastSimulationModel(modelName)
+{
+}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+FCCKillModel::~FCCKillModel()
+{
+}
 
-#endif
+G4bool FCCKillModel::IsApplicable(const G4ParticleDefinition& particleType)
+{
+   G4cout<<"+++++++++++++ Killing model !!! IsApplicable "<<G4endl;
+   return true;
+}
 
-    
+G4bool FCCKillModel::ModelTrigger(const G4FastTrack& fastTrack)
+{
+   G4cout<<"+++++++++++++ Killing model !!! ModelTrigger "<<G4endl;
+   return true;
+}
+
+void FCCKillModel::DoIt(const G4FastTrack& fastTrack,
+                            G4FastStep& fastStep)
+{
+   // Kill the parameterised particle:
+   G4cout<<"+++++++++++++ Killing particle !!! "<<fastTrack.GetPrimaryTrack()->GetDefinition()->GetParticleName()<< " in "<<
+      fastTrack.GetEnvelope()->GetName()<< G4endl;
+   fastStep.KillPrimaryTrack();
+   fastStep.ProposePrimaryTrackPathLength(0.0);
+   fastStep.ProposeTotalEnergyDeposited(fastTrack.GetPrimaryTrack()->GetKineticEnergy());
+}

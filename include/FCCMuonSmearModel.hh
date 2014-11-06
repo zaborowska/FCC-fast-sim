@@ -23,40 +23,49 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/extended/parametrisations/Par01/src/Par01ActionInitialization.cc
 //
+// based on G4 examples/extended/parametrisations/Par01/include/Par01EMShowerModel.hh
+//
+//----------------------------------------------
+// Parameterisation of e+/e-/gamma producing hits
+// The hits are the same as defined in the detailed
+// simulation.
+//----------------------------------------------
 
-#include "FCCActionInitialization.hh"
-#include "FCCPrimaryGeneratorAction.hh"
-// #include "FCCRunAction.hh"
-// #include "FCCEventAction.hh"
-// #include "FCCTrackingAction.hh"
+#ifndef FCC_MUON_SMEAR_MODEL_H
+#define FCC_MUON_SMEAR_MODEL_H
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include "G4VFastSimulationModel.hh"
+#include "G4Step.hh"
 
-FCCActionInitialization::FCCActionInitialization()
- : G4VUserActionInitialization()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCActionInitialization::~FCCActionInitialization()
-{;}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void FCCActionInitialization::BuildForMaster() const
+class FCCMuonSmearModel : public G4VFastSimulationModel
 {
-}
+public:
+  //-------------------------
+  // Constructor, destructor
+  //-------------------------
+  FCCMuonSmearModel (G4String, G4Region*);
+  FCCMuonSmearModel (G4String);
+  ~FCCMuonSmearModel ();
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+  //------------------------------
+  // Virtual methods of the base
+  // class to be coded by the user
+  //------------------------------
 
-void FCCActionInitialization::Build() const
-{
-  SetUserAction(new FCCPrimaryGeneratorAction);
-  // SetUserAction(new FCCRunAction);
-  // SetUserAction(new FCCEventAction);
-  // SetUserAction(new FCCTrackingAction);
-}
+  // -- IsApplicable
+  virtual G4bool IsApplicable(const G4ParticleDefinition&);
+  // -- ModelTrigger
+  virtual G4bool ModelTrigger(const G4FastTrack &);
+  // -- User method DoIt
+  virtual void DoIt(const G4FastTrack&, G4FastStep&);
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+private:
+  void SaveParticle(const G4Track*);
+
+};
+#endif
+
+
+
+

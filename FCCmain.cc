@@ -26,16 +26,18 @@
 
 // Generator action:
 #include "FCCActionInitialization.hh"
-#include "B1ActionInitialization.hh"
 // Parameterisation manager:
 #include "G4GlobalFastSimulationManager.hh"
 // Geometry:
 #include "FCCDetectorConstruction.hh"
+#include "B3DetectorConstruction.hh"
 //Sensitive Detectors
-// #include "FCCSDInfo.hh"
 #include "G4GDMLParser.hh"
+#include "FCCSmearModel.hh"
 // PhysicsList
+#include "FCCPhysicsList.hh"
 #include "FTFP_BERT.hh"
+#include "G4PhysListFactory.hh"
 // UI
 #include "G4UImanager.hh"
 #ifdef G4MULTITHREADED
@@ -50,23 +52,28 @@
 #include "G4UIExecutive.hh"
 #endif
 
+#include "FCCPhysicsConstructor.hh"
+
 
 int main(int argc, char** argv)
 {
    if (argc<2)
    {
       G4cout << G4endl;
-      G4cout << "Error! Mandatory input file is not specified!" << G4endl;
+      G4cout << "Error! Mandatory input files are not specified!" << G4endl;
       G4cout << G4endl;
-      G4cout << "Usage: "<<argv[0]<<" <intput_gdml:mandatory>"
+      G4cout << "Usage: "<<argv[0]<<" <intput_gdml:mandatory>"<<" <output_root_filename:mandatory>"
              << " <macro_with_pythia_settings:optional>" << G4endl;
       G4cout << G4endl;
       return -1;
    }
+
    G4GDMLParser parser;
    // Load geometry
    G4cout << "Geometry loaded from  file ......." << argv[1]<<G4endl;
    parser.Read(argv[1]);
+
+
    //-------------------------------
    // Initialization of Run manager
    //-------------------------------
@@ -84,17 +91,26 @@ int main(int argc, char** argv)
 #endif
 
    // Detector/mass geometry and parallel geometry(ies):
+   // G4VUserDetectorConstruction* detector = new B3DetectorConstruction()     ;
    G4VUserDetectorConstruction* detector = new FCCDetectorConstruction(parser.GetWorldVolume());
    runManager->SetUserInitialization(detector);
 
    // PhysicsList (including G4FastSimulationManagerProcess)
-   G4VUserPhysicsList* physicsList = new FTFP_BERT;// FCCPhysicsList;
-   runManager->SetUserInitialization(physicsList);
+   // G4PhysListFactory factory;
+   // G4VModularPhysicsList* physicsList = factory.GetReferencePhysList("FTFP_BERT");
+   // FCCPhysicsConstructor* physicsParam = new FCCPhysicsConstructor();
+   // physicsList->RegisterPhysics(physicsParam);
+   // G4VUserPhysicsList* physicsList = new FTFP_BERT;
+
+   G4VUserPhysicsList* physicsList = new FCCPhysicsList();
+    runManager->SetUserInitialization(physicsList);
+   G4Gamma::GammaDefinition()->SetApplyCutsFlag(TRUE);
+
 
    //-------------------------------
    // UserAction classes
    //-------------------------------
-   runManager->SetUserInitialization( new B1ActionInitialization );
+   runManager->SetUserInitialization( new FCCActionInitialization(argv[2]) );
 
    // Initialize Run manager
    runManager->Initialize();
@@ -102,17 +118,17 @@ int main(int argc, char** argv)
 
    //-------------------------------
    // Sensitive detectors
-   //------------------------------------------------ 
+   //------------------------------------------------
 
-   // const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
-   // FCCSDInfo SensDetCreater(auxmap);
+   const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
+   FCCSmearModel SmearModel(auxmap);
 
    //-------------------------------
    // UI
    //-------------------------------
    G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-   if(argc==2)
+   if(argc==3)
    {
       //--------------------------
       // Define (G)UI
@@ -134,7 +150,7 @@ int main(int argc, char** argv)
    else
    {
       G4String command = "/control/execute ";
-      G4String fileName = argv[2];
+      G4String fileName = argv[3];
       UImanager->ApplyCommand(command+fileName);
    }
 

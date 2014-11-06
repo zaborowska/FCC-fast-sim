@@ -23,85 +23,45 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/basic/B2/B2a/src/B2TrackerSD.cc
+// based on G4 examples/extended/parametrisations/Par01/src/Par01ActionInitialization.cc
 //
 
-#include "FCCTrackerSD.hh"
-#include "G4HCofThisEvent.hh"
-#include "G4Step.hh"
-#include "G4ThreeVector.hh"
-#include "G4SDManager.hh"
-#include "G4ios.hh"
+#include "FCCActionInitialization.hh"
+#include "FCCPrimaryGeneratorAction.hh"
+#include "FCCRunAction.hh"
+#include "FCCEventAction.hh"
+ #include "FCCTrackingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCTrackerSD::FCCTrackerSD(const G4String& name,
-                         const G4String& hitsCollectionName) 
- : G4VSensitiveDetector(name),
-   fHitsCollection(NULL)
-{
-  collectionName.insert(hitsCollectionName);
-}
-
+FCCActionInitialization::FCCActionInitialization()
+   : G4VUserActionInitialization(), fFileName("SImpleOutput")
+{}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCTrackerSD::~FCCTrackerSD() 
+FCCActionInitialization::FCCActionInitialization(const G4String OutName)
+   : G4VUserActionInitialization(), fFileName(OutName)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCTrackerSD::Initialize(G4HCofThisEvent* hce)
+FCCActionInitialization::~FCCActionInitialization()
+{;}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCActionInitialization::BuildForMaster() const
 {
-  // Create hits collection
-
-  fHitsCollection 
-    = new FCCTrackerHitsCollection(SensitiveDetectorName, collectionName[0]); 
-
-  // Add this collection in hce
-
-  G4int hcID 
-    = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-  hce->AddHitsCollection( hcID, fHitsCollection ); 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4bool FCCTrackerSD::ProcessHits(G4Step* aStep, 
-                                     G4TouchableHistory*)
-{  
-  // energy deposit
-  G4double edep = aStep->GetTotalEnergyDeposit();
-
-  if (edep==0.) return false;
-
-  FCCTrackerHit* newHit = new FCCTrackerHit();
-
-  //newHit->SetTrackID  (aStep->GetTrack()->GetTrackID());
-  //newHit->SetChamberNb(aStep->GetPreStepPoint()->GetTouchableHandle()
-  //                                             ->GetCopyNumber());
-  newHit->SetEdep(edep);
-  newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
-
-  //newHit->SetParentID(aStep->GetTrack()->GetParentID()); //Added by me!!
-  //newHit->SetParticleName(aStep->GetTrack()->GetDefinition()->GetParticleName());
-
-  fHitsCollection->insert( newHit );
-
-  //newHit->Print();
-
-  return true;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void FCCTrackerSD::EndOfEvent(G4HCofThisEvent*)
+void FCCActionInitialization::Build() const
 {
-   if ( verboseLevel>1 ) { 
-      G4int nofHits = fHitsCollection->entries();
-      G4cout << "\n-------->Hits Collection: in this event they are " << nofHits 
-             << " hits in the tracker chambers: " << G4endl;
-      for ( G4int i=0; i<nofHits; i++ ) (*fHitsCollection)[i]->Print();
-   }
+  SetUserAction(new FCCPrimaryGeneratorAction);
+  SetUserAction(new FCCRunAction(fFileName));
+  SetUserAction(new FCCEventAction);
+   SetUserAction(new FCCTrackingAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

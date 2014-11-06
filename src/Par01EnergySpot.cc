@@ -24,64 +24,67 @@
 // ********************************************************************
 //
 //
-// based on G4 examples/extended/parametrisations/Par01/include/Par01EMShowerModel.hh
+// $Id: Par01EnergySpot.cc 70911 2013-06-07 11:05:37Z mverderi $
 //
-//----------------------------------------------
-// Parameterisation of e+/e-/gamma producing hits
-// The hits are the same as defined in the detailed
-// simulation.
-//----------------------------------------------
+#include "Par01EnergySpot.hh"
 
-#ifndef FCC_EM_SHOWER_MODEL_H
-#define FCC_EM_SHOWER_MODEL_H
-
-#include "FCCEnergySpot.hh"
-#include "G4VFastSimulationModel.hh"
+#include "G4VisAttributes.hh"
+#include "G4Colour.hh"
+#include "G4Polyline.hh"
+#include "G4VVisManager.hh"
 #include "G4Step.hh"
-#include "G4TouchableHandle.hh"
-#include <vector>
+#include "G4SystemOfUnits.hh"
 
-class FCCEMShowerModel : public G4VFastSimulationModel
+Par01EnergySpot::Par01EnergySpot()
+{;}
+
+Par01EnergySpot::Par01EnergySpot(const G4ThreeVector& point, G4double E)
 {
-public:
-  //-------------------------
-  // Constructor, destructor
-  //-------------------------
-  FCCEMShowerModel (G4String, G4Region*);
-  FCCEMShowerModel (G4String);
-  ~FCCEMShowerModel ();
+  fPoint = point;
+  fEnergy = E;
+}
 
-  //------------------------------
-  // Virtual methods of the base
-  // class to be coded by the user
-  //------------------------------
+Par01EnergySpot::~Par01EnergySpot()
+{;}
 
-  // -- IsApplicable
-  virtual G4bool IsApplicable(const G4ParticleDefinition&);
-  // -- ModelTrigger
-  virtual G4bool ModelTrigger(const G4FastTrack &);
-  // -- User method DoIt
-  virtual void DoIt(const G4FastTrack&, G4FastStep&);
 
-private:
-  void AssignSpotAndCallHit(const FCCEnergySpot &eSpot);
-  void FillFakeStep(const FCCEnergySpot &eSpot);
-  void Explode(const G4FastTrack&);
-  void BuildDetectorResponse();
-   void SaveParticle(const G4Track*);
+void Par01EnergySpot::Draw(G4Colour *color)
+{
+  G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
+  if (pVVisManager)
+    {
+      G4Polyline polyline;
+      G4Colour colour(1.,.5,.5);
+      if (color != 0) colour = *color;
+      polyline.SetVisAttributes(colour);
+      G4ThreeVector pp(fPoint);
+      // Draw a "home made" marker:
+      // Will be better by using a real Marker:
+      pp.setZ(pp.z()+1*cm);
+      polyline.push_back(pp);
+      pp.setZ(pp.z()-2*cm);
+      polyline.push_back(pp);
+      pp = fPoint;
+      polyline.push_back(pp);
+      pp.setX(pp.x()+1*cm);
+      polyline.push_back(pp);
+      pp.setX(pp.x()-2*cm);
+      polyline.push_back(pp);
+      pp = fPoint;
+      polyline.push_back(pp);
+      pp.setY(pp.y()+1*cm);
+      polyline.push_back(pp);
+      pp.setY(pp.y()-2*cm);
+      polyline.push_back(pp);
+      pVVisManager -> Draw(polyline);
+    }
+}
 
-private:
-  G4Step                         *fFakeStep;
-  G4StepPoint                    *fFakePreStepPoint, *fFakePostStepPoint;
-  G4TouchableHandle              fTouchableHandle;
-  G4Navigator                    *fpNavigator;
-  G4bool                         fNaviSetup;
-  G4Material*                    fCsI;
+void Par01EnergySpot::Print()
+{
+  G4cout << " Par01EnergySpot {E = " << fEnergy << "; Position = " << fPoint << " }"<< G4endl;
+}
 
-  std::vector<FCCEnergySpot> feSpotList;
-
-};
-#endif
 
 
 

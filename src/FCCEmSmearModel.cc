@@ -24,10 +24,9 @@
 // ********************************************************************
 //
 //
-// $Id: FCCEMShowerModel.cc 77940 2013-11-29 15:15:17Z gcosmo $
+// $Id: FCCEmSmearModel.cc 77940 2013-11-29 15:15:17Z gcosmo $
 //
-#include "FCCEMShowerModel.hh"
-#include "FCCEnergySpot.hh"
+#include "FCCEmSmearModel.hh"
 #include "FCCPrimaryParticleInformation.hh"
 #include "FCCEventInformation.hh"
 
@@ -43,179 +42,45 @@
 #include "G4Electron.hh"
 #include "G4Positron.hh"
 #include "G4Gamma.hh"
-#include "G4TransportationManager.hh"
-#include "G4VSensitiveDetector.hh"
-#include "G4TouchableHandle.hh"
-#include "G4PhysicalConstants.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4NistManager.hh"
 
-FCCEMShowerModel::FCCEMShowerModel(G4String modelName, G4Region* envelope)
+FCCEmSmearModel::FCCEmSmearModel(G4String modelName, G4Region* envelope)
   : G4VFastSimulationModel(modelName, envelope)
-{
-   fFakeStep          = new G4Step();
-   fFakePreStepPoint  = fFakeStep->GetPreStepPoint();
-   fFakePostStepPoint = fFakeStep->GetPostStepPoint();
-   fTouchableHandle   = new G4TouchableHistory();
-   fpNavigator        = new G4Navigator();
-   fNaviSetup         = false;
-   fCsI               = 0;
-}
+{}
 
-FCCEMShowerModel::FCCEMShowerModel(G4String modelName)
+FCCEmSmearModel::FCCEmSmearModel(G4String modelName)
   : G4VFastSimulationModel(modelName)
-{
-   fFakeStep          = new G4Step();
-   fFakePreStepPoint  = fFakeStep->GetPreStepPoint();
-   fFakePostStepPoint = fFakeStep->GetPostStepPoint();
-   fTouchableHandle   = new G4TouchableHistory();
-   fpNavigator        = new G4Navigator();
-   fNaviSetup         = false;
-   fCsI               = 0;
-}
+{}
 
-FCCEMShowerModel::~FCCEMShowerModel()
-{
-   delete fFakeStep;
-   delete fpNavigator;
-}
+FCCEmSmearModel::~FCCEmSmearModel()
+{}
 
-G4bool FCCEMShowerModel::IsApplicable(const G4ParticleDefinition& particleType)
+G4bool FCCEmSmearModel::IsApplicable(const G4ParticleDefinition& particleType)
 {
    return
-      &particleType == G4Electron::ElectronDefinition() ||
-      &particleType == G4Positron::PositronDefinition() ||
-      &particleType == G4Gamma::GammaDefinition();
+      &particleType == G4Electron::Definition() ||
+      &particleType == G4Positron::Definition() ||
+      &particleType == G4Gamma::Definition();
 }
 
-G4bool FCCEMShowerModel::ModelTrigger(const G4FastTrack& fastTrack)
+G4bool FCCEmSmearModel::ModelTrigger(const G4FastTrack& fastTrack)
 {
-   // Applies the parameterisation above 100 MeV:
-   return fastTrack.GetPrimaryTrack()->GetKineticEnergy() > 100*MeV;
+   // Applies the parameterisation above some energy:
+   return true;//fastTrack.GetPrimaryTrack()->GetKineticEnergy() > 100*MeV;
 }
 
-void FCCEMShowerModel::DoIt(const G4FastTrack& fastTrack,
+void FCCEmSmearModel::DoIt(const G4FastTrack& fastTrack,
                             G4FastStep& fastStep)
 {
-   // G4cout<<" Killing the e-+ gamma !!"<<G4endl;
-
    // Kill the parameterised particle:
    fastStep.KillPrimaryTrack();
    fastStep.ProposePrimaryTrackPathLength(0.0);
    fastStep.ProposeTotalEnergyDeposited(fastTrack.GetPrimaryTrack()->GetKineticEnergy());
 
-   // split into "energy spots" energy according to the shower shape:
-   Explode(fastTrack);
-
-   // and put those energy spots into the crystals:
-   BuildDetectorResponse();
-
    if ( !fastTrack.GetPrimaryTrack()->GetParentID() ) SaveParticle(fastTrack.GetPrimaryTrack());
 }
 
 
-void FCCEMShowerModel::Explode(const G4FastTrack& fastTrack)
-{
-   //-----------------------------------------------------
-   //
-   //-----------------------------------------------------
-
-   FCCEnergySpot eSpot;
-
-   //Put all kinetic energy of particle into one spot
-   G4double Energy = fastTrack.GetPrimaryTrack()->GetKineticEnergy();
-   eSpot.SetEnergy(Energy);
-
-   // point of entry of the particle is also position of the spot
-   G4ThreeVector StartPosition = fastTrack.GetPrimaryTrack()->GetPosition();
-
-   eSpot.SetPosition(StartPosition);
-
-   feSpotList.clear();
-   feSpotList.push_back(eSpot);
-
-}
-
-
-void FCCEMShowerModel::BuildDetectorResponse()
-{
-   // Does the assignation of the energy spots to the sensitive volumes:
-   for (size_t i = 0; i < feSpotList.size(); i++)
-   {
-      // Draw the energy spot:
-      feSpotList[i].Draw();
-      //      feSpotList[i].Print();
-
-      // "converts" the energy spot into the fake
-      // G4Step to pass to sensitive detector:
-      AssignSpotAndCallHit(feSpotList[i]);
-   }
-}
-
-
-void FCCEMShowerModel::AssignSpotAndCallHit(const FCCEnergySpot &eSpot)
-{
-   //
-   // "converts" the energy spot into the fake
-   // G4Step to pass to sensitive detector:
-   //
-   FillFakeStep(eSpot);
-
-   //
-   // call sensitive part: taken/adapted from the stepping:
-   // Send G4Step information to Hit/Dig if the volume is sensitive
-   //
-   G4VPhysicalVolume* pCurrentVolume =
-      fFakeStep->GetPreStepPoint()->GetPhysicalVolume();
-   G4VSensitiveDetector* pSensitive;
-
-   if( pCurrentVolume != 0 )
-   {
-      pSensitive = pCurrentVolume->GetLogicalVolume()->
-         GetSensitiveDetector();
-      if( pSensitive != 0 )
-      {
-         pSensitive->Hit(fFakeStep);
-      }
-   }
-}
-
-
-void FCCEMShowerModel::FillFakeStep(const FCCEnergySpot &eSpot)
-{
-   //-----------------------------------------------------------
-   // find in which volume the spot is.
-   //-----------------------------------------------------------
-   if (!fNaviSetup)
-   {
-      fpNavigator->
-         SetWorldVolume(G4TransportationManager::GetTransportationManager()->
-                        GetNavigatorForTracking()->GetWorldVolume());
-      fpNavigator->
-         LocateGlobalPointAndUpdateTouchableHandle(eSpot.GetPosition(),
-                                                   G4ThreeVector(0.,0.,0.),
-                                                   fTouchableHandle,
-                                                   false);
-      fNaviSetup = true;
-   }
-   else
-   {
-      fpNavigator->
-         LocateGlobalPointAndUpdateTouchableHandle(eSpot.GetPosition(),
-                                                   G4ThreeVector(0.,0.,0.),
-                                                   fTouchableHandle);
-   }
-   //--------------------------------------
-   // Fills attribute of the G4Step needed
-   // by our sensitive detector:
-   //-------------------------------------
-   // set touchable volume at PreStepPoint:
-   fFakePreStepPoint->SetTouchableHandle(fTouchableHandle);
-   // set total energy deposit:
-   fFakeStep->SetTotalEnergyDeposit(eSpot.GetEnergy());
-}
-
-void FCCEMShowerModel::SaveParticle(const G4Track* aTrackOriginal)
+void FCCEmSmearModel::SaveParticle(const G4Track* aTrackOriginal)
 {
    const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
    G4int evNo = event->GetEventID();

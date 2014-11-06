@@ -23,35 +23,66 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/basic/B5/include/B5HadCalorimeterSD.hh
 //
+// $Id: Par01EMShowerModel.hh 70911 2013-06-07 11:05:37Z mverderi $
+//
+// 
+//----------------------------------------------
+// Parameterisation of e+/e-/gamma producing hits
+// The hits are the same as defined in the detailed
+// simulation.
+//----------------------------------------------
+#ifndef Par01EMShowerModel_h
+#define Par01EMShowerModel_h 1
 
-#ifndef FCC_HAD_CALORIMETER_SD_H
-#define FCC_HAD_CALORIMETER_SD_H
+#include "Par01EnergySpot.hh"
 
-#include "G4VSensitiveDetector.hh"
-#include "FCCHadCalorimeterHit.hh"
+#include "G4VFastSimulationModel.hh"
+#include "G4Step.hh"
+#include "G4TouchableHandle.hh"
+#include <vector>
 
-class G4Step;
-class G4HCofThisEvent;
-class G4TouchableHistory;
-
-/// Hadron calorimeter sensitive detector
-
-class FCCHadCalorimeterSD : public G4VSensitiveDetector
+class Par01EMShowerModel : public G4VFastSimulationModel
 {
 public:
-    FCCHadCalorimeterSD(G4String name);
-    virtual ~FCCHadCalorimeterSD();
+  //-------------------------
+  // Constructor, destructor
+  //-------------------------
+  Par01EMShowerModel (G4String, G4Region*);
+  Par01EMShowerModel (G4String);
+  ~Par01EMShowerModel ();
 
-    virtual void Initialize(G4HCofThisEvent*HCE);
-    virtual G4bool ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist);
+  //------------------------------
+  // Virtual methods of the base
+  // class to be coded by the user
+  //------------------------------
+
+  // -- IsApplicable
+  virtual G4bool IsApplicable(const G4ParticleDefinition&);
+  // -- ModelTrigger
+  virtual G4bool ModelTrigger(const G4FastTrack &);
+  // -- User method DoIt
+  virtual void DoIt(const G4FastTrack&, G4FastStep&);
 
 private:
-    FCCHadCalorimeterHitsCollection* fHitsCollection;
-    G4int fHCID;
+  void AssignSpotAndCallHit(const Par01EnergySpot &eSpot);
+  void FillFakeStep(const Par01EnergySpot &eSpot);
+  void Explode(const G4FastTrack&);
+  void BuildDetectorResponse();
+  
+private:  
+  G4Step                         *fFakeStep;
+  G4StepPoint                    *fFakePreStepPoint, *fFakePostStepPoint;
+  G4TouchableHandle              fTouchableHandle;
+  G4Navigator                    *fpNavigator;
+  G4bool                         fNaviSetup;
+  G4Material*                    fCsI;
+
+  std::vector<Par01EnergySpot> feSpotList;
+
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif
+
+
+
+

@@ -37,7 +37,7 @@ class G4Run;
 class FCCRunAction : public G4UserRunAction
 {
   public:
-    FCCRunAction();
+    FCCRunAction(const G4String);
     virtual ~FCCRunAction();
 
     virtual void BeginOfRunAction(const G4Run*);

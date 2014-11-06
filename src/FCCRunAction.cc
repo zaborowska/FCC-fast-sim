@@ -36,7 +36,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCRunAction::FCCRunAction()
+FCCRunAction::FCCRunAction(const G4String OutName="SimpleOutput")
  : G4UserRunAction()
 {
   // Create analysis manager
@@ -55,7 +55,7 @@ FCCRunAction::FCCRunAction()
 
   // Default settings
   analysisManager->SetVerboseLevel(1);
-  analysisManager->SetFileName("SimpleOutput");
+  analysisManager->SetFileName(OutName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

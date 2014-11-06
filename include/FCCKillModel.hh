@@ -32,24 +32,22 @@
 // simulation.
 //----------------------------------------------
 
-#ifndef FCC_Muon_SHOWER_MODEL_H
-#define FCC_Muon_SHOWER_MODEL_H
+#ifndef FCC_KILL_MODEL_H
+#define FCC_KILL_MODEL_H
 
-#include "FCCEnergySpot.hh"
 #include "G4VFastSimulationModel.hh"
 #include "G4Step.hh"
-#include "G4TouchableHandle.hh"
 #include <vector>
 
-class FCCMuonShowerModel : public G4VFastSimulationModel
+class FCCKillModel : public G4VFastSimulationModel
 {
 public:
   //-------------------------
   // Constructor, destructor
   //-------------------------
-  FCCMuonShowerModel (G4String, G4Region*);
-  FCCMuonShowerModel (G4String);
-  ~FCCMuonShowerModel ();
+  FCCKillModel (G4String, G4Region*);
+  FCCKillModel (G4String);
+  ~FCCKillModel ();
 
   //------------------------------
   // Virtual methods of the base
@@ -63,22 +61,6 @@ public:
   // -- User method DoIt
   virtual void DoIt(const G4FastTrack&, G4FastStep&);
 
-private:
-  void AssignSpotAndCallHit(const FCCEnergySpot &eSpot);
-  void FillFakeStep(const FCCEnergySpot &eSpot);
-  void Explode(const G4FastTrack&);
-  void BuildDetectorResponse();
-  void SaveParticle(const G4Track*);
-
-private:
-  G4Step                         *fFakeStep;
-  G4StepPoint                    *fFakePreStepPoint, *fFakePostStepPoint;
-  G4TouchableHandle              fTouchableHandle;
-  G4Navigator                    *fpNavigator;
-  G4bool                         fNaviSetup;
-  G4Material*                    fCsI;
-
-  std::vector<FCCEnergySpot> feSpotList;
 
 };
 #endif

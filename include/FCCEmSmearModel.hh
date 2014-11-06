@@ -32,24 +32,21 @@
 // simulation.
 //----------------------------------------------
 
-#ifndef FCC_Had_SHOWER_MODEL_H
-#define FCC_Had_SHOWER_MODEL_H
+#ifndef FCC_EM_SMEAR_MODEL_H
+#define FCC_EM_SMEAR_MODEL_H
 
-#include "FCCEnergySpot.hh"
 #include "G4VFastSimulationModel.hh"
 #include "G4Step.hh"
-#include "G4TouchableHandle.hh"
-#include <vector>
 
-class FCCHadShowerModel : public G4VFastSimulationModel
+class FCCEmSmearModel : public G4VFastSimulationModel
 {
 public:
   //-------------------------
   // Constructor, destructor
   //-------------------------
-  FCCHadShowerModel (G4String, G4Region*);
-  FCCHadShowerModel (G4String);
-  ~FCCHadShowerModel ();
+  FCCEmSmearModel (G4String, G4Region*);
+  FCCEmSmearModel (G4String);
+  ~FCCEmSmearModel ();
 
   //------------------------------
   // Virtual methods of the base
@@ -64,20 +61,8 @@ public:
   virtual void DoIt(const G4FastTrack&, G4FastStep&);
 
 private:
-  void AssignSpotAndCallHit(const FCCEnergySpot &eSpot);
-  void FillFakeStep(const FCCEnergySpot &eSpot);
-  void Explode(const G4FastTrack&);
-  void BuildDetectorResponse();
+   void SaveParticle(const G4Track*);
 
-private:
-  G4Step                         *fFakeStep;
-  G4StepPoint                    *fFakePreStepPoint, *fFakePostStepPoint;
-  G4TouchableHandle              fTouchableHandle;
-  G4Navigator                    *fpNavigator;
-  G4bool                         fNaviSetup;
-  G4Material*                    fCsI;
-
-  std::vector<FCCEnergySpot> feSpotList;
 
 };
 #endif
