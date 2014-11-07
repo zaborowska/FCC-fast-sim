@@ -1,6 +1,6 @@
-/gun/particle mu-
+/generator/select particleGun
+/gun/particle e-
 /gun/direction 0.1 0.1 0.05
 /gun/energy 1 GeV
-/run/setCut 1 m
-
-/run/beamOn 1 
+/run/setCut 10 m
+/run/beamOn 10000

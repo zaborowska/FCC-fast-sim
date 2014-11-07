@@ -89,7 +89,7 @@ void FCCEmSmearModel::SaveParticle(const G4Track* aTrackOriginal)
    if(aTrackOriginal->GetDefinition() == G4Gamma::GammaDefinition())
    {
       //saving to ntuple
-      //analysisManager->FillNtupleIColumn(2*evNo+1, 0, ((FCCPrimaryParticleInformation*) aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID()   );
+      analysisManager->FillNtupleIColumn(2*evNo+1, 0, ((FCCPrimaryParticleInformation*) aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID()   );
       analysisManager->FillNtupleIColumn(2*evNo+1, 1, aTrackOriginal->GetDynamicParticle()->GetPDGcode());
       analysisManager->FillNtupleDColumn(2*evNo+1, 2, aTrackOriginal->GetMomentum().x());
       analysisManager->FillNtupleDColumn(2*evNo+1, 3, aTrackOriginal->GetMomentum().y());
@@ -128,7 +128,7 @@ void FCCEmSmearModel::SaveParticle(const G4Track* aTrackOriginal)
    double Pz = abs(1./invPtCharge)/sin( atan(1./cotTheta) );
 
    //saving to ntuple
-   //analysisManager->FillNtupleIColumn(1+2*evNo, 0, ((FCCPrimaryParticleInformation*) aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID()   );
+   analysisManager->FillNtupleIColumn(1+2*evNo, 0, ((FCCPrimaryParticleInformation*) aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID()   );
    analysisManager->FillNtupleIColumn(1+2*evNo, 1, aTrackOriginal->GetDynamicParticle()->GetPDGcode());
    analysisManager->FillNtupleDColumn(1+2*evNo, 2, Px);
    analysisManager->FillNtupleDColumn(1+2*evNo, 3, Py);
