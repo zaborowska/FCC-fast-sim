@@ -134,18 +134,58 @@ namespace Atlfast{
          }
 
       }
-   //    G4cout<<G4endl;
-   //    G4cout<<G4endl;
-   // G4cout<<"=================================ROOT"<<G4endl;
-   //    G4cout<<G4endl;
-   // for(int i=0;i<size;i++)
-   // {
-   //    for(int j=0;j<size;j++)
-   //       G4cout<<sqRoot[i][j]<<"\t";
-   //    G4cout<<G4endl;
-   // }
-   //    G4cout<<G4endl;
-   //    G4cout<<G4endl;
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+   G4cout<<"================================= SIGMA"<<G4endl;
+      G4cout<<G4endl;
+   for(int i=0;i<size;i++)
+   {
+      for(int j=0;j<size;j++)
+         G4cout<<matrix[i][j]<<"\t";
+      G4cout<<G4endl;
+   }
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+   G4cout<<"=================================ROOT (SIGMA)"<<G4endl;
+      G4cout<<G4endl;
+   for(int i=0;i<size;i++)
+   {
+      for(int j=0;j<size;j++)
+         G4cout<<sqRoot[i][j]<<"\t";
+      G4cout<<G4endl;
+   }
+   G4cout<<G4endl;
+   G4cout<<G4endl;
+
+   CLHEP::HepMatrix Check(size, size, 0);
+   for (int row = 0; row != size; ++row)
+	{
+ 		for (int col = 0; col != size; ++col)
+		{
+			int sum = 0;
+			for (int inner = 0; inner != size; ++inner)
+			{
+				sum += (double)sqRoot[row][inner] * (double)sqRoot[inner][col];
+			}
+			Check[row][col] = sum;
+		}
+	}
+      G4cout<<G4endl;
+      G4cout<<G4endl;
+   G4cout<<"=================================CHECK (= ? SIGMA)"<<G4endl;
+      G4cout<<G4endl;
+   for(int i=0;i<size;i++)
+   {
+      for(int j=0;j<size;j++)
+         G4cout<<Check[i][j]<<"\t";
+      G4cout<<G4endl;
+   }
+   G4cout<<G4endl;
+   G4cout<<G4endl;
+
+
 
       return sqRoot;
    }
