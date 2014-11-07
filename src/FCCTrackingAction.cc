@@ -63,6 +63,11 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
    }
 
    if(aTrack->GetParentID()) return;
+   aTrack->GetDynamicParticle()->GetPrimaryParticle()->SetUserInformation(new FCCPrimaryParticleInformation(
+                                 aTrack->GetTrackID(),
+                                 aTrack->GetPosition().x(), aTrack->GetPosition().y(), aTrack->GetPosition().z(), 0,
+                    aTrack->GetMomentum().x(), aTrack->GetMomentum().y(), aTrack->GetMomentum().z(), aTrack->GetTotalEnergy()
+                    ));
    // filling data only for primary particles
    const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
    G4int evNo = event->GetEventID();
@@ -70,7 +75,6 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 
    // Fill ntuple with G4 original data
    G4int particleID = ((FCCPrimaryParticleInformation*) aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID();
-   if(PID == 13) G4cout<<" MUON !!!!!!!!!!!!!!!!!!"<<G4endl;
    G4ThreeVector P = aTrack->GetMomentum();
    if(P.x()!=0 && P.y()!=0 && P.z()!=0 )
    {

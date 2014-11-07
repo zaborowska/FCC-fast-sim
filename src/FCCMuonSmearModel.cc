@@ -67,8 +67,6 @@ G4bool FCCMuonSmearModel::ModelTrigger(const G4FastTrack& fastTrack)
 void FCCMuonSmearModel::DoIt(const G4FastTrack& fastTrack,
                      G4FastStep& fastStep)
 {
-   G4cout<<" Killing the muon !!"<<G4endl;
-
   // Kill the parameterised particle:
   fastStep.KillPrimaryTrack();
   fastStep.ProposePrimaryTrackPathLength(0.0);
