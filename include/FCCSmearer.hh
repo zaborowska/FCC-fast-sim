@@ -12,7 +12,7 @@ class FCCSmearer
 public:
    static FCCSmearer* Instance();
    void MakeManagers();
-   void Smear(G4Track* aTrack);
+   G4Track* Smear(const G4Track* aTrack);
 protected:
    FCCSmearer();
    ~FCCSmearer();

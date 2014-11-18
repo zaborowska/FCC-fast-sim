@@ -27,28 +27,28 @@
 #include "FCCTrackInformation.hh"
 
 FCCTrackInformation::FCCTrackInformation()
-   : fIfHitDetector(false)
+   : fIfSmeared(false)
 {;}
 
-FCCTrackInformation::FCCTrackInformation(G4bool hit)
-   : fIfHitDetector(hit)
+FCCTrackInformation::FCCTrackInformation(G4bool smeared)
+   : fIfSmeared(smeared)
 {}
 
 FCCTrackInformation::~FCCTrackInformation()
 {}
 
-G4bool FCCTrackInformation::GetHitDetector() const
+G4bool FCCTrackInformation::GetSmeared() const
 {
-   return fIfHitDetector;
+   return fIfSmeared;
 }
 
-void FCCTrackInformation::SetHitDetector(G4bool hit)
+void FCCTrackInformation::SetSmeared(G4bool smeared)
 {
-   fIfHitDetector=hit;
+   fIfSmeared=smeared;
 }
 
 void FCCTrackInformation::Print() const
 {
    G4cout<<"FCCTrackInformation: "<<G4endl
-         <<"track has hit the detector: "<<fIfHitDetector<<G4endl;
+         <<"track has been smeared: "<<fIfSmeared<<G4endl;
 }

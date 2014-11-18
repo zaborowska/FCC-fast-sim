@@ -23,114 +23,64 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-#include "FCCSmearModel.hh"
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCSmearModel::FCCSmearModel(const G4GDMLAuxMapType* auxmap)
-
-{
-
-   ///////////////////////////////////////////////////////////////////////
-   //
-   // Retrieving Auxiliary Information
-   //
-
-
-   for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin();
-       iter!=auxmap->end(); iter++)
-   {
-      for (G4GDMLAuxListType::const_iterator vit=(*iter).second.begin();
-           vit!=(*iter).second.end();vit++)
-      {
-         if ((*vit).type=="SensDet")
-         {
-            G4LogicalVolume* myvol = (*iter).first;
-            if ((myvol->GetName()).find("HCal") != std::string::npos){
-               fHCalList.push_back(new G4Region(myvol->GetName()));
-               fHCalList.back()->AddRootLogicalVolume(myvol);
-            }
-            else if ((myvol->GetName()).find("ECal") != std::string::npos){
-               fECalList.push_back(new G4Region(myvol->GetName()));
-               fECalList.back()->AddRootLogicalVolume(myvol);
-            }
-            else if ((myvol->GetName()).find("Muon") != std::string::npos){
-               fMuonList.push_back(new G4Region(myvol->GetName()));
-               fMuonList.back()->AddRootLogicalVolume(myvol);
-            }
-            else {
-               G4cout << G4endl << "NOT A KNOWN DETECTOR !!!" << G4endl;
-            }
-         }
-      }
-   }
-
 //
-   // End of Auxiliary Information block
-   //
-   ////////////////////////////////////////////////////////////////////////
+// $Id: FCCSmearModel.cc 77940 2013-11-29 15:15:17Z gcosmo $
+//
+#include "FCCSmearModel.hh"
+#include "FCCTrackInformation.hh"
+#include "FCCSmearer.hh"
 
-   //  // Example of User Limits
-   //  //
-   //  G4double maxStep = 0.1*m, maxLength = 0.1*m, maxTime = 5*ns, minEkin = 5*MeV;
-   // fStepLimit = new G4UserLimits(maxStep,  maxLength,  maxTime,  minEkin);
+#include "G4Electron.hh"
+#include "G4Positron.hh"
+#include "G4PionPlus.hh"
+#include "G4PionMinus.hh"
+#include "G4MuonMinus.hh"
+#include "G4MuonPlus.hh"
 
-   for (G4int iterECal=0; iterECal<G4int(fECalList.size()); iterECal++)
-   {
-      fECalList[iterECal]->SetProductionCuts(new G4ProductionCuts());
-      fECalList[iterECal]->GetProductionCuts()->SetProductionCut
-         (0.5* ((*fECalList[iterECal]->GetRootLogicalVolumeIterator())->GetMaterial()->GetRadlen()) );
-      fECalList[iterECal]->GetProductionCuts()->SetProductionCut(
-         0.1*m, idxG4GammaCut );
-      //fECalList[iterECal]->SetUserLimits(fStepLimit);
-      fECalSmearModel.push_back(
-         new FCCEmSmearModel("emKillModel",fECalList[iterECal]));
-   }
-   for (G4int iterHCal=0; iterHCal<G4int(fHCalList.size()); iterHCal++)
-   {
-      fHCalList[iterHCal]->SetProductionCuts(new G4ProductionCuts());
-      fHCalList[iterHCal]->GetProductionCuts()->SetProductionCut(
-         0.5* ((*fHCalList[iterHCal]->GetRootLogicalVolumeIterator())->GetMaterial()->GetRadlen()) );
-      fHCalList[iterHCal]->GetProductionCuts()->SetProductionCut(
-         1.*m, idxG4GammaCut );
+FCCSmearModel::FCCSmearModel(G4String modelName, G4Region* envelope)
+  : G4VFastSimulationModel(modelName, envelope)
+{}
 
-      fHCalSmearModel.push_back(
-         new FCCHadSmearModel("hadKillModel",fHCalList[iterHCal]));
-   }
-
-   for (G4int iterMuon=0; iterMuon<G4int(fMuonList.size()); iterMuon++)
-   {
-      fMuonList[iterMuon]->SetProductionCuts(new G4ProductionCuts());
-      fMuonList[iterMuon]->GetProductionCuts()->SetProductionCut(
-         0.5* ((*fMuonList[iterMuon]->GetRootLogicalVolumeIterator())->GetMaterial()->GetRadlen()) );
-      fMuonList[iterMuon]->GetProductionCuts()->SetProductionCut(
-         1.*m, idxG4GammaCut );
-
-      fMuonSmearModel.push_back(
-         new FCCMuonSmearModel("MuonKillModel",fMuonList[iterMuon]));
-   }
-}
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+FCCSmearModel::FCCSmearModel(G4String modelName)
+  : G4VFastSimulationModel(modelName)
+{}
 
 FCCSmearModel::~FCCSmearModel()
+{}
+
+G4bool FCCSmearModel::IsApplicable(const G4ParticleDefinition& particleType)
 {
-   for (G4int iterECal=0; iterECal<G4int(fECalList.size()); iterECal++)
-   {
-      delete fECalSmearModel[iterECal];
-      delete fECalList[iterECal];
-   }
-for (G4int iterHCal=0; iterHCal<G4int(fHCalList.size()); iterHCal++)
-   {
-
-      delete fHCalSmearModel[iterHCal];
-      delete fHCalList[iterHCal];
-   }
-   for (G4int iterMuon=0; iterMuon<G4int(fMuonList.size()); iterMuon++)
-   {
-
-      delete fMuonSmearModel[iterMuon];
-      delete fMuonList[iterMuon];
-   }
+   G4cout<<"    Particle entered the world..."<<G4endl;
+   return
+      &particleType == G4Electron::Definition() ||
+      &particleType == G4Positron::Definition() ||
+      &particleType == G4PionPlus::Definition() ||
+      &particleType == G4PionMinus::Definition() ||
+      &particleType == G4MuonPlus::Definition() ||
+      &particleType == G4MuonMinus::Definition() ;
 }
 
+G4bool FCCSmearModel::ModelTrigger(const G4FastTrack& fastTrack)
+{
+   return (bool) ((fastTrack.GetPrimaryTrack()->GetVertexMomentumDirection()) == (fastTrack.GetPrimaryTrack()->GetMomentumDirection()));
+}
+
+void FCCSmearModel::DoIt(const G4FastTrack& fastTrack,
+                            G4FastStep& fastStep)
+{
+
+   // fastStep.KillPrimaryTrack();
+   // fastStep.ProposePrimaryTrackPathLength(0.0);
+   // fastStep.ProposeTotalEnergyDeposited(fastTrack.GetPrimaryTrack()->GetKineticEnergy());
+
+   G4Track* newTrack = FCCSmearer::Instance()->Smear(fastTrack.GetPrimaryTrack());
+
+   fastStep.ProposePrimaryTrackFinalPosition(newTrack->GetPosition());
+   fastStep.ProposePrimaryTrackFinalKineticEnergyAndDirection(
+      newTrack->GetKineticEnergy(),
+      newTrack->GetMomentumDirection()
+      );
+   G4cout<<"Flag: "<<(bool) ( ! ((FCCTrackInformation*)fastTrack.GetPrimaryTrack()->GetUserInformation())->GetSmeared())<<G4endl;
+   ((FCCTrackInformation*)fastTrack.GetPrimaryTrack()->GetUserInformation())->SetSmeared(true);
+   G4cout<<"Flag: "<<(bool) ( ! ((FCCTrackInformation*)fastTrack.GetPrimaryTrack()->GetUserInformation())->GetSmeared())<<G4endl;
+}

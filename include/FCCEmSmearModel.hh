@@ -60,10 +60,6 @@ public:
   // -- User method DoIt
   virtual void DoIt(const G4FastTrack&, G4FastStep&);
 
-private:
-   void SaveParticle(const G4Track*);
-
-
 };
 #endif
 

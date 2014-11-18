@@ -25,7 +25,7 @@
 //
 
 #include "FCCTrackingAction.hh"
-#include "FCCPrimaryParticleInformation.hh"
+#include "FCCTrackInformation.hh"
 #include "FCCOutput.hh"
 #include "FCCSmearer.hh"
 
@@ -52,6 +52,7 @@ FCCTrackingAction::~FCCTrackingAction()
 void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
    G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
+   G4cout<<" Particle "<<PID<<" found"<<G4endl;
    if(
       !( // (abs(PID)==11 || abs(PID)==211 || abs(PID)==13) && // to reject other particles that are not being registered
          abs(aTrack->GetMomentum().pseudoRapidity())<5.5
@@ -63,13 +64,16 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 // filling data only for primary particles
    if(aTrack->GetParentID()) return;
 
+
    // Fill ntuple with G4 original data
    G4ThreeVector P = aTrack->GetMomentum();
    if(P.x()!=0 && P.y()!=0 && P.z()!=0 )
       FCCOutput::Instance()->SaveTrack(false, PID, PID, P);
 
    // SMEAR HERE
-   FCCSmearer::Instance()->Smear(new G4Track(*aTrack));
+//   FCCSmearer::Instance()->Smear(new G4Track(*aTrack));
+
+   fpTrackingManager->SetUserTrackInformation(new FCCTrackInformation(false));
 
 }
 

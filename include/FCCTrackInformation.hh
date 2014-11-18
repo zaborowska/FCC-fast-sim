@@ -34,17 +34,17 @@ class FCCTrackInformation: public G4VUserTrackInformation
 {
 public:
    FCCTrackInformation();
-   FCCTrackInformation(G4bool hit);
+   FCCTrackInformation(G4bool smeared);
 
    virtual ~FCCTrackInformation();
 
    virtual void Print() const;
 
-   G4bool GetHitDetector() const;
-   void SetHitDetector(G4bool);
+   G4bool GetSmeared() const;
+   void SetSmeared(G4bool=true);
 
 private:
-   G4bool fIfHitDetector;
+   G4bool fIfSmeared;
 };
 
 #endif

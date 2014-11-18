@@ -34,7 +34,7 @@ void FCCSmearer::MakeManagers()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCSmearer::Smear(G4Track* aTrackOriginal)
+G4Track* FCCSmearer::Smear(const G4Track* aTrackOriginal)
 {
    CLHEP::HepSymMatrix sigma; // smear matrix for track
    std::vector<double> smearVariables;   // Vector of correlated gaussian variables
@@ -47,7 +47,7 @@ void FCCSmearer::Smear(G4Track* aTrackOriginal)
       smearVariables = fMuonManager->getVariables( *aTrackOriginal, sigma );
    else if(abs(PID) == 211)
       smearVariables = fPionManager->getVariables( *aTrackOriginal, sigma );
-   else return;
+   else return NULL;
 
    // helpful variables
    double originPhi = aTrackOriginal->GetMomentum().phi();
@@ -68,17 +68,17 @@ void FCCSmearer::Smear(G4Track* aTrackOriginal)
    double cotTheta = 1/tan(originTheta) + smearVariables[3] ; //[3]
    double invPtCharge = (double)((double)originCharge/(abs((double)originCharge)*originPt)) +  smearVariables[4]; // q/pT where q = q/|q| (just sign) //[4]
 
-   G4ThreeVector pos = aTrackOriginal->GetPosition(); // TO REPAIR  FROM ABOVE !!! NOT SMEARED NOW !!
+   G4ThreeVector pos( aTrackOriginal->GetPosition().x(),aTrackOriginal->GetPosition().y(),aTrackOriginal->GetPosition().z()) ; // TO REPAIR  FROM ABOVE !!! NOT SMEARED NOW !!
 
    // back to P
    double Px = abs(1./invPtCharge)*sin(Phi);
    double Py = abs(1./invPtCharge)*cos(Phi);
    double Pz = abs(1./invPtCharge)/sin( atan(1./cotTheta) );
 
-   // G4DynamicParticle* dynPart = new G4DynamicParticle(aTrackOriginal->GetDynamicParticle()->GetDefinition(), new G4ThreeVector(Px,Py,Pz) );
-   // G4Track* trackNew = new G4Track(dynPart, aTrackOriginal->GetGlobalTime(), pos);
+   G4DynamicParticle* dynPart = new G4DynamicParticle(aTrackOriginal->GetDynamicParticle()->GetDefinition(), G4ThreeVector(Px,Py,Pz) );
+   G4Track* trackNew = new G4Track(dynPart, aTrackOriginal->GetGlobalTime(), pos);
 
-   //return trackNew;
+   return trackNew;
 
    // G4cout<<"____Current particle : "<<aTrackOriginal->GetDefinition()->GetParticleName()<<" with ID  "<<aTrackOriginal->GetTrackID()<<G4endl;
    // G4cout<<" PHI : "<<originPhi<<" ->  "<<Phi<<G4endl;

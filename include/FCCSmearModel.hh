@@ -26,52 +26,25 @@
 #ifndef FCC_SMEAR_MODEL_H
 #define FCC_SMEAR_MODEL_H
 
-#include <vector>
-//------------
-// Geometry:
-//------------
-#include "FCCDetectorConstruction.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4TransportationManager.hh"
-#include "G4RegionStore.hh"
-#include "G4GDMLParser.hh"
-//-----------------------------------
-//Sensitive Detectors
-//-----------------------------------
-#include "G4SDManager.hh"
-
-//-----------------------------------
-// PhysicsList
-//-----------------------------------
-#include "FCCPhysicsList.hh"
-#include "FCCEmSmearModel.hh"
-#include "FCCHadSmearModel.hh"
-#include "FCCMuonSmearModel.hh"
-#include "FTFP_BERT.hh"
-//---------------------------
-// Parameterisation manager:
-//---------------------------
-#include "G4GlobalFastSimulationManager.hh"
-
-#include "G4UserLimits.hh"
+#include "G4VFastSimulationModel.hh"
+#include "G4Step.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class FCCSmearModel
+class FCCSmearModel: public G4VFastSimulationModel
 {
-  public:
-    FCCSmearModel(const G4GDMLAuxMapType* auxmap);
-    ~FCCSmearModel();
+public:
+   FCCSmearModel(G4String, G4Region*);
+   FCCSmearModel(G4String);
+   ~FCCSmearModel();
 
-private:
+  // -- IsApplicable
+  virtual G4bool IsApplicable(const G4ParticleDefinition&);
+  // -- ModelTrigger
+  virtual G4bool ModelTrigger(const G4FastTrack &);
+  // -- User method DoIt
+  virtual void DoIt(const G4FastTrack&, G4FastStep&);
 
-   std::vector<G4Region*> fECalList;
-   std::vector<G4Region*> fHCalList;
-   std::vector<G4Region*> fMuonList;
-   //G4UserLimits* fStepLimit;
-   std::vector<FCCEmSmearModel*> fECalSmearModel;
-   std::vector<FCCHadSmearModel*> fHCalSmearModel;
-   std::vector<FCCMuonSmearModel*> fMuonSmearModel;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
