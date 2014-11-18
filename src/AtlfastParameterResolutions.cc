@@ -8,12 +8,13 @@ namespace Atlfast
 
    double ParameterResolutions::resolution( const G4Track& track ) const
    {
-      FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*) track.GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
-
       // resolutions are given by c0(eta) + c1(eta)/sqrt(pT) + c2(eta)/pT + c3(eta)/pT/sqrt(pT) + c4(eta)/pT^2
       // have to interpolate eta between bin edges for coefficients
-      double eta = std::abs( info->GetMomentumProduction()->pseudoRapidity() );
-      double pT  = info->GetMomentumProduction()->perp();
+      double Ekin = track.GetVertexKineticEnergy();
+      G4ThreeVector eP = track.GetVertexMomentumDirection();
+      double Pmag = sqrt(Ekin*Ekin+2*Ekin*track.GetDynamicParticle()->GetDefinition()->GetPDGMass());
+      double eta = std::abs( eP.pseudoRapidity());
+      double pT  = (eP*Pmag).perp();
 
       std::vector<BinID>::const_iterator iter = m_coefficientBins.begin();
       std::vector<BinID>::const_iterator end  = m_coefficientBins.end();

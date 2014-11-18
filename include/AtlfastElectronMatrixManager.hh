@@ -37,18 +37,14 @@ namespace Atlfast
    class ElectronMatrixManager
    {
    public:
-
-      static ElectronMatrixManager* Instance();
-
-      /** reads file, creates BinData objects and asks them to calculate their matrices */
-      void initialise(string, string, int);
       /** returns correlation matrix corresponding to given track trajectory */
       vector<double> getVariables( const G4Track& track,
                                    CLHEP::HepSymMatrix& usedSigma ) const;
 
-   protected:
       /** Default Constructor */
       ElectronMatrixManager( );
+
+      ElectronMatrixManager( string, string, int);
 
       /** Default Destructor */
       virtual ~ElectronMatrixManager();
@@ -64,8 +60,6 @@ namespace Atlfast
 
       /** matrix manager for bremsstrahlung corrections */
       BremMatrixManager* m_bremMgr;
-
-      static ElectronMatrixManager* fElectronMatrixManager;
 
       /** BinData objects, paired to a BinID */
       map<BinID, IBinData*> m_binData;

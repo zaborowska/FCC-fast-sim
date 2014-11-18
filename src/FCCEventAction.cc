@@ -27,7 +27,8 @@
 #include "FCCEventAction.hh"
 #include "FCCEventInformation.hh"
 #include "FCCRunAction.hh"
-#include "g4root.hh"
+#include "FCCOutput.hh"
+
 #include "G4RunManager.hh"
 #include "G4Event.hh"
 #include "G4UnitsTable.hh"
@@ -52,31 +53,7 @@ void FCCEventAction::BeginOfEventAction(const G4Event* event)
 //New event, add the user information object
 //if set to false -> no track smearing. if true -> smear tracks
   G4EventManager::GetEventManager()->SetUserInformation(new FCCEventInformation(true));
-
-   G4String evName = "Event_";
-   evName += G4UIcommand::ConvertToString(event->GetEventID());
-
-  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  // Creating ntuple
-  //
-  analysisManager->CreateNtuple(evName+"_MC", evName+"_MC");
-  analysisManager->CreateNtupleIColumn("particleID");  // column Id = 0
-  analysisManager->CreateNtupleIColumn("PID");  // column Id = 1
-  analysisManager->CreateNtupleDColumn("pX");  // column Id = 2
-  analysisManager->CreateNtupleDColumn("pY"); // column Id = 3
-  analysisManager->CreateNtupleDColumn("pZ"); // column Id = 4
-  analysisManager->FinishNtuple(2*event->GetEventID());
-
-  if(((FCCEventInformation*)event->GetUserInformation())->GetDoSmearing())
-  {
-     analysisManager->CreateNtuple(evName+"_smeared", evName+"_smeared");
-     analysisManager->CreateNtupleIColumn("particleID");  // column Id = 5
-     analysisManager->CreateNtupleIColumn("PID");  // column Id = 6
-     analysisManager->CreateNtupleDColumn("pX");  // column Id = 7
-     analysisManager->CreateNtupleDColumn("pY"); // column Id = 8
-     analysisManager->CreateNtupleDColumn("pZ"); // column Id = 9
-     analysisManager->FinishNtuple(2*event->GetEventID() + 1);
-     }
+  FCCOutput::Instance()->CreateNtuples();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

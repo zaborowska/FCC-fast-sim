@@ -1,5 +1,4 @@
 #include "AtlfastMuonMatrixManager.hh"
-#include "FCCPrimaryParticleInformation.hh"
 #include "G4PrimaryParticle.hh"
 #include <iostream>
 
@@ -14,14 +13,12 @@ namespace Atlfast
  * data and creates a BinData object for every eta/rT bin.
  */
 
-   MuonMatrixManager* MuonMatrixManager::fMuonMatrixManager = 0;
-
    //-----------------------------------------------------------
-   // PRIVATE: Constructor
+   // PUBLIC: Constructor
    //-----------------------------------------------------------
    MuonMatrixManager::MuonMatrixManager()
    {
-      G4cout  << "Constructed MuonMatrixManager" << G4endl;
+      G4cout  << "Constructed MuonMatrixManager with NO input data file" << G4endl;
    }
 
 
@@ -38,9 +35,9 @@ namespace Atlfast
    }
 
    //------------------------------------------------------------
-   // PUBLIC: initialise : read file and construct data bins
+   // PUBLIC: Constructor : read file and construct data bins
    //------------------------------------------------------------
-   void MuonMatrixManager::initialise(string aFileName, int aRandSeed)
+   MuonMatrixManager::MuonMatrixManager(string aFileName, int aRandSeed)
    {
       m_randSeed = aRandSeed;
       m_file = aFileName;
@@ -224,10 +221,9 @@ namespace Atlfast
    //-----------------------------------------------------------
    IBinData* MuonMatrixManager::getBinData( const G4Track& track ) const
    {
-      FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*) track.GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
       vector<double> rTEta;
-      double rT = abs( info->GetVertexProduction()->perp() );
-      double eta = abs( info->GetMomentumProduction()->pseudoRapidity() );
+      double rT = abs( track.GetVertexPosition().perp() );
+      double eta = abs( track.GetVertexMomentumDirection().pseudoRapidity() );
 
       // validity check
       double rTLow   = ( (m_binData.begin())->first ).low(0);
@@ -260,15 +256,6 @@ namespace Atlfast
              << G4endl;
 
       return ( m_binData.begin() )->second;
-   }
-
-   MuonMatrixManager* MuonMatrixManager::Instance()
-   {
-      if(!fMuonMatrixManager)
-      {
-         fMuonMatrixManager = new MuonMatrixManager();
-      }
-      return fMuonMatrixManager;
    }
 
 }// namespace

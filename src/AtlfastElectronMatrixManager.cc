@@ -1,5 +1,4 @@
 #include "AtlfastElectronMatrixManager.hh"
-#include "FCCPrimaryParticleInformation.hh"
 #include "G4PrimaryParticle.hh"
 #include <iostream>
 
@@ -14,10 +13,8 @@ namespace Atlfast
  * data and creates a BinData object for every eta/rT bin.
  */
 
-   ElectronMatrixManager* ElectronMatrixManager::fElectronMatrixManager = 0;
-
    //-----------------------------------------------------------
-   // PRIVATE: Constructor
+   // PUBLIC: Constructor
    //-----------------------------------------------------------
    ElectronMatrixManager::ElectronMatrixManager() 
    {
@@ -41,9 +38,9 @@ namespace Atlfast
    }
 
    //------------------------------------------------------------
-   // PUBLIC: initialise : read file and construct data bins
+   // PUBLIC: Constructor : read file and construct data bins
    //------------------------------------------------------------
-   void ElectronMatrixManager::initialise(string aFileName, string aFileNameBrem, int aRandSeed)
+   ElectronMatrixManager::ElectronMatrixManager(string aFileName, string aFileNameBrem, int aRandSeed)
    {
       m_randSeed = aRandSeed;
       m_file = aFileName;
@@ -314,11 +311,9 @@ namespace Atlfast
    //-----------------------------------------------------------
    IBinData* ElectronMatrixManager::getBinData( const G4Track& track ) const
    {
-
-      FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*) track.GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
       vector<double> rTEta;
-      double rT = abs( info->GetVertexProduction()->perp() );
-      double eta = abs( info->GetMomentumProduction()->pseudoRapidity() );
+      double rT = abs( track.GetVertexPosition().perp() );
+      double eta = abs( track.GetVertexMomentumDirection().pseudoRapidity() );
 
       // validity check
       double rTLow = ( (m_binData.begin())->first ).low(0);
@@ -350,15 +345,6 @@ namespace Atlfast
              << G4endl;
 
       return ( m_binData.begin() )->second;
-   }
-
-   ElectronMatrixManager* ElectronMatrixManager::Instance()
-   {
-      if(!fElectronMatrixManager)
-      {
-         fElectronMatrixManager = new ElectronMatrixManager();
-      }
-      return fElectronMatrixManager;
    }
 
 } // namespace

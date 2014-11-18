@@ -38,17 +38,13 @@ namespace Atlfast
 
    public:
 
-      static MuonMatrixManager* Instance();
-      /** reads file, creates BinData objects and asks them to calculate their matrices */
-      void initialise(string, int);
-
       /** returns correlation matrix corresponding to given track trajectory */
       vector<double> getVariables( const G4Track& track,
                                    CLHEP::HepSymMatrix& usedSigma ) const;
-
-   protected:
       /** Default Constructor */
       MuonMatrixManager( );
+
+      MuonMatrixManager( string, int);
 
       /** Default Destructor */
       ~MuonMatrixManager();
@@ -72,8 +68,6 @@ namespace Atlfast
       vector<double> m_rTBoundaries;
       int m_nRTBins;
       int m_nEtaBins;
-
-      static MuonMatrixManager* fMuonMatrixManager;
 
    };
 

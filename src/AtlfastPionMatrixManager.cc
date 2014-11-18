@@ -1,5 +1,4 @@
 #include "AtlfastPionMatrixManager.hh"
-#include "FCCPrimaryParticleInformation.hh"
 #include "G4PrimaryParticle.hh"
 #include <iostream>
 
@@ -14,14 +13,13 @@ namespace Atlfast
  * file containing smear matrix data and creates a BinData object for
  * every eta/rT bin.
  */
-   PionMatrixManager* PionMatrixManager::fPionMatrixManager = 0;
 
    //-----------------------------------------------------------
-   // PRIVATE: Constructor
+   // PUBLIC: Constructor
    //-----------------------------------------------------------
    PionMatrixManager::PionMatrixManager( )
    {
-      G4cout <<  "Constructed PionMatrixManager" << G4endl;
+      G4cout <<  "Constructed PionMatrixManager with NO input data file" << G4endl;
    }
 
 
@@ -40,9 +38,9 @@ namespace Atlfast
    }
 
    //------------------------------------------------------------
-   // PRIVATE: initialise : read file and construct data bins
+   // PUBLIC: Constructor : read file and construct data bins
    //------------------------------------------------------------
-   void PionMatrixManager::initialise(string aFileName, int aRandSeed)
+   PionMatrixManager::PionMatrixManager(string aFileName, int aRandSeed)
    {
       m_randSeed = aRandSeed;
       m_file = aFileName;
@@ -283,10 +281,9 @@ namespace Atlfast
    //-----------------------------------------------------------
    IBinData* PionMatrixManager::getBinData( const G4Track& track ) const
    {
-      FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*) track.GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
       vector<double> rTEta;
-      double rT = abs( info->GetVertexProduction()->perp() );
-      double eta = abs( info->GetMomentumProduction()->pseudoRapidity() );
+      double rT = abs( track.GetVertexPosition().perp() );
+      double eta = abs( track.GetVertexMomentumDirection().pseudoRapidity() );
 
       // validity check
       double rTLow = ( (m_binData.begin())->first ).low(0);
@@ -319,16 +316,5 @@ namespace Atlfast
 
       return ( m_binData.begin() )->second;
    }
-
-
-   PionMatrixManager* PionMatrixManager::Instance()
-   {
-      if(!fPionMatrixManager)
-      {
-         fPionMatrixManager = new PionMatrixManager();
-      }
-      return fPionMatrixManager;
-   }
-
 
 } // namespace

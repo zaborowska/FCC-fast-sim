@@ -29,7 +29,6 @@
 
 #include "G4UserTrackingAction.hh"
 #include "globals.hh"
-#include "G4ThreeVector.hh"
 
 class FCCTrackingAction : public G4UserTrackingAction
 {
@@ -39,8 +38,6 @@ class FCCTrackingAction : public G4UserTrackingAction
 
    virtual void  PreUserTrackingAction(const G4Track* track);
    virtual void  PostUserTrackingAction(const G4Track* track);
-
-   void SaveTrack(G4bool ifDetected, G4int partID, G4int PID, G4ThreeVector P) const;
 
 };
 

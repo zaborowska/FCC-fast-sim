@@ -1,5 +1,4 @@
 #include "AtlfastBremMatrixManager.hh"
-#include "FCCPrimaryParticleInformation.hh"
 #include "G4PrimaryParticle.hh"
 #include <iostream>
 
@@ -250,10 +249,9 @@ namespace Atlfast
    //-----------------------------------------------------------
    BremBinData* BremMatrixManager::getBinData( const G4Track& track ) const
    {
-      FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*) track.GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
       vector<double> rTEta;
-      double rT = abs( info->GetVertexProduction()->perp() );
-      double eta = abs( info->GetMomentumProduction()->pseudoRapidity() );
+      double rT = abs( track.GetVertexPosition().perp() );
+      double eta = abs( track.GetVertexMomentumDirection().pseudoRapidity() );
 
       // validity check
       double rTLow = ( (m_binData.begin())->first ).low(0);

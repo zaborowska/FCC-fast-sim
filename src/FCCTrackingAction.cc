@@ -25,14 +25,11 @@
 //
 
 #include "FCCTrackingAction.hh"
-#include "FCCEventInformation.hh"
-#include "FCCTrackInformation.hh"
 #include "FCCPrimaryParticleInformation.hh"
+#include "FCCOutput.hh"
+#include "FCCSmearer.hh"
 
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "g4root.hh"
+#include "G4ThreeVector.hh"
 
 #include "Randomize.hh"
 #include "G4TrackingManager.hh"
@@ -63,19 +60,16 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
     ((G4Track*)aTrack)->SetTrackStatus(fStopAndKill);
    }
 
-
 // filling data only for primary particles
    if(aTrack->GetParentID()) return;
 
    // Fill ntuple with G4 original data
    G4ThreeVector P = aTrack->GetMomentum();
    if(P.x()!=0 && P.y()!=0 && P.z()!=0 )
-      SaveTrack(false, PID, PID, P);
+      FCCOutput::Instance()->SaveTrack(false, PID, PID, P);
 
    // SMEAR HERE
-
-   fpTrackingManager->SetUserTrackInformation(new FCCTrackInformation());
-
+   FCCSmearer::Instance()->Smear(new G4Track(*aTrack));
 
 }
 
@@ -86,39 +80,7 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 // a track, but also each time it is suspended, as it happens
 // in the case of neutrons with _HP Physics Lists.
 // To be sure that we collect information about a track only once
-// when its life comes to the end, we have to require that its
-// status is "fStopAndKill".
-{
-   if ( aTrack->GetTrackStatus() == fStopAndKill )
-   {
-      // filling data only for primary particles
-      if(aTrack->GetParentID()) return;
-      ((FCCTrackInformation*) aTrack->GetUserInformation())->Print();
-      if ( ((FCCTrackInformation*) aTrack->GetUserInformation())->GetHitDetector() )
-      {
-         G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
-         G4ThreeVector P = aTrack->GetMomentum();
-         SaveTrack(true, PID, PID, P);
-      }
-   }
-}
-
+// when its   if ( aTrack->GetTrackStatus() == fStopAndKill )
+{}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCTrackingAction::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4ThreeVector P) const
-{
-   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-   G4int evNo = event->GetEventID();
-   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   G4int ntupleID = evNo+HitDetector;
-   if (((FCCEventInformation*)event->GetUserInformation())->GetDoSmearing())
-      ntupleID = 2* evNo+HitDetector;
-   analysisManager->FillNtupleIColumn(ntupleID, 0, partID);
-   analysisManager->FillNtupleIColumn(ntupleID, 1, PID);
-   analysisManager->FillNtupleDColumn(ntupleID, 2, P.x());
-   analysisManager->FillNtupleDColumn(ntupleID, 3, P.y());
-   analysisManager->FillNtupleDColumn(ntupleID, 4, P.z());
-   analysisManager->AddNtupleRow(ntupleID);
-
-   return;
-}
