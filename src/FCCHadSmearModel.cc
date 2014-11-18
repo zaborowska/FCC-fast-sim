@@ -29,6 +29,7 @@
 #include "FCCHadSmearModel.hh"
 #include "FCCPrimaryParticleInformation.hh"
 #include "FCCEventInformation.hh"
+#include "FCCTrackInformation.hh"
 
 #include "Randomize.hh"
 
@@ -74,7 +75,7 @@ void FCCHadSmearModel::DoIt(const G4FastTrack& fastTrack,
   fastStep.ProposePrimaryTrackPathLength(0.0);
   fastStep.ProposeTotalEnergyDeposited(fastTrack.GetPrimaryTrack()->GetKineticEnergy());
 
-   if ( !fastTrack.GetPrimaryTrack()->GetParentID() ) SaveParticle(fastTrack.GetPrimaryTrack());
+   if ( !fastTrack.GetPrimaryTrack()->GetParentID() ) ((FCCTrackInformation*)fastTrack.GetPrimaryTrack()->GetUserInformation())->SetHitDetector(true);//SaveParticle(fastTrack.GetPrimaryTrack());
 }
 
 

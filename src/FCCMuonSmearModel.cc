@@ -26,6 +26,7 @@
 
 #include "FCCMuonSmearModel.hh"
 #include "FCCPrimaryParticleInformation.hh"
+#include "FCCTrackInformation.hh"
 #include "FCCEventInformation.hh"
 
 #include "AtlfastMuonMatrixManager.hh"
@@ -72,7 +73,7 @@ void FCCMuonSmearModel::DoIt(const G4FastTrack& fastTrack,
   fastStep.ProposePrimaryTrackPathLength(0.0);
   fastStep.ProposeTotalEnergyDeposited(fastTrack.GetPrimaryTrack()->GetKineticEnergy());
 
-   if ( !fastTrack.GetPrimaryTrack()->GetParentID() ) SaveParticle(fastTrack.GetPrimaryTrack());
+  if ( !fastTrack.GetPrimaryTrack()->GetParentID() ) ((FCCTrackInformation*)fastTrack.GetPrimaryTrack()->GetUserInformation())->SetHitDetector(true);//SaveParticle(fastTrack.GetPrimaryTrack());
 }
 
 

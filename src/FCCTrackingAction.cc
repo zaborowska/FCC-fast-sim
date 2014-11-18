@@ -26,15 +26,16 @@
 
 #include "FCCTrackingAction.hh"
 #include "FCCEventInformation.hh"
+#include "FCCTrackInformation.hh"
 #include "FCCPrimaryParticleInformation.hh"
 
-#include "G4Track.hh"
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4UnitsTable.hh"
 #include "g4root.hh"
 
 #include "Randomize.hh"
+#include "G4TrackingManager.hh"
 #include <iomanip>
 #include <vector>
 
@@ -55,36 +56,27 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
    G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
    if(
-      !( // (abs(PID)==11 || abs(PID)==211 || abs(PID)==13) && // to reject other particles that are not registered
+      !( // (abs(PID)==11 || abs(PID)==211 || abs(PID)==13) && // to reject other particles that are not being registered
          abs(aTrack->GetMomentum().pseudoRapidity())<5.5
          ))
    {
     ((G4Track*)aTrack)->SetTrackStatus(fStopAndKill);
    }
 
+
+// filling data only for primary particles
    if(aTrack->GetParentID()) return;
-   aTrack->GetDynamicParticle()->GetPrimaryParticle()->SetUserInformation(new FCCPrimaryParticleInformation(
-                                 aTrack->GetTrackID(),
-                                 aTrack->GetPosition().x(), aTrack->GetPosition().y(), aTrack->GetPosition().z(), 0,
-                    aTrack->GetMomentum().x(), aTrack->GetMomentum().y(), aTrack->GetMomentum().z(), aTrack->GetTotalEnergy()
-                    ));
-   // filling data only for primary particles
-   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-   G4int evNo = event->GetEventID();
-   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
 
    // Fill ntuple with G4 original data
-   G4int particleID = ((FCCPrimaryParticleInformation*) aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID();
    G4ThreeVector P = aTrack->GetMomentum();
    if(P.x()!=0 && P.y()!=0 && P.z()!=0 )
-   {
-      analysisManager->FillNtupleIColumn(2*evNo, 0, particleID);
-      analysisManager->FillNtupleIColumn(2*evNo, 1, PID);
-      analysisManager->FillNtupleDColumn(2*evNo, 2, P.x());
-      analysisManager->FillNtupleDColumn(2*evNo, 3, P.y());
-      analysisManager->FillNtupleDColumn(2*evNo, 4, P.z());
-      analysisManager->AddNtupleRow(2*evNo);
-   }
+      SaveTrack(false, PID, PID, P);
+
+   // SMEAR HERE
+
+   fpTrackingManager->SetUserTrackInformation(new FCCTrackInformation());
+
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -97,7 +89,36 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 // when its life comes to the end, we have to require that its
 // status is "fStopAndKill".
 {
-
+   if ( aTrack->GetTrackStatus() == fStopAndKill )
+   {
+      // filling data only for primary particles
+      if(aTrack->GetParentID()) return;
+      ((FCCTrackInformation*) aTrack->GetUserInformation())->Print();
+      if ( ((FCCTrackInformation*) aTrack->GetUserInformation())->GetHitDetector() )
+      {
+         G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
+         G4ThreeVector P = aTrack->GetMomentum();
+         SaveTrack(true, PID, PID, P);
+      }
+   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCTrackingAction::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4ThreeVector P) const
+{
+   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
+   G4int evNo = event->GetEventID();
+   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+   G4int ntupleID = evNo+HitDetector;
+   if (((FCCEventInformation*)event->GetUserInformation())->GetDoSmearing())
+      ntupleID = 2* evNo+HitDetector;
+   analysisManager->FillNtupleIColumn(ntupleID, 0, partID);
+   analysisManager->FillNtupleIColumn(ntupleID, 1, PID);
+   analysisManager->FillNtupleDColumn(ntupleID, 2, P.x());
+   analysisManager->FillNtupleDColumn(ntupleID, 3, P.y());
+   analysisManager->FillNtupleDColumn(ntupleID, 4, P.z());
+   analysisManager->AddNtupleRow(ntupleID);
+
+   return;
+}

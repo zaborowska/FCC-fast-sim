@@ -99,8 +99,9 @@ namespace Atlfast
 
     // covariance sub-matrix of transverse parameters needs to be positive definite
     // in order that its square root (cf. ElectronMatrixManager) exists
-    double det3 = 1 - rho13 * rho13 - rho15 * rho15 - rho35 * rho35 - 2 * rho13 * rho15 * rho35;
-    if ( det3 < 0 )  rho13 = rho15 = rho35 = 0;
+    double det3 = 1 - rho13 * rho13 - rho15 * rho15 - rho35 * rho35 + 2 * rho13 * rho15 * rho35;
+    if ( det3 < 0 )
+       rho13 = rho15 = rho35 = 0;
 
     // make sure that correlation coefficients stay within [-1,+1]
     if ( std::abs(rho13) > 1 )  rho13 *= 0.99 / std::abs(rho13);

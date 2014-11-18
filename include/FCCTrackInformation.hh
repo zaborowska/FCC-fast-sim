@@ -24,28 +24,28 @@
 // ********************************************************************
 //
 
-#ifndef FCC_TRACKING_ACTION_H
-#define FCC_TRACKING_ACTION_H
+#ifndef FCC_TRACK_INFORMATION_H
+#define FCC_TRACK_INFORMATION_H
 
-#include "G4UserTrackingAction.hh"
+#include "G4VUserTrackInformation.hh"
 #include "globals.hh"
-#include "G4ThreeVector.hh"
 
-class FCCTrackingAction : public G4UserTrackingAction
+class FCCTrackInformation: public G4VUserTrackInformation
 {
-  public:
-    FCCTrackingAction();
-    virtual ~FCCTrackingAction();
+public:
+   FCCTrackInformation();
+   FCCTrackInformation(G4bool hit);
 
-   virtual void  PreUserTrackingAction(const G4Track* track);
-   virtual void  PostUserTrackingAction(const G4Track* track);
+   virtual ~FCCTrackInformation();
 
-   void SaveTrack(G4bool ifDetected, G4int partID, G4int PID, G4ThreeVector P) const;
+   virtual void Print() const;
 
+   G4bool GetHitDetector() const;
+   void SetHitDetector(G4bool);
+
+private:
+   G4bool fIfHitDetector;
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #endif
-
 

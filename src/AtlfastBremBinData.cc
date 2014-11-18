@@ -49,9 +49,10 @@ namespace Atlfast
   //--------------------------------------------------------------------
   G4Track* BremBinData::getBremTrack( const G4Track& track ) const
   {
-// TO BE FIXED: THE BREMSSTRAHLUNG
 
-/*
+//TO BE FIXED: THE BREMSSTRAHLUNG
+
+
     // data necessary to generate bremsstrahlung corrections
     double x0[3], lambda[3], sigma[3];
     for ( int i = 0; i < 3; i++ )
@@ -81,31 +82,30 @@ namespace Atlfast
       var[i] = sign[i] * x0[i] / denom;   // normalised power-series distribution
     }
 
-    // create output TrackTrackectory object: longitudinal parameters remain unchanged
+    // create output G4Track object: longitudinal parameters remain unchanged
     // (small effects taken into account in double-Gaussian smearing in ElectronMatrixManager)
 
     double impactParameter = var[0];
-    double zPerigee        = trkParam.zPerigee();
-    Phi phi                = var[1];
-    double cotTheta        = trkParam.cotTheta();
+    double zPerigee        ; // COMPUTE Z PERIGEE !!!!!!!!!!!!!!!!!!!!!!!!!
+    double phi             = var[1];
+    double cotTheta        = 1/tan( track.GetMomentum().theta() );
     double invPtCharge     = var[2];
 
-    double curvature =  0; //TODO : CHANGE !!!!track.curvature();
+    //double curvature =  track.curvature();
     double pT = std::abs( 1. / invPtCharge );
-    CLHEP::Hep3Vector vec;
+    G4ThreeVector vec;
     vec.setX( pT * std::cos(phi) );
     vec.setY( pT * std::sin(phi) );
     vec.setZ( pT * cotTheta );
-    // Convert results to object
-    TrackTrackectory newTrackectory( TrackParameters( vec.pseudoRapidity(),
-						    phi, pT, impactParameter,
-						    zPerigee, cotTheta,
-						    invPtCharge ),
-				   track.startPoint(),
-				   curvature );
-    return newTrackectory;
-*/
-    G4Track* newTrack = new G4Track(track);
+
+    G4ThreeVector pos;
+    vec.setX( impactParameter * std::cos(phi) );
+    vec.setY( impactParameter * std::sin(phi) );
+    vec.setZ( zPerigee );
+
+
+   G4DynamicParticle* part = new G4DynamicParticle(track.GetDynamicParticle()->GetDefinition(), vec);
+   G4Track* newTrack = new G4Track(part, track.GetGlobalTime(), pos );
     return newTrack;
   }
 
