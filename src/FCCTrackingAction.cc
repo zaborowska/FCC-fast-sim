@@ -25,11 +25,12 @@
 //
 
 #include "FCCTrackingAction.hh"
-#include "FCCTrackInformation.hh"
+#include "FCCEventInformation.hh"
 #include "FCCOutput.hh"
 #include "FCCSmearer.hh"
 
 #include "G4ThreeVector.hh"
+#include "G4EventManager.hh"
 
 #include "Randomize.hh"
 #include "G4TrackingManager.hh"
@@ -52,7 +53,6 @@ FCCTrackingAction::~FCCTrackingAction()
 void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
    G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
-   G4cout<<" Particle "<<PID<<" found"<<G4endl;
    if(
       !( // (abs(PID)==11 || abs(PID)==211 || abs(PID)==13) && // to reject other particles that are not being registered
          abs(aTrack->GetMomentum().pseudoRapidity())<5.5
@@ -66,14 +66,16 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 
 
    // Fill ntuple with G4 original data
-   G4ThreeVector P = aTrack->GetMomentum();
-   if(P.x()!=0 && P.y()!=0 && P.z()!=0 )
-      FCCOutput::Instance()->SaveTrack(false, PID, PID, P);
+   FCCOutput::Instance()->SaveTrack(false, PID, PID, aTrack->GetDynamicParticle()->GetCharge(), 1., aTrack->GetMomentum(), aTrack->GetPosition() );
 
-   // SMEAR HERE
-//   FCCSmearer::Instance()->Smear(new G4Track(*aTrack));
+   // G4cout<<"middle of pretracking....";
+   // aTrack->GetDynamicParticle()->DumpInfo();
 
-   fpTrackingManager->SetUserTrackInformation(new FCCTrackInformation(false));
+   if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
+      FCCSmearer::Instance()->Smear(const_cast<G4Track*>(aTrack));
+
+   // G4cout<<"end of pretracking....";
+   // aTrack->GetDynamicParticle()->DumpInfo();
 
 }
 

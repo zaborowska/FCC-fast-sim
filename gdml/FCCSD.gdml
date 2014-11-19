@@ -229,7 +229,6 @@
     <volume name="world_volume0x7ff5f9e77ca0">
       <materialref ref="Air0x7ff5f9e72ea0"/>
       <solidref ref="world_volume0x7ff5f9e788a0"/>
-      <auxiliary auxtype="SensDet" auxvalue="World"/>
 
 <!-- EM Calorimeters -->
 

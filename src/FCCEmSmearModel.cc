@@ -79,7 +79,12 @@ void FCCEmSmearModel::DoIt(const G4FastTrack& fastTrack,
    if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
    {
       G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
-      G4ThreeVector P = fastTrack.GetPrimaryTrack()->GetMomentum();
-      FCCOutput::Instance()->SaveTrack(true, PID, PID, P);
+      G4double mass = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetDefinition()->GetPDGMass();
+      G4double q = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetCharge();
+      G4ThreeVector eP = fastTrack.GetPrimaryTrack()->GetVertexMomentumDirection();
+      G4double Ekin = fastTrack.GetPrimaryTrack()->GetVertexKineticEnergy();
+      G4ThreeVector P = eP * sqrt (Ekin*Ekin+2*mass*Ekin);
+      G4ThreeVector pos = fastTrack.GetPrimaryTrack()->GetVertexPosition();
+      FCCOutput::Instance()->SaveTrack(true, PID, PID, q, 1., P, pos);
    }
 }

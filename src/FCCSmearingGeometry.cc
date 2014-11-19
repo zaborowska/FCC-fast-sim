@@ -58,11 +58,11 @@ FCCSmearingGeometry::FCCSmearingGeometry(const G4GDMLAuxMapType* auxmap)
                fMuonList.push_back(new G4Region(myvol->GetName()));
                fMuonList.back()->AddRootLogicalVolume(myvol);
             }
-            else if ((myvol->GetName()).find("world") != std::string::npos){
-               fWorldRegion = new G4Region(myvol->GetName());
-               fWorldRegion->AddRootLogicalVolume(myvol);
-               G4cout<<" Found "<<myvol->GetName()<<" ... creating G4region "<<G4endl;
-            }
+            // else if ((myvol->GetName()).find("world") != std::string::npos){
+            //    fWorldRegion = new G4Region(myvol->GetName());
+            //    fWorldRegion->AddRootLogicalVolume(myvol);
+            //    G4cout<<" Found "<<myvol->GetName()<<" ... creating G4region "<<G4endl;
+            // }
             else {
                G4cout << G4endl << "NOT A KNOWN DETECTOR !!!" << G4endl;
             }
@@ -81,12 +81,12 @@ FCCSmearingGeometry::FCCSmearingGeometry(const G4GDMLAuxMapType* auxmap)
    // fStepLimit = new G4UserLimits(maxStep,  maxLength,  maxTime,  minEkin);
 
 
-   fWorldRegion->SetProductionCuts(new G4ProductionCuts());
-   fWorldRegion->GetProductionCuts()->SetProductionCut
-      (0.5* ((*fWorldRegion->GetRootLogicalVolumeIterator())->GetMaterial()->GetRadlen()) );
-   fWorldRegion->GetProductionCuts()->SetProductionCut(
-      0.1*m, idxG4GammaCut );
-   fSmearModel = new FCCSmearModel("ALLSmearModel",fWorldRegion);
+   // fWorldRegion->SetProductionCuts(new G4ProductionCuts());
+   // fWorldRegion->GetProductionCuts()->SetProductionCut
+   //    (0.5* ((*fWorldRegion->GetRootLogicalVolumeIterator())->GetMaterial()->GetRadlen()) );
+   // fWorldRegion->GetProductionCuts()->SetProductionCut(
+   //    0.1*m, idxG4GammaCut );
+   // fSmearModel = new FCCSmearModel("ALLSmearModel",fWorldRegion);
 
    for (G4int iterECal=0; iterECal<G4int(fECalList.size()); iterECal++)
    {
@@ -144,7 +144,7 @@ for (G4int iterHCal=0; iterHCal<G4int(fHCalList.size()); iterHCal++)
       delete fMuonSmearModel[iterMuon];
       delete fMuonList[iterMuon];
    }
-   delete fWorldRegion;
-   delete fSmearModel;
+   // delete fWorldRegion;
+   // delete fSmearModel;
 }
 

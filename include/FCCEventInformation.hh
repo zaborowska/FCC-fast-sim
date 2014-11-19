@@ -34,15 +34,20 @@ class FCCEventInformation: public G4VUserEventInformation
 {
 public:
    FCCEventInformation();
-   FCCEventInformation(G4bool);
+   FCCEventInformation(G4bool, G4double);
    virtual ~FCCEventInformation();
    virtual void Print() const;
 
    void SetDoSmearing(G4bool);
    G4bool GetDoSmearing();
+   void SetEnergy(G4double);
+   G4double GetEnergy();
+   G4bool GetUseEnergy();
 
 private:
    G4bool fDoSmearing;
+   G4bool fEnergyUse;
+   G4double fEnergy;
 };
 
 #endif

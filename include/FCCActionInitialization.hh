@@ -38,7 +38,9 @@
 class FCCActionInitialization : public G4VUserActionInitialization
 {
   public:
-    FCCActionInitialization(const G4String);
+   FCCActionInitialization(const G4String, const G4String, const G4String);
+   FCCActionInitialization(const G4String, const G4String);
+   FCCActionInitialization(const G4String);
     FCCActionInitialization();
     virtual ~FCCActionInitialization();
 
@@ -46,6 +48,8 @@ class FCCActionInitialization : public G4VUserActionInitialization
     virtual void Build() const;
 private:
    G4String fFileName;
+   G4bool fSmear;
+   G4double fGunEnergy;
 };
 
 #endif

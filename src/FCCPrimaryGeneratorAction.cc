@@ -76,19 +76,23 @@ void FCCPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   {
      if(currentGenerator == particleGun)
     {
-       // randomized position
-       G4double x0  = 0*cm, y0  = 0*cm, z0  = 0*cm;
+       // static G4double Egiven = ((G4ParticleGun*)particleGun)->GetParticleEnergy();
        G4double px0  = 0, py0  = 0, pz0  = 0;
-       G4double dx0 = 0.01*cm, dy0 = 0.01*cm, dz0 = 0.1*cm;
-       G4double dpx0 = 0.01, dpy0 = 0.01, dpz0 = 0.1;
-       x0 += dx0*(G4UniformRand()-0.5);
-       y0 += dy0*(G4UniformRand()-0.5);
-       z0 += dz0*(G4UniformRand()-0.5);
+       G4double dpx0 = 1, dpy0 = 1, dpz0 = 1;
        px0 = px0+ dpx0*(G4UniformRand()-0.5);
        py0 = py0+ dpy0*(G4UniformRand()-0.5);
        pz0 = pz0+ dpz0*(G4UniformRand()-0.5);
-       ((G4ParticleGun*)particleGun)->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-       ((G4ParticleGun*)particleGun)->SetParticleMomentumDirection(G4ThreeVector(px0,py0,pz0));
+       G4ThreeVector eP(px0,py0,pz0);
+       // randomize particle momentum direction
+       ((G4ParticleGun*)particleGun)->SetParticleMomentumDirection(eP.unit());
+       // // G4cout<<"Setting particle momentum direction: "<<eP<<"   "<<eP.mag()<<G4endl<<" eP.perp()  "<<eP.perp()<<G4endl;
+       // G4cout<<"Egiven "<<Egiven<<G4endl;
+       // //       <<"P "<<((G4ParticleGun*)particleGun)->GetParticleMomentum()<<G4endl<<G4endl;
+       // // G4cout<<"pT "<<((G4ParticleGun*)particleGun)->GetParticleMomentum()*eP.perp()<<G4endl<<G4endl;
+       // // G4cout<<"energy should be.... "<<((G4ParticleGun*)particleGun)->GetParticleEnergy()/eP.perp()<<G4endl<<G4endl;
+       // // ensure that particle pT = given energy in G4 macro
+       // ((G4ParticleGun*)particleGun)->SetParticleEnergy( Egiven/eP.perp() );
+       // G4cout<<"E "<<((G4ParticleGun*)particleGun)->GetParticleEnergy()<<G4endl;
     }
     currentGenerator-> GeneratePrimaryVertex(anEvent);
   }

@@ -59,7 +59,7 @@ int main(int argc, char** argv)
       G4cout << "Error! Mandatory input files are not specified!" << G4endl;
       G4cout << G4endl;
       G4cout << "Usage: "<<argv[0]<<" <intput_gdml:mandatory>"<<" <output_root_filename:mandatory>"
-             << " <macro_with_pythia_settings:optional>" << G4endl;
+             << " <macro_with_pythia_settings:optional>"<< " <do smearing:optional (default true)>"<< " <gun energy:optional>" << G4endl;
       G4cout << G4endl;
       return -1;
    }
@@ -99,8 +99,10 @@ int main(int argc, char** argv)
    //-------------------------------
    // UserAction classes
    //-------------------------------
-   runManager->SetUserInitialization( new FCCActionInitialization(argv[2]) );
-
+   if(argc>4)
+      runManager->SetUserInitialization( new FCCActionInitialization(argv[2], argv[4], argv[5]) );
+   else
+      runManager->SetUserInitialization( new FCCActionInitialization(argv[2]) );
    // Initialize Run manager
    runManager->Initialize();
 

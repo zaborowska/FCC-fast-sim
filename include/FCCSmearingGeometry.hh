@@ -47,7 +47,7 @@
 #include "FCCEmSmearModel.hh"
 #include "FCCHadSmearModel.hh"
 #include "FCCMuonSmearModel.hh"
-#include "FCCSmearModel.hh"
+// #include "FCCSmearModel.hh"
 #include "FTFP_BERT.hh"
 //---------------------------
 // Parameterisation manager:
@@ -65,8 +65,8 @@ class FCCSmearingGeometry
     ~FCCSmearingGeometry();
 
 private:
-   G4Region* fWorldRegion;
-   FCCSmearModel* fSmearModel;
+   // G4Region* fWorldRegion;
+   // FCCSmearModel* fSmearModel;
 
    std::vector<G4Region*> fECalList;
    std::vector<G4Region*> fHCalList;
