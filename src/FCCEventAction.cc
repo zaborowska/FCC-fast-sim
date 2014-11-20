@@ -38,13 +38,13 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 FCCEventAction::FCCEventAction()
-   : G4UserEventAction(), fGunEnergy(0), fSmear(0)
+   : G4UserEventAction(), fSmear(0)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCEventAction::FCCEventAction(G4bool smearing, G4double energy)
-   : G4UserEventAction(), fGunEnergy(energy), fSmear(smearing)
+FCCEventAction::FCCEventAction(G4bool smearing)
+   : G4UserEventAction(), fSmear(smearing)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -56,9 +56,7 @@ FCCEventAction::~FCCEventAction()
 
 void FCCEventAction::BeginOfEventAction(const G4Event* event)
 {
-//New event, add the user information object
-//if set to false -> no track smearing. if true -> smear tracks
-   G4EventManager::GetEventManager()->SetUserInformation(new FCCEventInformation(fSmear, fGunEnergy));
+   G4EventManager::GetEventManager()->SetUserInformation(new FCCEventInformation(fSmear));
    FCCOutput::Instance()->CreateNtuples();
 }
 

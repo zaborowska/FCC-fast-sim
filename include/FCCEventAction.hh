@@ -34,14 +34,13 @@ class FCCEventAction : public G4UserEventAction
 {
 public:
     FCCEventAction();
-   FCCEventAction(G4bool, G4double);
+   FCCEventAction(G4bool);
     virtual ~FCCEventAction();
 
     virtual void BeginOfEventAction(const G4Event*);
     virtual void EndOfEventAction(const G4Event*);
 private:
-   G4double fGunEnergy;
-   G4double fSmear;
+   G4bool fSmear;
 
 };
 

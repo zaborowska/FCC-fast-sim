@@ -80,6 +80,8 @@ void FCCOutput::CreateNtuples()
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
   // Creating ntuple
   //
+  G4int ntupID = 2*event->GetEventID();
+
   analysisManager->CreateNtuple(evName+"_MC", evName+"_MC");
   analysisManager->CreateNtupleIColumn("particleID");  // column Id = 0
   analysisManager->CreateNtupleIColumn("PID");  // column Id = 1
@@ -91,11 +93,9 @@ void FCCOutput::CreateNtuples()
   analysisManager->CreateNtupleDColumn("phi0"); // column Id = 7
   analysisManager->CreateNtupleDColumn("cottheta");  // column Id = 8
   analysisManager->CreateNtupleDColumn("qpT"); // column Id = 9
-  analysisManager->FinishNtuple(2*event->GetEventID());
+  analysisManager->FinishNtuple(ntupID);
 
-  if(((FCCEventInformation*)event->GetUserInformation())->GetDoSmearing())
-  {
-     analysisManager->CreateNtuple(evName+"_smeared", evName+"_smeared");
+     analysisManager->CreateNtuple(evName+"_det", evName+"_det");
      analysisManager->CreateNtupleIColumn("particleID");  // column Id = 0
      analysisManager->CreateNtupleIColumn("PID");  // column Id = 1
      analysisManager->CreateNtupleDColumn("pX");  // column Id = 2
@@ -106,8 +106,7 @@ void FCCOutput::CreateNtuples()
      analysisManager->CreateNtupleDColumn("phi0"); // column Id = 7
      analysisManager->CreateNtupleDColumn("cottheta");  // column Id = 8
      analysisManager->CreateNtupleDColumn("qpT"); // column Id = 9
-     analysisManager->FinishNtuple(2*event->GetEventID() + 1);
-  }
+     analysisManager->FinishNtuple(ntupID + 1);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -118,16 +117,12 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
    const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
    G4int evNo = event->GetEventID();
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   G4int ntupleID = evNo+HitDetector; // if doSmearing == 0, only one TTree per event is created
-   if (((FCCEventInformation*)event->GetUserInformation())->GetDoSmearing())
-      ntupleID = 2* evNo+HitDetector; // if doSmearing == 1,
-                                      // 2*evNo is TTree number for storing MC
-                                      // 2*evNo+1 is TTree number for storing smeared particles that reached detector
-   analysisManager->FillNtupleIColumn(ntupleID, 0, partID);
-   analysisManager->FillNtupleIColumn(ntupleID, 1, PID);
-   analysisManager->FillNtupleDColumn(ntupleID, 2, vertexMomentum.x());
-   analysisManager->FillNtupleDColumn(ntupleID, 3, vertexMomentum.y());
-   analysisManager->FillNtupleDColumn(ntupleID, 4, vertexMomentum.z());
+   G4int ntupID = 2* evNo+HitDetector; // 2*evNo is TTree number for storing MC at vertex, 2*evNo+1 is TTree number for storing detected particles (can be smeared)
+   analysisManager->FillNtupleIColumn(ntupID, 0, partID);
+   analysisManager->FillNtupleIColumn(ntupID, 1, PID);
+   analysisManager->FillNtupleDColumn(ntupID, 2, vertexMomentum.x());
+   analysisManager->FillNtupleDColumn(ntupID, 3, vertexMomentum.y());
+   analysisManager->FillNtupleDColumn(ntupID, 4, vertexMomentum.z());
 
    // calculation of track parameter representation: from Atlfast::TrackTrajectory
     double pt = vertexMomentum.perp();
@@ -179,12 +174,12 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
     // track parametrisation:
     //  (eta, phi, pt, impactParameter, zPerigee, cotTheta, q/pt );
 
-   analysisManager->FillNtupleDColumn(ntupleID, 5, impactParameter);
-   analysisManager->FillNtupleDColumn(ntupleID, 6, zPerigee);
-   analysisManager->FillNtupleDColumn(ntupleID, 7, phi);
-   analysisManager->FillNtupleDColumn(ntupleID, 8, cotTheta);
-   analysisManager->FillNtupleDColumn(ntupleID, 9, q/pt);
-   analysisManager->AddNtupleRow(ntupleID);
+   analysisManager->FillNtupleDColumn(ntupID, 5, impactParameter);
+   analysisManager->FillNtupleDColumn(ntupID, 6, zPerigee);
+   analysisManager->FillNtupleDColumn(ntupID, 7, phi);
+   analysisManager->FillNtupleDColumn(ntupID, 8, cotTheta);
+   analysisManager->FillNtupleDColumn(ntupID, 9, q/pt);
+   analysisManager->AddNtupleRow(ntupID);
    return;
 }
 

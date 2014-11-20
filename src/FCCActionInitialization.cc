@@ -37,24 +37,20 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 FCCActionInitialization::FCCActionInitialization()
-   : G4VUserActionInitialization(), fFileName("DefaultOutput"), fSmear(true), fGunEnergy(0)
+   : G4VUserActionInitialization(), fFileName("DefaultOutput"), fSmear(true)
 {}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCActionInitialization::FCCActionInitialization(const G4String aOutName, const G4String aSmear, const G4String aEnergy)
-   : G4VUserActionInitialization(), fFileName(aOutName),fSmear(G4UIcommand::ConvertToBool(aSmear)), fGunEnergy(G4UIcommand::ConvertToDouble(aEnergy))
-{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 FCCActionInitialization::FCCActionInitialization(const G4String aOutName, const G4String aSmear)
-   : G4VUserActionInitialization(), fFileName(aOutName),fSmear(G4UIcommand::ConvertToBool(aSmear)), fGunEnergy(0)
+   : G4VUserActionInitialization(), fFileName(aOutName),fSmear(G4UIcommand::ConvertToBool(aSmear))
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 FCCActionInitialization::FCCActionInitialization(const G4String aOutName)
-   : G4VUserActionInitialization(), fFileName(aOutName),fSmear(true), fGunEnergy(0)
+   : G4VUserActionInitialization(), fFileName(aOutName),fSmear(true)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -73,7 +69,7 @@ void FCCActionInitialization::BuildForMaster() const
 void FCCActionInitialization::Build() const
 {
    SetUserAction(new FCCRunAction(fFileName));
-   SetUserAction(new FCCEventAction(fSmear, fGunEnergy));
+   SetUserAction(new FCCEventAction(fSmear));
    SetUserAction(new FCCTrackingAction);
    SetUserAction(new FCCPrimaryGeneratorAction);
 }

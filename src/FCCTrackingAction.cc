@@ -64,19 +64,11 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 // filling data only for primary particles
    if(aTrack->GetParentID()) return;
 
-
    // Fill ntuple with G4 original data
    FCCOutput::Instance()->SaveTrack(false, PID, PID, aTrack->GetDynamicParticle()->GetCharge(), 1., aTrack->GetMomentum(), aTrack->GetPosition() );
 
-   // G4cout<<"middle of pretracking....";
-   // aTrack->GetDynamicParticle()->DumpInfo();
-
    if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       FCCSmearer::Instance()->Smear(const_cast<G4Track*>(aTrack));
-
-   // G4cout<<"end of pretracking....";
-   // aTrack->GetDynamicParticle()->DumpInfo();
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

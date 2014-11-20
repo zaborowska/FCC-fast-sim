@@ -58,8 +58,10 @@ int main(int argc, char** argv)
       G4cout << G4endl;
       G4cout << "Error! Mandatory input files are not specified!" << G4endl;
       G4cout << G4endl;
-      G4cout << "Usage: "<<argv[0]<<" <intput_gdml:mandatory>"<<" <output_root_filename:mandatory>"
-             << " <macro_with_pythia_settings:optional>"<< " <do smearing:optional (default true)>"<< " <gun energy:optional>" << G4endl;
+      G4cout << "Usage: "<<argv[0]<<"\n\t\t<intput gdml filename : mandatory>"
+             <<"\n\t\t<output root filename : optional (default \"DefaultOutput.root\")>"
+             <<"\n\t\t<do smearing : optional (default true)>"
+             <<"\n\t\t<settings macro : optional (if not ->GUI)>"<< G4endl;
       G4cout << G4endl;
       return -1;
    }
@@ -99,10 +101,12 @@ int main(int argc, char** argv)
    //-------------------------------
    // UserAction classes
    //-------------------------------
-   if(argc>4)
-      runManager->SetUserInitialization( new FCCActionInitialization(argv[2], argv[4], argv[5]) );
-   else
+   if(argc>=4)
+      runManager->SetUserInitialization( new FCCActionInitialization(argv[2], argv[3]) );
+   else if (argc==3)
       runManager->SetUserInitialization( new FCCActionInitialization(argv[2]) );
+   else
+      runManager->SetUserInitialization( new FCCActionInitialization() );
    // Initialize Run manager
    runManager->Initialize();
 
@@ -119,7 +123,7 @@ int main(int argc, char** argv)
    //-------------------------------
    G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-   if(argc==3)
+   if(argc<5)
    {
       //--------------------------
       // Define (G)UI
@@ -141,7 +145,7 @@ int main(int argc, char** argv)
    else
    {
       G4String command = "/control/execute ";
-      G4String fileName = argv[3];
+      G4String fileName = argv[4];
       UImanager->ApplyCommand(command+fileName);
    }
 
