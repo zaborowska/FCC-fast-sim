@@ -1,4 +1,5 @@
 #include "FCCOutput.hh"
+#include "FCCSmearer.hh"
 #include "FCCEventInformation.hh"
 
 #include "G4Event.hh"
@@ -124,62 +125,20 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
    analysisManager->FillNtupleDColumn(ntupID, 3, vertexMomentum.y());
    analysisManager->FillNtupleDColumn(ntupID, 4, vertexMomentum.z());
 
-   // calculation of track parameter representation: from Atlfast::TrackTrajectory
-    double pt = vertexMomentum.perp();
-    double q  = charge;
-    q /= abs(q); //  q = |1|
-
-    // Working in MeV and mm
-    double radius = pt/(2*0.149898*bField);
-    double x0  = vertexPosition.x() + q*radius*sin(vertexMomentum.phi());
-    double y0  = vertexPosition.y() - q*radius*cos(vertexMomentum.phi());
-    G4ThreeVector hCentre(x0,y0);
-
-    // calculate parameters
-    // Tidier version of Fortran code zvhepa.F - Tarta
-    double impactParameter = -q*(hCentre.perp() - radius);
-    double theta = vertexMomentum.theta();
-    double cotTheta = 1/tan(theta);
-    double eta = vertexMomentum.pseudoRapidity();
-    double zPerigee;
-    double phi;
-
-    //  Calculate Phi
-    if (abs(vertexPosition.x()) < 1e-4 && abs(vertexPosition.y()) < 1e-4)
-      {phi = vertexMomentum.phi();} else
-	{if ( (vertexPosition.phi() - hCentre.phi()) > 0 )
-	  { phi =  hCentre.phi() + M_PI/2; } else
-	    { phi = hCentre.phi() - M_PI/2;} }
-
-    double x1 =  sin(phi)*q*hCentre.perp()/(radius*radius);
-    double y1 = -cos(phi)*q*hCentre.perp()/(radius*radius);
-    if (x1*x0 < 0 || y1*y0 < 0) {phi += M_PI;}
-    if (phi < 0) {phi += 2.*M_PI;} else
-      { if(phi > 2.*M_PI) {phi -= 2.*M_PI;} }
-
-    // z of perigee
-    double dot = vertexPosition.x()*vertexMomentum.x() + vertexPosition.y()*vertexMomentum.y();
-    double dotsign = dot/abs(dot) ;
-    double dV = (vertexPosition.perp()*vertexPosition.perp()) -
-      (impactParameter*impactParameter);
-    double denom = hCentre.perp()/radius;
-
-    // NAN protection
-    if (dV < 0) {dV = 0;}
-    if (abs(dotsign)!=1) dotsign=0;
-
-    zPerigee = vertexPosition.z() - (2*q*radius)*dotsign*cotTheta*
-       asin((sqrt(dV/(denom)))*q/(2*radius) );
+   G4double* params;
+   params = FCCSmearer::Instance()->ComputeTrackParams(charge, bField, vertexMomentum, vertexPosition);
 
     // track parametrisation:
     //  (eta, phi, pt, impactParameter, zPerigee, cotTheta, q/pt );
 
-   analysisManager->FillNtupleDColumn(ntupID, 5, impactParameter);
-   analysisManager->FillNtupleDColumn(ntupID, 6, zPerigee);
-   analysisManager->FillNtupleDColumn(ntupID, 7, phi);
-   analysisManager->FillNtupleDColumn(ntupID, 8, cotTheta);
-   analysisManager->FillNtupleDColumn(ntupID, 9, q/pt);
+   analysisManager->FillNtupleDColumn(ntupID, 5, params[0]);
+   analysisManager->FillNtupleDColumn(ntupID, 6, params[1]);
+   analysisManager->FillNtupleDColumn(ntupID, 7, params[2]);
+   analysisManager->FillNtupleDColumn(ntupID, 8, params[3]);
+   analysisManager->FillNtupleDColumn(ntupID, 9, params[4]);
    analysisManager->AddNtupleRow(ntupID);
+
+   delete params;
    return;
 }
 

@@ -13,6 +13,10 @@ public:
    static FCCSmearer* Instance();
    void MakeManagers();
    void Smear(G4Track* aTrack);
+   G4double* ComputeTrackParams(G4double charge, G4double bField,
+                                G4ThreeVector vertexMomentum, G4ThreeVector vertexPosition);
+   G4ThreeVector ComputePosFromParams(G4double* params);
+   G4ThreeVector ComputeMomFromParams(G4double* params);
 protected:
    FCCSmearer();
    ~FCCSmearer();
