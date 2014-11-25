@@ -78,6 +78,13 @@ void FCCPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
      if(currentGenerator == particleGun)
     {
        // randomize particle momentum direction
+       G4double x0  = 0, y0  = 0, z0  = 0;
+       G4double dx0 = 1, dy0 = 1, dz0 = 1;
+       x0 = x0+ dx0*(G4UniformRand()-0.5);
+       y0 = y0+ dy0*(G4UniformRand()-0.5);
+       z0 = z0+ dz0*(G4UniformRand()-0.5);
+       G4ThreeVector pos(x0,y0,z0);
+       ((G4ParticleGun*)particleGun)->SetParticlePosition(pos);
        G4double px0  = 0, py0  = 0, pz0  = 0;
        G4double dpx0 = 1, dpy0 = 1, dpz0 = 1;
        px0 = px0+ dpx0*(G4UniformRand()-0.5);

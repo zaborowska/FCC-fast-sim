@@ -12,11 +12,11 @@ class FCCSmearer
 public:
    static FCCSmearer* Instance();
    void MakeManagers();
-   void Smear(G4Track* aTrack);
-   G4double* ComputeTrackParams(G4double charge, G4double bField,
-                                G4ThreeVector vertexMomentum, G4ThreeVector vertexPosition);
-   G4ThreeVector ComputePosFromParams(G4double* params);
+   double* Smear(const G4Track* aTrack);
+   G4double* ComputeTrackParams(G4double charge, G4ThreeVector vertexMomentum, G4ThreeVector vertexPosition);
+   G4ThreeVector ComputePosFromParams(G4double* params, G4double diffAngle);
    G4ThreeVector ComputeMomFromParams(G4double* params);
+   G4double CheckPhi(G4double Phi);
 protected:
    FCCSmearer();
    ~FCCSmearer();
@@ -25,6 +25,8 @@ private:
    Atlfast::ElectronMatrixManager* fElectronManager;
    Atlfast::PionMatrixManager* fPionManager;
    Atlfast::MuonMatrixManager* fMuonManager;
+
+   G4double bField;
 };
 
 #endif

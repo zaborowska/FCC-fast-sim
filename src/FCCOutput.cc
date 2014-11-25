@@ -112,7 +112,7 @@ void FCCOutput::CreateNtuples()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double charge, G4double bField,
+void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double charge,
                           G4ThreeVector vertexMomentum, G4ThreeVector vertexPosition) const
 {
    const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
@@ -126,7 +126,7 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
    analysisManager->FillNtupleDColumn(ntupID, 4, vertexMomentum.z());
 
    G4double* params;
-   params = FCCSmearer::Instance()->ComputeTrackParams(charge, bField, vertexMomentum, vertexPosition);
+   params = FCCSmearer::Instance()->ComputeTrackParams(charge, vertexMomentum, vertexPosition);
 
     // track parametrisation:
     //  (eta, phi, pt, impactParameter, zPerigee, cotTheta, q/pt );
@@ -139,6 +139,34 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
    analysisManager->AddNtupleRow(ntupID);
 
    delete params;
+   return;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double charge,
+                          G4double* params) const
+{
+   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
+   G4int evNo = event->GetEventID();
+   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+   G4int ntupID = 2* evNo+HitDetector; // 2*evNo is TTree number for storing MC at vertex, 2*evNo+1 is TTree number for storing detected particles (can be smeared)
+
+   G4ThreeVector vertexMomentum = FCCSmearer::Instance()->ComputeMomFromParams(params);
+   analysisManager->FillNtupleIColumn(ntupID, 0, partID);
+   analysisManager->FillNtupleIColumn(ntupID, 1, PID);
+   analysisManager->FillNtupleDColumn(ntupID, 2, vertexMomentum.x());
+   analysisManager->FillNtupleDColumn(ntupID, 3, vertexMomentum.y());
+   analysisManager->FillNtupleDColumn(ntupID, 4, vertexMomentum.z());
+
+    // track parametrisation:
+    //  (eta, phi, pt, impactParameter, zPerigee, cotTheta, q/pt );
+   analysisManager->FillNtupleDColumn(ntupID, 5, params[0]);
+   analysisManager->FillNtupleDColumn(ntupID, 6, params[1]);
+   analysisManager->FillNtupleDColumn(ntupID, 7, params[2]);
+   analysisManager->FillNtupleDColumn(ntupID, 8, params[3]);
+   analysisManager->FillNtupleDColumn(ntupID, 9, params[4]);
+   analysisManager->AddNtupleRow(ntupID);
    return;
 }
 

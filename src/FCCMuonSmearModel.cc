@@ -27,6 +27,7 @@
 #include "FCCMuonSmearModel.hh"
 #include "FCCEventInformation.hh"
 #include "FCCOutput.hh"
+#include "FCCSmearer.hh"
 
 #include "G4Track.hh"
 #include "G4Event.hh"
@@ -72,13 +73,22 @@ void FCCMuonSmearModel::DoIt(const G4FastTrack& fastTrack,
 
   if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
   {
-      G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
-      G4double mass = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetDefinition()->GetPDGMass();
-      G4double q = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetCharge();
-      G4ThreeVector eP = fastTrack.GetPrimaryTrack()->GetVertexMomentumDirection();
-      G4double Ekin = fastTrack.GetPrimaryTrack()->GetVertexKineticEnergy();
-      G4ThreeVector P = eP * sqrt (Ekin*Ekin+2*mass*Ekin);
-      G4ThreeVector pos = fastTrack.GetPrimaryTrack()->GetVertexPosition();
-      FCCOutput::Instance()->SaveTrack(true, PID, PID, q, 1., P, pos);
+     G4cout<< " SAVING MUON ! SMEARED ! "<<G4endl;
+     G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
+     G4double mass = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetDefinition()->GetPDGMass();
+     G4double q = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetCharge();
+     if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
+     {
+        G4double* params = FCCSmearer::Instance()->Smear(fastTrack.GetPrimaryTrack());
+     FCCOutput::Instance()->SaveTrack(true, PID, PID, q,  params);
+     }
+     else
+     {
+        G4ThreeVector eP = fastTrack.GetPrimaryTrack()->GetVertexMomentumDirection();
+        G4double Ekin = fastTrack.GetPrimaryTrack()->GetVertexKineticEnergy();
+        G4ThreeVector P = eP * sqrt (Ekin*Ekin+2*mass*Ekin);
+        G4ThreeVector pos = fastTrack.GetPrimaryTrack()->GetVertexPosition();
+        FCCOutput::Instance()->SaveTrack(true, PID, PID, q,  P, pos);
+     }
   }
 }
