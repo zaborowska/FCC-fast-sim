@@ -160,7 +160,7 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
    analysisManager->FillNtupleDColumn(ntupID, 3, vertexMomentum.y());
    analysisManager->FillNtupleDColumn(ntupID, 4, vertexMomentum.z());
 
-   if(HitDetector)
+   //if(HitDetector)
    {
       // track parametrisation:
       //  (eta, phi, pt, impactParameter, zPerigee, cotTheta, q/pt );
@@ -173,6 +173,8 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
    }
  // G4cout<<"_________SAVING: "<<G4endl
  //        <<"\td0: "<<G4BestUnit(params[0],"Length")<<"\tz0: "<<G4BestUnit(params[1],"Length")<<"\tphi0: "<<G4BestUnit(params[2],"Angle")<<"\tcottheta: "<<params[3]<<"\tpT: "<<G4BestUnit(1./params[4],"Energy")<<G4endl;
+ // G4cout<<"_________SAVING: "<<G4endl
+ //        <<"\td0: "<<params[0]<<"\tz0: "<<params[1]<<"\tphi0: "<<params[2]<<"\tcottheta: "<<params[3]<<"\tpT: "<<1./params[4]<<G4endl;
 
    return;
 }

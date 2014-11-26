@@ -50,38 +50,40 @@ G4double* FCCSmearer::Smear(const G4Track* aTrackOriginal)
    else if(abs(PID) == 211)
       smearVariables = fPionManager->getVariables( *aTrackOriginal, sigma );
    else return NULL;
+/*
+   // original track position, momentum and charge
+   G4ThreeVector originP = aTrackOriginal->GetMomentum();
+   double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
+   G4ThreeVector originPos = aTrackOriginal->GetPosition();
 
-   // // original track position, momentum and charge
-   // G4ThreeVector originP = aTrackOriginal->GetMomentum();
-   // double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
-   // G4ThreeVector originPos = aTrackOriginal->GetPosition();
-
-
-   // G4double* originParams;
-   // originParams = ComputeTrackParams(originCharge, originP, originPos);
+   G4double* originParams;
+   originParams = ComputeTrackParams(originCharge, originP, originPos);
+ G4cout<<"_________OLD: "<<G4endl
+        <<"\td0: "<<G4BestUnit(originParams[0],"Length")<<"\tz0: "<<G4BestUnit(originParams[1],"Length")<<"\tphi0: "<<G4BestUnit(originParams[2],"Angle")<<"\tcottheta: "<<originParams[3]<<"\tpT: "<<G4BestUnit(1./originParams[4],"Energy")<<G4endl;
 
    // // Atlfast smeared variables
    // G4double smearUnits[] = {um, um, mrad, 1e-3, 1./TeV };
-   // double impactParameter = originParams[0] + smearVariables[0] * smearUnits[0]; // [0]
-   // double zPerigee = originParams[1]  + smearVariables[1] * smearUnits[1]; //[1]
-   // double Phi = CheckPhi(originParams[2] + smearVariables[2] * smearUnits[2]); //[2]
-   // double cotTheta = originParams[3] + smearVariables[3] * smearUnits[3]; //[3]
-   // double invPtCharge = originParams[4] +  smearVariables[4] * smearUnits[4]; // q/pT where q = q/|q| (just sign) //[4]
-
-   // G4double* params = new G4double[5];
-   // params[0] = impactParameter;
-   // params[1] = zPerigee;
-   // params[2] = Phi;
-   // params[3] = cotTheta;
-   // params[4] = invPtCharge;
+ double impactParameter = originParams[0] + smearVariables[0] ;// * smearUnits[0]; // [0]
+ double zPerigee = originParams[1]  + smearVariables[1] ;// * smearUnits[1]; //[1]
+ double Phi = CheckPhi(originParams[2] + smearVariables[2]);// * smearUnits[2]); //[2]
+ double cotTheta = originParams[3] + smearVariables[3];// * smearUnits[3]; //[3]
+ double invPtCharge = originParams[4] +  smearVariables[4];// * smearUnits[4]; // q/pT where q = q/|q| (just sign) //[4]
+ G4cout<<"_________NEW: "<<G4endl
+        <<"\td0: "<<G4BestUnit(impactParameter,"Length")<<"\tz0: "<<G4BestUnit(zPerigee,"Length")<<"\tphi0: "<<G4BestUnit(Phi,"Angle")<<"\tcottheta: "<<cotTheta<<"\tpT: "<<G4BestUnit(1./invPtCharge,"Energy")<<G4endl;
 
    G4double* params = new G4double[5];
-   G4double smearUnits[] = {um, um, mrad, 1e-3, 1./TeV };
-   params[0] = smearVariables[0] / smearUnits[0]; // [0]
-   params[1] = smearVariables[1] / smearUnits[1]; //[1]
-   params[2] = CheckPhi(smearVariables[2] / smearUnits[2]); //[2]
-   params[3] = smearVariables[3] / smearUnits[3]; //[3]
-   params[4] =  smearVariables[4] / smearUnits[4]; // q/pT where q = q/|q| (just sign) //[4]
+   params[0] = impactParameter;
+   params[1] = zPerigee;
+   params[2] = Phi;
+   params[3] = cotTheta;
+   params[4] = invPtCharge;
+*/
+   G4double* params = new G4double[5];
+   params[0] = smearVariables[0] ;//* smearUnits[0]; // [0]
+   params[1] = smearVariables[1] ;//* smearUnits[1]; //[1]
+   params[2] = CheckPhi(smearVariables[2]) ;//* smearUnits[2]); //[2]
+   params[3] = smearVariables[3] ;//* smearUnits[3]; //[3]
+   params[4] = smearVariables[4];// * smearUnits[4]; // q/pT where q = q/|q| (just sign) //[4]
 
    return params;
 
