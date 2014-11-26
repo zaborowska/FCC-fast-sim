@@ -171,8 +171,8 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
       analysisManager->FillNtupleDColumn(ntupID, 9, params[4]);
       analysisManager->AddNtupleRow(ntupID);
    }
- G4cout<<"_________SAVING: "<<G4endl
-        <<"\td0: "<<G4BestUnit(params[0],"Length")<<"\tz0: "<<G4BestUnit(params[1],"Length")<<"\tphi0: "<<G4BestUnit(params[2],"Angle")<<"\tcottheta: "<<params[3]<<"\tpT: "<<G4BestUnit(1./params[4],"Energy")<<G4endl;
+ // G4cout<<"_________SAVING: "<<G4endl
+ //        <<"\td0: "<<G4BestUnit(params[0],"Length")<<"\tz0: "<<G4BestUnit(params[1],"Length")<<"\tphi0: "<<G4BestUnit(params[2],"Angle")<<"\tcottheta: "<<params[3]<<"\tpT: "<<G4BestUnit(1./params[4],"Energy")<<G4endl;
 
    return;
 }
