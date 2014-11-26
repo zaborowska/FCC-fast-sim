@@ -85,7 +85,10 @@ void FCCEmSmearModel::DoIt(const G4FastTrack& fastTrack,
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       {
          G4double* params = FCCSmearer::Instance()->Smear(fastTrack.GetPrimaryTrack());
-         FCCOutput::Instance()->SaveTrack(true, PID, PID, q,  params);
+         G4ThreeVector eP = fastTrack.GetPrimaryTrack()->GetVertexMomentumDirection();
+         G4double Ekin = fastTrack.GetPrimaryTrack()->GetVertexKineticEnergy();
+         G4ThreeVector P = eP * sqrt (Ekin*Ekin+2*mass*Ekin);
+         FCCOutput::Instance()->SaveTrack(true, PID, PID, q, P, params);
       }
       else
       {

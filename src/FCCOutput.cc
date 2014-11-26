@@ -145,7 +145,7 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double charge,
+void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double charge, G4ThreeVector vertexMomentum,
                           G4double* params) const
 {
    const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
@@ -153,7 +153,7 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
    G4int ntupID = 2* evNo+HitDetector; // 2*evNo is TTree number for storing MC at vertex, 2*evNo+1 is TTree number for storing detected particles (can be smeared)
 
-   G4ThreeVector vertexMomentum = FCCSmearer::Instance()->ComputeMomFromParams(params);
+   //G4ThreeVector vertexMomentum = FCCSmearer::Instance()->ComputeMomFromParams(params);
    analysisManager->FillNtupleIColumn(ntupID, 0, partID);
    analysisManager->FillNtupleIColumn(ntupID, 1, PID);
    analysisManager->FillNtupleDColumn(ntupID, 2, vertexMomentum.x());
@@ -172,6 +172,7 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
       analysisManager->AddNtupleRow(ntupID);
    }
  // G4cout<<"_________SAVING: "<<G4endl
+ //       <<"\tvertex momentum: "<<G4BestUnit(vertexMomentum.x(),"Energy")<<" , "<<G4BestUnit(vertexMomentum.y(),"Energy")<<" , "<<G4BestUnit(vertexMomentum.z(),"Energy")<<G4endl
  //        <<"\td0: "<<G4BestUnit(params[0],"Length")<<"\tz0: "<<G4BestUnit(params[1],"Length")<<"\tphi0: "<<G4BestUnit(params[2],"Angle")<<"\tcottheta: "<<params[3]<<"\tpT: "<<G4BestUnit(1./params[4],"Energy")<<G4endl;
  // G4cout<<"_________SAVING: "<<G4endl
  //        <<"\td0: "<<params[0]<<"\tz0: "<<params[1]<<"\tphi0: "<<params[2]<<"\tcottheta: "<<params[3]<<"\tpT: "<<1./params[4]<<G4endl;
