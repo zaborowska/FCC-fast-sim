@@ -89,11 +89,11 @@ void FCCOutput::CreateNtuples()
   analysisManager->CreateNtupleDColumn("pX");  // column Id = 2
   analysisManager->CreateNtupleDColumn("pY"); // column Id = 3
   analysisManager->CreateNtupleDColumn("pZ"); // column Id = 4
-  analysisManager->CreateNtupleDColumn("d0");  // column Id = 5
-  analysisManager->CreateNtupleDColumn("z0"); // column Id = 6
-  analysisManager->CreateNtupleDColumn("phi0"); // column Id = 7
-  analysisManager->CreateNtupleDColumn("cottheta");  // column Id = 8
-  analysisManager->CreateNtupleDColumn("qpT"); // column Id = 9
+  // analysisManager->CreateNtupleDColumn("d0");  // column Id = 5
+  // analysisManager->CreateNtupleDColumn("z0"); // column Id = 6
+  // analysisManager->CreateNtupleDColumn("phi0"); // column Id = 7
+  // analysisManager->CreateNtupleDColumn("cottheta");  // column Id = 8
+  // analysisManager->CreateNtupleDColumn("qpT"); // column Id = 9
   analysisManager->FinishNtuple(ntupID);
 
      analysisManager->CreateNtuple(evName+"_det", evName+"_det");
@@ -102,11 +102,11 @@ void FCCOutput::CreateNtuples()
      analysisManager->CreateNtupleDColumn("pX");  // column Id = 2
      analysisManager->CreateNtupleDColumn("pY"); // column Id = 3
      analysisManager->CreateNtupleDColumn("pZ"); // column Id = 4
-     analysisManager->CreateNtupleDColumn("d0");  // column Id = 5
-     analysisManager->CreateNtupleDColumn("z0"); // column Id = 6
-     analysisManager->CreateNtupleDColumn("phi0"); // column Id = 7
-     analysisManager->CreateNtupleDColumn("cottheta");  // column Id = 8
-     analysisManager->CreateNtupleDColumn("qpT"); // column Id = 9
+     analysisManager->CreateNtupleDColumn("Dd0");  // column Id = 5
+     analysisManager->CreateNtupleDColumn("Dz0"); // column Id = 6
+     analysisManager->CreateNtupleDColumn("Dphi0"); // column Id = 7
+     analysisManager->CreateNtupleDColumn("Dcottheta");  // column Id = 8
+     analysisManager->CreateNtupleDColumn("DqpT"); // column Id = 9
      analysisManager->FinishNtuple(ntupID + 1);
 }
 
@@ -125,20 +125,22 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
    analysisManager->FillNtupleDColumn(ntupID, 3, vertexMomentum.y());
    analysisManager->FillNtupleDColumn(ntupID, 4, vertexMomentum.z());
 
-   G4double* params;
-   params = FCCSmearer::Instance()->ComputeTrackParams(charge, vertexMomentum, vertexPosition);
+   if(HitDetector)
+   {
+      G4double* params;
+      params = FCCSmearer::Instance()->ComputeTrackParams(charge, vertexMomentum, vertexPosition);
 
-    // track parametrisation:
-    //  (eta, phi, pt, impactParameter, zPerigee, cotTheta, q/pt );
+      // track parametrisation:
+      //  (eta, phi, pt, impactParameter, zPerigee, cotTheta, q/pt );
 
-   analysisManager->FillNtupleDColumn(ntupID, 5, params[0]);
-   analysisManager->FillNtupleDColumn(ntupID, 6, params[1]);
-   analysisManager->FillNtupleDColumn(ntupID, 7, params[2]);
-   analysisManager->FillNtupleDColumn(ntupID, 8, params[3]);
-   analysisManager->FillNtupleDColumn(ntupID, 9, params[4]);
-   analysisManager->AddNtupleRow(ntupID);
-
-   delete params;
+      analysisManager->FillNtupleDColumn(ntupID, 5, params[0]);
+      analysisManager->FillNtupleDColumn(ntupID, 6, params[1]);
+      analysisManager->FillNtupleDColumn(ntupID, 7, params[2]);
+      analysisManager->FillNtupleDColumn(ntupID, 8, params[3]);
+      analysisManager->FillNtupleDColumn(ntupID, 9, params[4]);
+      analysisManager->AddNtupleRow(ntupID);
+      delete params;
+   }
    return;
 }
 
@@ -159,14 +161,20 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
    analysisManager->FillNtupleDColumn(ntupID, 3, vertexMomentum.y());
    analysisManager->FillNtupleDColumn(ntupID, 4, vertexMomentum.z());
 
-    // track parametrisation:
-    //  (eta, phi, pt, impactParameter, zPerigee, cotTheta, q/pt );
-   analysisManager->FillNtupleDColumn(ntupID, 5, params[0]);
-   analysisManager->FillNtupleDColumn(ntupID, 6, params[1]);
-   analysisManager->FillNtupleDColumn(ntupID, 7, params[2]);
-   analysisManager->FillNtupleDColumn(ntupID, 8, params[3]);
-   analysisManager->FillNtupleDColumn(ntupID, 9, params[4]);
-   analysisManager->AddNtupleRow(ntupID);
+   if(HitDetector)
+   {
+      // track parametrisation:
+      //  (eta, phi, pt, impactParameter, zPerigee, cotTheta, q/pt );
+      analysisManager->FillNtupleDColumn(ntupID, 5, params[0]);
+      analysisManager->FillNtupleDColumn(ntupID, 6, params[1]);
+      analysisManager->FillNtupleDColumn(ntupID, 7, params[2]);
+      analysisManager->FillNtupleDColumn(ntupID, 8, params[3]);
+      analysisManager->FillNtupleDColumn(ntupID, 9, params[4]);
+      analysisManager->AddNtupleRow(ntupID);
+   }
+ // G4cout<<"_________SAVING: "<<G4endl
+ //        <<"\td0: "<<G4BestUnit(params[0],"Length")<<"\tz0: "<<G4BestUnit(params[1],"Length")<<"\tphi0: "<<G4BestUnit(params[2],"Angle")<<"\tcottheta: "<<params[3]<<"\tpT: "<<G4BestUnit(1./params[4],"Energy")<<G4endl;
+
    return;
 }
 
