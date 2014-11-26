@@ -65,7 +65,10 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
    if(aTrack->GetParentID()) return;
 
    // Fill ntuple with G4 original data
-   FCCOutput::Instance()->SaveTrack(false, PID, PID, aTrack->GetDynamicParticle()->GetCharge(), aTrack->GetMomentum(), aTrack->GetPosition() );
+   //FCCOutput::Instance()->SaveTrack(false, PID, PID, aTrack->GetDynamicParticle()->GetCharge(), aTrack->GetMomentum(), aTrack->GetPosition() );
+
+   G4double* params = FCCSmearer::Instance()->Smear(aTrack);
+   FCCOutput::Instance()->SaveTrack(false, PID, PID, aTrack->GetDynamicParticle()->GetCharge() ,  params);
 
    // if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
    //    FCCSmearer::Instance()->Smear(const_cast<G4Track*>(aTrack));

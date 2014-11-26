@@ -76,12 +76,12 @@ G4double* FCCSmearer::Smear(const G4Track* aTrackOriginal)
    // params[4] = invPtCharge;
 
    G4double* params = new G4double[5];
-   G4double smearUnits[] = {um, um, mrad, 1e-3, 1./MeV };
-   params[0] = smearVariables[0] * smearUnits[0]; // [0]
-   params[1] = smearVariables[1] * smearUnits[1]; //[1]
-   params[2] = CheckPhi(smearVariables[2] * smearUnits[2]); //[2]
-   params[3] = smearVariables[3] * smearUnits[3]; //[3]
-   params[4] =  smearVariables[4] * smearUnits[4]; // q/pT where q = q/|q| (just sign) //[4]
+   G4double smearUnits[] = {um, um, mrad, 1e-3, 1./TeV };
+   params[0] = smearVariables[0] / smearUnits[0]; // [0]
+   params[1] = smearVariables[1] / smearUnits[1]; //[1]
+   params[2] = CheckPhi(smearVariables[2] / smearUnits[2]); //[2]
+   params[3] = smearVariables[3] / smearUnits[3]; //[3]
+   params[4] =  smearVariables[4] / smearUnits[4]; // q/pT where q = q/|q| (just sign) //[4]
 
    return params;
 

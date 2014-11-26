@@ -89,11 +89,11 @@ void FCCOutput::CreateNtuples()
   analysisManager->CreateNtupleDColumn("pX");  // column Id = 2
   analysisManager->CreateNtupleDColumn("pY"); // column Id = 3
   analysisManager->CreateNtupleDColumn("pZ"); // column Id = 4
-  // analysisManager->CreateNtupleDColumn("d0");  // column Id = 5
-  // analysisManager->CreateNtupleDColumn("z0"); // column Id = 6
-  // analysisManager->CreateNtupleDColumn("phi0"); // column Id = 7
-  // analysisManager->CreateNtupleDColumn("cottheta");  // column Id = 8
-  // analysisManager->CreateNtupleDColumn("qpT"); // column Id = 9
+  analysisManager->CreateNtupleDColumn("Dd0");  // column Id = 5
+  analysisManager->CreateNtupleDColumn("Dz0"); // column Id = 6
+  analysisManager->CreateNtupleDColumn("Dphi0"); // column Id = 7
+  analysisManager->CreateNtupleDColumn("Dcottheta");  // column Id = 8
+  analysisManager->CreateNtupleDColumn("DqpT"); // column Id = 9
   analysisManager->FinishNtuple(ntupID);
 
      analysisManager->CreateNtuple(evName+"_det", evName+"_det");
@@ -125,7 +125,6 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
    analysisManager->FillNtupleDColumn(ntupID, 3, vertexMomentum.y());
    analysisManager->FillNtupleDColumn(ntupID, 4, vertexMomentum.z());
 
-   if(HitDetector)
    {
       G4double* params;
       params = FCCSmearer::Instance()->ComputeTrackParams(charge, vertexMomentum, vertexPosition);
@@ -172,8 +171,8 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
       analysisManager->FillNtupleDColumn(ntupID, 9, params[4]);
       analysisManager->AddNtupleRow(ntupID);
    }
- // G4cout<<"_________SAVING: "<<G4endl
- //        <<"\td0: "<<G4BestUnit(params[0],"Length")<<"\tz0: "<<G4BestUnit(params[1],"Length")<<"\tphi0: "<<G4BestUnit(params[2],"Angle")<<"\tcottheta: "<<params[3]<<"\tpT: "<<G4BestUnit(1./params[4],"Energy")<<G4endl;
+ G4cout<<"_________SAVING: "<<G4endl
+        <<"\td0: "<<G4BestUnit(params[0],"Length")<<"\tz0: "<<G4BestUnit(params[1],"Length")<<"\tphi0: "<<G4BestUnit(params[2],"Angle")<<"\tcottheta: "<<params[3]<<"\tpT: "<<G4BestUnit(1./params[4],"Energy")<<G4endl;
 
    return;
 }
