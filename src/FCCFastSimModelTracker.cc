@@ -76,7 +76,6 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
    G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
    G4double res =  Resolution(PID, fastTrack.GetPrimaryTrack()->GetMomentum());
    G4double eff = Efficiency(PID, fastTrack.GetPrimaryTrack()->GetMomentum());
-   G4cout<<" Resolution: "<<Resolution(PID, fastTrack.GetPrimaryTrack()->GetMomentum())<<G4endl;
 
    if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
    {
@@ -85,9 +84,10 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       {
          //FCCSmearer::Instance()->Smear(fastTrack.GetPrimaryTrack());
-         G4ThreeVector P = fastTrack.GetPrimaryTrack()->GetMomentum();
+         G4ThreeVector P = fastTrack.GetPrimaryTrack()->GetMomentum() * res;
          FCCOutput::Instance()->SaveTrack(true, PID, PID, P, res, eff);
-         G4cout<<" saving ... true, "<<PID<<", "<<PID<<", "<<P<<", "<<res<<", "<<eff<<G4endl;
+         FCCOutput::Instance()->FillHistogram(0,P.mag() - fastTrack.GetPrimaryTrack()->GetMomentum().mag() );
+         G4cout<<" filling hist with "<<P.mag() - fastTrack.GetPrimaryTrack()->GetMomentum().mag()<<G4endl;
       }
       else
       {

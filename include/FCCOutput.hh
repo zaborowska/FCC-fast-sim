@@ -14,8 +14,10 @@ public:
    void StartAnalysis(G4int runID);
    void EndAnalysis();
    void CreateNtuples();
+   void CreateHistograms();
    void SaveTrack(G4bool HitDetector, G4int partID,  G4int PID,
-                          G4ThreeVector momentum, G4double resolution = 0, G4double efficiency = 1) const;
+                  G4ThreeVector momentum, G4double resolution = 0, G4double efficiency = 1) const;
+   void FillHistogram(G4int HNo, G4double value) const;
    ~FCCOutput();
 protected:
    FCCOutput();

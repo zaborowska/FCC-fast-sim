@@ -100,8 +100,13 @@ void FCCOutput::CreateNtuples()
   analysisManager->CreateNtupleDColumn("TRres"); // column Id = 5
   analysisManager->CreateNtupleDColumn("TReff"); // column Id = 6
   analysisManager->FinishNtuple(ntupID + 1);
-  // analysisManager->CreateH1("0","Psmeared in tracker", 101, -100., 100*GeV);
+}
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void FCCOutput::CreateHistograms()
+{
+  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+   analysisManager->CreateH1("Pdiff","P smeared in tracker", 101, -100.*GeV, 100*GeV);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -122,8 +127,17 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID,
    {
       analysisManager->FillNtupleDColumn(ntupID, 5, resolution);
       analysisManager->FillNtupleDColumn(ntupID, 6, efficiency);
-      // analysisManager->FillH1(0, momentum.x());
    }
+   analysisManager->AddNtupleRow(ntupID);
+   return;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCOutput::FillHistogram(G4int HNo, G4double value) const
+{
+   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+   analysisManager->FillH1(HNo, value);
    return;
 }
 

@@ -49,6 +49,7 @@ FCCRunAction::~FCCRunAction()
 void FCCRunAction::BeginOfRunAction(const G4Run* run)
 {
    FCCOutput::Instance()->StartAnalysis(run->GetRunID());
+   FCCOutput::Instance()->CreateHistograms();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
