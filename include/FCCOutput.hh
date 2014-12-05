@@ -14,13 +14,11 @@ public:
    void StartAnalysis(G4int runID);
    void EndAnalysis();
    void CreateNtuples();
-   void SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double q,
-                          G4ThreeVector momentum, G4ThreeVector vertex) const;
-   void SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double q, G4ThreeVector mom,
-                          G4double* params) const;
+   void SaveTrack(G4bool HitDetector, G4int partID,  G4int PID,
+                          G4ThreeVector momentum, G4double resolution = 0, G4double efficiency = 1) const;
+   ~FCCOutput();
 protected:
    FCCOutput();
-   ~FCCOutput();
 private:
    static FCCOutput* fFCCOutput;
    G4String fFileName;

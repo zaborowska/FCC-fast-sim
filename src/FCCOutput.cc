@@ -1,17 +1,17 @@
 #include "FCCOutput.hh"
-#include "FCCSmearer.hh"
 #include "FCCEventInformation.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4UnitsTable.hh"
+#include "G4SystemOfUnits.hh"
 #include "g4root.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCOutput* FCCOutput::fFCCOutput = 0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-FCCOutput::FCCOutput()
+FCCOutput::FCCOutput(): fFileNameWithRunNo(false)
 {
    fFileName = "DefaultOutput.root";
 }
@@ -59,7 +59,7 @@ void FCCOutput::StartAnalysis(G4int runID)
    }
    analysisManager->SetVerboseLevel(1);
    analysisManager->SetFileName(fFileName);
-   analysisManager->OpenFile();
+   analysisManager->OpenFile(fFileName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -89,94 +89,41 @@ void FCCOutput::CreateNtuples()
   analysisManager->CreateNtupleDColumn("pX");  // column Id = 2
   analysisManager->CreateNtupleDColumn("pY"); // column Id = 3
   analysisManager->CreateNtupleDColumn("pZ"); // column Id = 4
-  analysisManager->CreateNtupleDColumn("Dd0");  // column Id = 5
-  analysisManager->CreateNtupleDColumn("Dz0"); // column Id = 6
-  analysisManager->CreateNtupleDColumn("Dphi0"); // column Id = 7
-  analysisManager->CreateNtupleDColumn("Dcottheta");  // column Id = 8
-  analysisManager->CreateNtupleDColumn("DqpT"); // column Id = 9
   analysisManager->FinishNtuple(ntupID);
 
-     analysisManager->CreateNtuple(evName+"_det", evName+"_det");
-     analysisManager->CreateNtupleIColumn("particleID");  // column Id = 0
-     analysisManager->CreateNtupleIColumn("PID");  // column Id = 1
-     analysisManager->CreateNtupleDColumn("pX");  // column Id = 2
-     analysisManager->CreateNtupleDColumn("pY"); // column Id = 3
-     analysisManager->CreateNtupleDColumn("pZ"); // column Id = 4
-     analysisManager->CreateNtupleDColumn("Dd0");  // column Id = 5
-     analysisManager->CreateNtupleDColumn("Dz0"); // column Id = 6
-     analysisManager->CreateNtupleDColumn("Dphi0"); // column Id = 7
-     analysisManager->CreateNtupleDColumn("Dcottheta");  // column Id = 8
-     analysisManager->CreateNtupleDColumn("DqpT"); // column Id = 9
-     analysisManager->FinishNtuple(ntupID + 1);
+  analysisManager->CreateNtuple(evName+"_det", evName+"_det");
+  analysisManager->CreateNtupleIColumn("particleID");  // column Id = 0
+  analysisManager->CreateNtupleIColumn("PID");  // column Id = 1
+  analysisManager->CreateNtupleDColumn("TRpX");  // column Id = 2
+  analysisManager->CreateNtupleDColumn("TRpY"); // column Id = 3
+  analysisManager->CreateNtupleDColumn("TRpZ"); // column Id = 4
+  analysisManager->CreateNtupleDColumn("TRres"); // column Id = 5
+  analysisManager->CreateNtupleDColumn("TReff"); // column Id = 6
+  analysisManager->FinishNtuple(ntupID + 1);
+  // analysisManager->CreateH1("0","Psmeared in tracker", 101, -100., 100*GeV);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double charge,
-                          G4ThreeVector vertexMomentum, G4ThreeVector vertexPosition) const
+void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID,
+                          G4ThreeVector momentum, G4double resolution, G4double efficiency) const
 {
    const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
    G4int evNo = event->GetEventID();
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   G4int ntupID = 2* evNo+HitDetector; // 2*evNo is TTree number for storing MC at vertex, 2*evNo+1 is TTree number for storing detected particles (can be smeared)
+   G4int ntupID = 2* evNo+HitDetector; // 2*evNo is TTree number for storing MC at vertex, 2*evNo+1 is TTree number for storing detected particles (smeared)
    analysisManager->FillNtupleIColumn(ntupID, 0, partID);
    analysisManager->FillNtupleIColumn(ntupID, 1, PID);
-   analysisManager->FillNtupleDColumn(ntupID, 2, vertexMomentum.x());
-   analysisManager->FillNtupleDColumn(ntupID, 3, vertexMomentum.y());
-   analysisManager->FillNtupleDColumn(ntupID, 4, vertexMomentum.z());
-
+   analysisManager->FillNtupleDColumn(ntupID, 2, momentum.x());
+   analysisManager->FillNtupleDColumn(ntupID, 3, momentum.y());
+   analysisManager->FillNtupleDColumn(ntupID, 4, momentum.z());
+   if(HitDetector)
    {
-      G4double* params;
-      params = FCCSmearer::Instance()->ComputeTrackParams(charge, vertexMomentum, vertexPosition);
-
-      // track parametrisation:
-      //  (eta, phi, pt, impactParameter, zPerigee, cotTheta, q/pt );
-
-      analysisManager->FillNtupleDColumn(ntupID, 5, params[0]);
-      analysisManager->FillNtupleDColumn(ntupID, 6, params[1]);
-      analysisManager->FillNtupleDColumn(ntupID, 7, params[2]);
-      analysisManager->FillNtupleDColumn(ntupID, 8, params[3]);
-      analysisManager->FillNtupleDColumn(ntupID, 9, params[4]);
-      analysisManager->AddNtupleRow(ntupID);
-      delete params;
+      analysisManager->FillNtupleDColumn(ntupID, 5, resolution);
+      analysisManager->FillNtupleDColumn(ntupID, 6, efficiency);
+      // analysisManager->FillH1(0, momentum.x());
    }
-   return;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double charge, G4ThreeVector vertexMomentum,
-                          G4double* params) const
-{
-   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-   G4int evNo = event->GetEventID();
-   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   G4int ntupID = 2* evNo+HitDetector; // 2*evNo is TTree number for storing MC at vertex, 2*evNo+1 is TTree number for storing detected particles (can be smeared)
-
-   //G4ThreeVector vertexMomentum = FCCSmearer::Instance()->ComputeMomFromParams(params);
-   analysisManager->FillNtupleIColumn(ntupID, 0, partID);
-   analysisManager->FillNtupleIColumn(ntupID, 1, PID);
-   analysisManager->FillNtupleDColumn(ntupID, 2, vertexMomentum.x());
-   analysisManager->FillNtupleDColumn(ntupID, 3, vertexMomentum.y());
-   analysisManager->FillNtupleDColumn(ntupID, 4, vertexMomentum.z());
-
-   //if(HitDetector)
-   {
-      // track parametrisation:
-      //  (eta, phi, pt, impactParameter, zPerigee, cotTheta, q/pt );
-      analysisManager->FillNtupleDColumn(ntupID, 5, params[0]);
-      analysisManager->FillNtupleDColumn(ntupID, 6, params[1]);
-      analysisManager->FillNtupleDColumn(ntupID, 7, params[2]);
-      analysisManager->FillNtupleDColumn(ntupID, 8, params[3]);
-      analysisManager->FillNtupleDColumn(ntupID, 9, params[4]);
-      analysisManager->AddNtupleRow(ntupID);
-   }
- // G4cout<<"_________SAVING: "<<G4endl
- //       <<"\tvertex momentum: "<<G4BestUnit(vertexMomentum.x(),"Energy")<<" , "<<G4BestUnit(vertexMomentum.y(),"Energy")<<" , "<<G4BestUnit(vertexMomentum.z(),"Energy")<<G4endl
- //        <<"\td0: "<<G4BestUnit(params[0],"Length")<<"\tz0: "<<G4BestUnit(params[1],"Length")<<"\tphi0: "<<G4BestUnit(params[2],"Angle")<<"\tcottheta: "<<params[3]<<"\tpT: "<<G4BestUnit(1./params[4],"Energy")<<G4endl;
- // G4cout<<"_________SAVING: "<<G4endl
- //        <<"\td0: "<<params[0]<<"\tz0: "<<params[1]<<"\tphi0: "<<params[2]<<"\tcottheta: "<<params[3]<<"\tpT: "<<1./params[4]<<G4endl;
-
    return;
 }
 

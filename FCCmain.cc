@@ -32,7 +32,7 @@
 #include "FCCDetectorConstruction.hh"
 //Sensitive Detectors
 #include "G4GDMLParser.hh"
-#include "FCCSmearingGeometry.hh"
+#include "FCCFastSimGeometry.hh"
 // PhysicsList
 #include "FCCPhysicsList.hh"
 #include "FTFP_BERT.hh"
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
    //------------------------------------------------
 
    const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
-   FCCSmearingGeometry SmearingGeometry(auxmap);
+   FCCFastSimGeometry FastSimGeometry(auxmap);
 
    //-------------------------------
    // UI

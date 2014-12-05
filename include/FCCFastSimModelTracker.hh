@@ -23,42 +23,40 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
 // based on G4 examples/extended/parametrisations/Par01/include/Par01EMShowerModel.hh
 //
-//----------------------------------------------
-// Parameterisation of e+/e-/gamma producing hits
-// The hits are the same as defined in the detailed
-// simulation.
-//----------------------------------------------
 
-#ifndef FCC_MUON_SMEAR_MODEL_H
-#define FCC_MUON_SMEAR_MODEL_H
+#ifndef FCC_TRACKER_FAST_SIM_MODEL_H
+#define FCC_TRACKER_FAST_SIM_MODEL_H
 
 #include "G4VFastSimulationModel.hh"
 #include "G4Step.hh"
 
-class FCCMuonSmearModel : public G4VFastSimulationModel
+class FCCFastSimModelTracker : public G4VFastSimulationModel
 {
 public:
-  //-------------------------
-  // Constructor, destructor
-  //-------------------------
-  FCCMuonSmearModel (G4String, G4Region*);
-  FCCMuonSmearModel (G4String);
-  ~FCCMuonSmearModel ();
+   //-------------------------
+   // Constructor, destructor
+   //-------------------------
+   FCCFastSimModelTracker (G4String, G4Region*);
+   FCCFastSimModelTracker (G4String);
+   ~FCCFastSimModelTracker ();
 
-  //------------------------------
-  // Virtual methods of the base
-  // class to be coded by the user
-  //------------------------------
+   //------------------------------
+   // Virtual methods of the base
+   // class to be coded by the user
+   //------------------------------
 
-  // -- IsApplicable
-  virtual G4bool IsApplicable(const G4ParticleDefinition&);
-  // -- ModelTrigger
-  virtual G4bool ModelTrigger(const G4FastTrack &);
-  // -- User method DoIt
-  virtual void DoIt(const G4FastTrack&, G4FastStep&);
+   // -- IsApplicable
+   virtual G4bool IsApplicable(const G4ParticleDefinition&);
+   // -- ModelTrigger
+   virtual G4bool ModelTrigger(const G4FastTrack &);
+   // -- User method DoIt
+   virtual void DoIt(const G4FastTrack&, G4FastStep&);
+
+   G4double Resolution(const G4int PID, const G4ThreeVector mom) const;
+
+   G4double Efficiency(const G4int PID, const G4ThreeVector mom) const;
 
 };
 #endif

@@ -114,7 +114,7 @@ void FCCPhysicsList::ConstructProcess()
   AddTransportation();
   AddParameterisation();
 
-  ConstructEM();
+  // ConstructEM();
   ConstructGeneral();
 }
 
@@ -258,25 +258,21 @@ void FCCPhysicsList::ConstructGeneral()
 
 void FCCPhysicsList::AddParameterisation()
 {
-  // -- Fast simulation manager process for "mass geometry":
-  G4FastSimulationManagerProcess*
-    fastSimProcess_massGeom     = new G4FastSimulationManagerProcess("G4FSMP");
+   G4FastSimulationManagerProcess* fastSimProcess = new G4FastSimulationManagerProcess("G4FSMP");
 
-  theParticleIterator->reset();
-  while( (*theParticleIterator)() )
-    {
+   theParticleIterator->reset();
+   while( (*theParticleIterator)() )
+   {
       G4ParticleDefinition* particle = theParticleIterator->value();
       G4ProcessManager* pmanager = particle->GetProcessManager();
-      // -- For the mass geometry, G4FSMP is a PostStep process, ordering does not matter:
-      if (particle->GetParticleName() == "pi+"  ||
-          particle->GetParticleName() == "pi-"  ||
-          particle->GetParticleName() == "mu+"  ||
-          particle->GetParticleName() == "mu-"  ||
-          particle->GetParticleName() == "e+"  ||
-          particle->GetParticleName() == "e-"  ||
-          particle->GetParticleName() == "gamma"  ) pmanager->
-                                                    AddDiscreteProcess(fastSimProcess_massGeom);
-
+      // if (particle->GetParticleName() == "pi+"  ||
+      //     particle->GetParticleName() == "pi-"  ||
+      //     particle->GetParticleName() == "mu+"  ||
+      //     particle->GetParticleName() == "mu-"  ||
+      //     particle->GetParticleName() == "e+"  ||
+      //     particle->GetParticleName() == "e-"  ||
+      //     particle->GetParticleName() == "gamma"  )
+         pmanager->AddDiscreteProcess(fastSimProcess);
     }
 }
 

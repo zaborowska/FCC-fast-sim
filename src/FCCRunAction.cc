@@ -25,8 +25,6 @@
 
 #include "FCCOutput.hh"
 #include "FCCRunAction.hh"
-#include "FCCSmearer.hh"
-
 #include "G4Run.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
@@ -36,15 +34,15 @@
 FCCRunAction::FCCRunAction(const G4String OutName="SimpleOutput")
  : G4UserRunAction()
 {
-
-   FCCSmearer::Instance()->MakeManagers();
    FCCOutput::Instance()->SetFileName(OutName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 FCCRunAction::~FCCRunAction()
-{}
+{
+   delete FCCOutput::Instance();
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

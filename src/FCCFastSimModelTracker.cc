@@ -23,15 +23,10 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-// $Id: FCCEmSmearModel.cc 77940 2013-11-29 15:15:17Z gcosmo $
-//
-#include "FCCEmSmearModel.hh"
+
+#include "FCCFastSimModelTracker.hh"
 #include "FCCEventInformation.hh"
 #include "FCCOutput.hh"
-#include "FCCSmearer.hh"
-
-#include "AtlfastElectronMatrixManager.hh"
 
 #include "G4Track.hh"
 #include "G4Event.hh"
@@ -44,32 +39,31 @@
 #include "G4Positron.hh"
 #include "G4Gamma.hh"
 
-FCCEmSmearModel::FCCEmSmearModel(G4String modelName, G4Region* envelope)
+FCCFastSimModelTracker::FCCFastSimModelTracker(G4String modelName, G4Region* envelope)
   : G4VFastSimulationModel(modelName, envelope)
 {}
 
-FCCEmSmearModel::FCCEmSmearModel(G4String modelName)
+FCCFastSimModelTracker::FCCFastSimModelTracker(G4String modelName)
   : G4VFastSimulationModel(modelName)
 {}
 
-FCCEmSmearModel::~FCCEmSmearModel()
+FCCFastSimModelTracker::~FCCFastSimModelTracker()
 {}
 
-G4bool FCCEmSmearModel::IsApplicable(const G4ParticleDefinition& particleType)
+G4bool FCCFastSimModelTracker::IsApplicable(const G4ParticleDefinition& particleType)
 {
-   return
-      &particleType == G4Electron::Definition() ||
-      &particleType == G4Positron::Definition() ;//||
-//      &particleType == G4Gamma::Definition();
+   return  particleType.GetPDGCharge() != 0;
+      // &particleType == G4Electron::Definition() ||
+      // &particleType == G4Positron::Definition() ||
+      // &particleType == G4Gamma::Definition();
 }
 
-G4bool FCCEmSmearModel::ModelTrigger(const G4FastTrack& fastTrack)
+G4bool FCCFastSimModelTracker::ModelTrigger(const G4FastTrack& fastTrack)
 {
-   // Applies the parameterisation above some energy:
    return true;//fastTrack.GetPrimaryTrack()->GetKineticEnergy() > 100*MeV;
 }
 
-void FCCEmSmearModel::DoIt(const G4FastTrack& fastTrack,
+void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
                             G4FastStep& fastStep)
 {
    // Kill the parameterised particle:
@@ -77,26 +71,51 @@ void FCCEmSmearModel::DoIt(const G4FastTrack& fastTrack,
    fastStep.ProposePrimaryTrackPathLength(0.0);
    fastStep.ProposeTotalEnergyDeposited(fastTrack.GetPrimaryTrack()->GetKineticEnergy());
 
+   // here Smear according to tracker resolution
+
+   G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
+   G4double res =  Resolution(PID, fastTrack.GetPrimaryTrack()->GetMomentum());
+   G4double eff = Efficiency(PID, fastTrack.GetPrimaryTrack()->GetMomentum());
+   G4cout<<" Resolution: "<<Resolution(PID, fastTrack.GetPrimaryTrack()->GetMomentum())<<G4endl;
+
    if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
    {
-      G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
-      G4double mass = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetDefinition()->GetPDGMass();
-      G4double q = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetCharge();
+      // G4double mass = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetDefinition()->GetPDGMass();
+      // G4double q = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetCharge();
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       {
-         G4double* params = FCCSmearer::Instance()->Smear(fastTrack.GetPrimaryTrack());
-         G4ThreeVector eP = fastTrack.GetPrimaryTrack()->GetVertexMomentumDirection();
-         G4double Ekin = fastTrack.GetPrimaryTrack()->GetVertexKineticEnergy();
-         G4ThreeVector P = eP * sqrt (Ekin*Ekin+2*mass*Ekin);
-         FCCOutput::Instance()->SaveTrack(true, PID, PID, q, P, params);
+         //FCCSmearer::Instance()->Smear(fastTrack.GetPrimaryTrack());
+         G4ThreeVector P = fastTrack.GetPrimaryTrack()->GetMomentum();
+         FCCOutput::Instance()->SaveTrack(true, PID, PID, P, res, eff);
+         G4cout<<" saving ... true, "<<PID<<", "<<PID<<", "<<P<<", "<<res<<", "<<eff<<G4endl;
       }
       else
       {
-         G4ThreeVector eP = fastTrack.GetPrimaryTrack()->GetVertexMomentumDirection();
-         G4double Ekin = fastTrack.GetPrimaryTrack()->GetVertexKineticEnergy();
-         G4ThreeVector P = eP * sqrt (Ekin*Ekin+2*mass*Ekin);
-         G4ThreeVector pos = fastTrack.GetPrimaryTrack()->GetVertexPosition();
-         FCCOutput::Instance()->SaveTrack(true, PID, PID, q,  P, pos);
+         G4ThreeVector P = fastTrack.GetPrimaryTrack()->GetMomentum();
+         FCCOutput::Instance()->SaveTrack(true, PID, PID, P);
       }
    }
+}
+
+G4double FCCFastSimModelTracker::Resolution(const G4int PID, const G4ThreeVector mom) const
+{
+   if(PID)
+      return 0.013;
+   else
+      return 0;
+}
+
+G4double FCCFastSimModelTracker::Efficiency(const G4int PID, const G4ThreeVector mom) const
+{
+   if(PID)
+   {
+      float pt = mom.perp();
+      float eta = mom.eta();
+      float effvalue = 0.;
+      if (pt>1.0 && fabs(eta)<2.5)
+         effvalue = 0.90;
+      return effvalue;
+   }
+   else
+      return 0;
 }
