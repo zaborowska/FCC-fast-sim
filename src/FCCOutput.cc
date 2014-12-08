@@ -89,11 +89,11 @@ void FCCOutput::CreateNtuples()
   analysisManager->CreateNtupleDColumn("pX");  // column Id = 2
   analysisManager->CreateNtupleDColumn("pY"); // column Id = 3
   analysisManager->CreateNtupleDColumn("pZ"); // column Id = 4
-  analysisManager->CreateNtupleDColumn("Dd0");  // column Id = 5
-  analysisManager->CreateNtupleDColumn("Dz0"); // column Id = 6
-  analysisManager->CreateNtupleDColumn("Dphi0"); // column Id = 7
-  analysisManager->CreateNtupleDColumn("Dcottheta");  // column Id = 8
-  analysisManager->CreateNtupleDColumn("DqpT"); // column Id = 9
+  analysisManager->CreateNtupleDColumn("d0");  // column Id = 5
+  analysisManager->CreateNtupleDColumn("z0"); // column Id = 6
+  analysisManager->CreateNtupleDColumn("phi0"); // column Id = 7
+  analysisManager->CreateNtupleDColumn("cottheta");  // column Id = 8
+  analysisManager->CreateNtupleDColumn("qpT"); // column Id = 9
   analysisManager->FinishNtuple(ntupID);
 
      analysisManager->CreateNtuple(evName+"_det", evName+"_det");
@@ -102,11 +102,11 @@ void FCCOutput::CreateNtuples()
      analysisManager->CreateNtupleDColumn("pX");  // column Id = 2
      analysisManager->CreateNtupleDColumn("pY"); // column Id = 3
      analysisManager->CreateNtupleDColumn("pZ"); // column Id = 4
-     analysisManager->CreateNtupleDColumn("Dd0");  // column Id = 5
-     analysisManager->CreateNtupleDColumn("Dz0"); // column Id = 6
-     analysisManager->CreateNtupleDColumn("Dphi0"); // column Id = 7
-     analysisManager->CreateNtupleDColumn("Dcottheta");  // column Id = 8
-     analysisManager->CreateNtupleDColumn("DqpT"); // column Id = 9
+     analysisManager->CreateNtupleDColumn("d0");  // column Id = 5
+     analysisManager->CreateNtupleDColumn("z0"); // column Id = 6
+     analysisManager->CreateNtupleDColumn("phi0"); // column Id = 7
+     analysisManager->CreateNtupleDColumn("cottheta");  // column Id = 8
+     analysisManager->CreateNtupleDColumn("qpT"); // column Id = 9
      analysisManager->FinishNtuple(ntupID + 1);
 }
 

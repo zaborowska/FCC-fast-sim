@@ -6,11 +6,36 @@
 #setting seed to be able to restore the event in future
 #/generator/pythia8/setSeed CombinationOfRunNumberAndEventNumber
 
-/generator/pythia8/read HardQCD:all = on
-/generator/pythia8/read PhaseSpace:pTHatMin = 20.
-/generator/pythia8/init 2212 2212 140.
+/generator/pythia8/read HiggsSM:all = on
+/generator/pythia8/read 25:0:onMode off
+/generator/pythia8/read 25:1:onMode off
+/generator/pythia8/read 25:2:onMode off
+/generator/pythia8/read 25:3:onMode off
+/generator/pythia8/read 25:4:onMode off
+/generator/pythia8/read 25:5:onMode off
+/generator/pythia8/read 25:6:onMode off
+/generator/pythia8/read 25:7:onMode off
+/generator/pythia8/read 25:8:onMode off
+/generator/pythia8/read 25:9:onMode off
+/generator/pythia8/read 25:10:onMode off
+/generator/pythia8/read 25:11:onMode off
+/generator/pythia8/read 25:12:onMode on
+/generator/pythia8/read 25:13:onMode off
+
+/generator/pythia8/read 23:0:onMode off
+/generator/pythia8/read 23:1:onMode off
+/generator/pythia8/read 23:2:onMode off
+/generator/pythia8/read 23:3:onMode off
+/generator/pythia8/read 23:4:onMode off
+/generator/pythia8/read 23:5:onMode off
+/generator/pythia8/read 23:6:onMode off
+/generator/pythia8/read 23:7:onMode on
+/generator/pythia8/read 23:8:onMode off
+/generator/pythia8/read 23:9:onMode off
+/generator/pythia8/read 23:10:onMode off
+/generator/pythia8/init 2212 2212 14000.
 
 #/hits/verbose 2
-/run/beamOn 1
+/run/beamOn 2
 /generator/pythia8/stat
 

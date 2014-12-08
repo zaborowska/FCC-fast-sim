@@ -25,6 +25,7 @@
 //
 
 #include "FCCTrackingAction.hh"
+#include "FCCPrimaryParticleInformation.hh"
 #include "FCCEventInformation.hh"
 #include "FCCOutput.hh"
 #include "FCCSmearer.hh"
@@ -53,19 +54,23 @@ FCCTrackingAction::~FCCTrackingAction()
 void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
    G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
-   if( !( abs(aTrack->GetMomentum().pseudoRapidity())<5.5) )
-      ((G4Track*)aTrack)->SetTrackStatus(fStopAndKill);
 
 // filling data only for primary particles
    if(aTrack->GetParentID()) return;
 
+   FCCOutput::Instance()->SaveTrack(false, ((FCCPrimaryParticleInformation*) aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID(), PID, aTrack->GetDynamicParticle()->GetCharge() , aTrack->GetMomentum(), aTrack->GetPosition());
+
+   if( !( abs(aTrack->GetMomentum().pseudoRapidity())<5.5) )
+      ((G4Track*)aTrack)->SetTrackStatus(fStopAndKill);
+
+
    // Fill ntuple with G4 original data
    //FCCOutput::Instance()->SaveTrack(false, PID, PID, aTrack->GetDynamicParticle()->GetCharge(), aTrack->GetMomentum(), aTrack->GetPosition() );
 
-   //  if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
-   G4double* params = FCCSmearer::Instance()->Smear(aTrack);
+   // if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
+   //    G4double* params = FCCSmearer::Instance()->Smear(aTrack);
 
-   FCCOutput::Instance()->SaveTrack(false, PID, PID, aTrack->GetDynamicParticle()->GetCharge() , aTrack->GetDynamicParticle()->GetMomentum() ,  params);
+   if(abs(PID) ==13) G4cout<<PID<<"   MC Track ID: "<<aTrack->GetTrackID()<<"part id: "<<((FCCPrimaryParticleInformation*) aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID()<<G4endl;
 
 }
 
