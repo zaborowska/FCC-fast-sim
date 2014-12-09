@@ -1,49 +1,28 @@
 #ifndef FCC_SMEARER_H
 #define FCC_SMEARER_H
 
-#include "AtlfastMuonMatrixManager.hh"
-#include "AtlfastPionMatrixManager.hh"
-#include "AtlfastElectronMatrixManager.hh"
 #include "globals.hh"
 #include "G4Track.hh"
+#include "CLHEP/Random/JamesRandom.h"
+#include "CLHEP/Random/RandGauss.h"
 
 class FCCSmearer
 {
 public:
+
    static FCCSmearer* Instance();
-   void MakeManagers();
-   double* Smear(const G4Track* aTrack);
-   G4double* ComputeTrackParams(G4double charge, G4ThreeVector vertexMomentum, G4ThreeVector vertexPosition);
-   G4ThreeVector ComputePosFromParams(G4double* params, G4double diffAngle);
-   G4ThreeVector ComputeMomFromParams(G4double* params);
-   G4double CheckPhi(G4double Phi);
+   G4ThreeVector Smear(const G4Track* aTrack, G4double resolution);
+   G4double Smear(const G4double energy, G4double resolution);
 
-   enum Parametrisation {simpleCMS, simpleATLAS, simpleAPHEA, AtlFast};
-   void SetTrackerParametrisation(Parametrisation tr);
-   FCCSmearer::Parametrisation GetTrackerParametrisation();
-   void SetEMCalParametrisation(Parametrisation ec);
-   FCCSmearer::Parametrisation GetEMCalParametrisation();
-   void SetHCalParametrisation(Parametrisation hc);
-   FCCSmearer::Parametrisation GetHCalParametrisation();
-
-   // G4double Smear(G4double aMomentum);
-   // G4double GetResolution(G4double aMomentum);
-
+   G4double Gauss(G4double mean, G4double stdDev);
 protected:
    FCCSmearer();
    ~FCCSmearer();
 
 private:
    static FCCSmearer* fFCCSmearer;
-   Atlfast::ElectronMatrixManager* fElectronManager;
-   Atlfast::PionMatrixManager* fPionManager;
-   Atlfast::MuonMatrixManager* fMuonManager;
-   FCCSmearer::Parametrisation fTracker;
-   FCCSmearer::Parametrisation fEMCal;
-   FCCSmearer::Parametrisation fHCal;
-
-   G4double bField;
-
+    CLHEP::HepRandomEngine*    fRandomEngine;
+    CLHEP::RandGauss*    fRandomGauss;
 };
 
 #endif

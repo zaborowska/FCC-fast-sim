@@ -26,23 +26,23 @@
 // based on G4 examples/extended/parametrisations/Par01/include/Par01EMShowerModel.hh
 //
 
-#ifndef FCC_TRACKER_FAST_SIM_MODEL_H
-#define FCC_TRACKER_FAST_SIM_MODEL_H
+#ifndef FCC_EMCAL_FAST_SIM_MODEL_H
+#define FCC_EMCAL_FAST_SIM_MODEL_H
 
 #include "G4VFastSimulationModel.hh"
 #include "FCCDetectorParametrisation.hh"
 #include "G4Step.hh"
 
-class FCCFastSimModelTracker : public G4VFastSimulationModel
+class FCCFastSimModelEMCal : public G4VFastSimulationModel
 {
 public:
    //-------------------------
    // Constructor, destructor
    //-------------------------
-   FCCFastSimModelTracker (G4String, G4Region*, FCCDetectorParametrisation::Parametrisation);
-   FCCFastSimModelTracker (G4String, G4Region*);
-   FCCFastSimModelTracker (G4String);
-   ~FCCFastSimModelTracker ();
+   FCCFastSimModelEMCal (G4String, G4Region*, FCCDetectorParametrisation::Parametrisation);
+   FCCFastSimModelEMCal (G4String, G4Region*);
+   FCCFastSimModelEMCal (G4String);
+   ~FCCFastSimModelEMCal ();
 
    //------------------------------
    // Virtual methods of the base

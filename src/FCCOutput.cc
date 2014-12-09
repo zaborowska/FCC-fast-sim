@@ -11,14 +11,14 @@
 FCCOutput* FCCOutput::fFCCOutput = 0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-FCCOutput::FCCOutput(): fFileNameWithRunNo(false)
+FCCOutput::FCCOutput(): fFileNameWithRunNo(false), fCurrentID()
 {
    fFileName = "DefaultOutput.root";
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCOutput::~FCCOutput()
 {
-  delete G4AnalysisManager::Instance();
+   delete G4AnalysisManager::Instance();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -66,7 +66,7 @@ void FCCOutput::StartAnalysis(G4int runID)
 void FCCOutput::EndAnalysis()
 {
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  // save histograms & ntuple
+   // save histograms & ntuple
    analysisManager->Write();
    analysisManager->CloseFile();
 }
@@ -75,63 +75,109 @@ void FCCOutput::EndAnalysis()
 void FCCOutput::CreateNtuples()
 {
    const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-  G4String evName = "Event_";
-  evName += G4UIcommand::ConvertToString(event->GetEventID());
+   G4String evName = "Event_";
+   evName += G4UIcommand::ConvertToString(event->GetEventID());
 
-  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  // Creating ntuple
-  //
-  G4int ntupID = 2*event->GetEventID();
+   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+   // Creating ntuple
+   //
+   G4int ntupID = 2*event->GetEventID();
 
-  analysisManager->CreateNtuple(evName+"_MC", evName+"_MC");
-  analysisManager->CreateNtupleIColumn("particleID");  // column Id = 0
-  analysisManager->CreateNtupleIColumn("PID");  // column Id = 1
-  analysisManager->CreateNtupleDColumn("pX");  // column Id = 2
-  analysisManager->CreateNtupleDColumn("pY"); // column Id = 3
-  analysisManager->CreateNtupleDColumn("pZ"); // column Id = 4
-  analysisManager->FinishNtuple(ntupID);
+   analysisManager->CreateNtuple(evName, evName);
+   analysisManager->CreateNtupleIColumn("particleID");  // column Id = 0
+   analysisManager->CreateNtupleIColumn("PID");  // column Id = 1
+   analysisManager->CreateNtupleDColumn("MC_pX");  // column Id = 2
+   analysisManager->CreateNtupleDColumn("MC_pY"); // column Id = 3
+   analysisManager->CreateNtupleDColumn("MC_pZ"); // column Id = 4
 
-  analysisManager->CreateNtuple(evName+"_det", evName+"_det");
-  analysisManager->CreateNtupleIColumn("particleID");  // column Id = 0
-  analysisManager->CreateNtupleIColumn("PID");  // column Id = 1
-  analysisManager->CreateNtupleDColumn("TRpX");  // column Id = 2
-  analysisManager->CreateNtupleDColumn("TRpY"); // column Id = 3
-  analysisManager->CreateNtupleDColumn("TRpZ"); // column Id = 4
-  analysisManager->CreateNtupleDColumn("TRres"); // column Id = 5
-  analysisManager->CreateNtupleDColumn("TReff"); // column Id = 6
-  analysisManager->FinishNtuple(ntupID + 1);
+   analysisManager->CreateNtupleDColumn("tracker_res"); // column Id = 5
+   analysisManager->CreateNtupleDColumn("tracker_eff"); // column Id = 6
+   analysisManager->CreateNtupleDColumn("tracker_pX");  // column Id = 7
+   analysisManager->CreateNtupleDColumn("tracker_pY"); // column Id = 8
+   analysisManager->CreateNtupleDColumn("tracker_pZ"); // column Id = 9
+
+   analysisManager->CreateNtupleDColumn("emcal_eff"); // column Id = 10
+   analysisManager->CreateNtupleIColumn("emcal_E");  // column Id = 11
+   analysisManager->CreateNtupleDColumn("emcal_X");  // column Id = 12
+   analysisManager->CreateNtupleDColumn("emcal_Y"); // column Id = 13
+   analysisManager->CreateNtupleDColumn("emcal_Z"); // column Id = 14
+   analysisManager->CreateNtupleDColumn("emcal_res"); // column Id = 15
+
+   analysisManager->CreateNtupleDColumn("hcal_res"); // column Id = 16
+   analysisManager->CreateNtupleDColumn("hcal_eff"); // column Id = 17
+   analysisManager->CreateNtupleDColumn("hcal_X");  // column Id = 18
+   analysisManager->CreateNtupleDColumn("hcal_Y"); // column Id = 19
+   analysisManager->CreateNtupleDColumn("hcal_Z"); // column Id = 20
+   analysisManager->CreateNtupleIColumn("hcal_E");  // column Id = 21
+   analysisManager->FinishNtuple(ntupID);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void FCCOutput::CreateHistograms()
 {
-  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
    analysisManager->CreateH1("Pdiff","P smeared in tracker", 101, -100.*GeV, 100*GeV);
+   analysisManager->CreateH1("ECalEdiff","E smeared in EMCal", 101, 0., 100*GeV);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID,
-                          G4ThreeVector momentum, G4double resolution, G4double efficiency) const
+void FCCOutput::SaveTrack(SaveType what, G4int partID,  G4int PID,
+                          G4ThreeVector vec, G4double resolution, G4double efficiency, G4double energy)
 {
-   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
-   G4int evNo = event->GetEventID();
+   G4int evNo = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   G4int ntupID = 2* evNo+HitDetector; // 2*evNo is TTree number for storing MC at vertex, 2*evNo+1 is TTree number for storing detected particles (smeared)
-   analysisManager->FillNtupleIColumn(ntupID, 0, partID);
-   analysisManager->FillNtupleIColumn(ntupID, 1, PID);
-   analysisManager->FillNtupleDColumn(ntupID, 2, momentum.x());
-   analysisManager->FillNtupleDColumn(ntupID, 3, momentum.y());
-   analysisManager->FillNtupleDColumn(ntupID, 4, momentum.z());
-   if(HitDetector)
+   switch(what)
    {
-      analysisManager->FillNtupleDColumn(ntupID, 5, resolution);
-      analysisManager->FillNtupleDColumn(ntupID, 6, efficiency);
+   case eMC:
+   {
+      analysisManager->FillNtupleIColumn(evNo, 0, partID);
+      analysisManager->FillNtupleIColumn(evNo, 1, PID);
+      analysisManager->FillNtupleDColumn(evNo, 2, vec.x());
+      analysisManager->FillNtupleDColumn(evNo, 3, vec.y());
+      analysisManager->FillNtupleDColumn(evNo, 4, vec.z());
+      fCurrentID = partID;
+      break;
    }
-   analysisManager->AddNtupleRow(ntupID);
+   case eTracker:
+   {
+      if (partID != fCurrentID)
+         G4cout<<" Wrong particle - trying to save Tracker information of different particle"<<G4endl;
+      analysisManager->FillNtupleDColumn(evNo, 5, resolution);
+      analysisManager->FillNtupleDColumn(evNo, 6, efficiency);
+      analysisManager->FillNtupleDColumn(evNo, 7, vec.x());
+      analysisManager->FillNtupleDColumn(evNo, 8, vec.y());
+      analysisManager->FillNtupleDColumn(evNo, 9, vec.z());
+      break;
+   }
+   case eEMCal:
+   {
+      if (partID != fCurrentID)
+         G4cout<<" Wrong particle - trying to save EMCal information of different particle"<<G4endl;
+      analysisManager->FillNtupleDColumn(evNo, 10, resolution);
+      analysisManager->FillNtupleDColumn(evNo, 11, efficiency);
+      analysisManager->FillNtupleDColumn(evNo, 12, vec.x());
+      analysisManager->FillNtupleDColumn(evNo, 13, vec.y());
+      analysisManager->FillNtupleDColumn(evNo, 14, vec.z());
+      analysisManager->FillNtupleDColumn(evNo, 15, energy);
+      break;
+   }
+   case eHCal:
+   {
+      if (partID != fCurrentID)
+         G4cout<<" Wrong particle - trying to save HCal information of different particle"<<G4endl;
+      analysisManager->FillNtupleDColumn(evNo, 16, resolution);
+      analysisManager->FillNtupleDColumn(evNo, 17, efficiency);
+      analysisManager->FillNtupleDColumn(evNo, 18, vec.x());
+      analysisManager->FillNtupleDColumn(evNo, 19, vec.y());
+      analysisManager->FillNtupleDColumn(evNo, 20, vec.z());
+      analysisManager->FillNtupleDColumn(evNo, 21, energy);
+      analysisManager->AddNtupleRow(evNo);
+      break;
+   }
+   }
    return;
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void FCCOutput::FillHistogram(G4int HNo, G4double value) const

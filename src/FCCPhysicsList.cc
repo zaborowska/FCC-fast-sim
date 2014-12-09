@@ -114,7 +114,7 @@ void FCCPhysicsList::ConstructProcess()
   AddTransportation();
   AddParameterisation();
 
-  // ConstructEM();
+  ConstructEM();
   ConstructGeneral();
 }
 

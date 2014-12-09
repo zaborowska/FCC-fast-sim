@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 
-#include "FCCFastSimModelTracker.hh"
+#include "FCCFastSimModelEMCal.hh"
 #include "FCCEventInformation.hh"
 #include "FCCSmearer.hh"
 #include "FCCOutput.hh"
@@ -40,58 +40,62 @@
 #include "G4Positron.hh"
 #include "G4Gamma.hh"
 
-FCCFastSimModelTracker::FCCFastSimModelTracker(G4String modelName, G4Region* envelope, FCCDetectorParametrisation::Parametrisation type)
+FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String modelName, G4Region* envelope, FCCDetectorParametrisation::Parametrisation type)
    : G4VFastSimulationModel(modelName, envelope), fCalcParam(), fParam(type)
 {}
 
-FCCFastSimModelTracker::FCCFastSimModelTracker(G4String modelName, G4Region* envelope)
+FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String modelName, G4Region* envelope)
    : G4VFastSimulationModel(modelName, envelope), fCalcParam(), fParam(FCCDetectorParametrisation::eCMS)
 {}
 
-FCCFastSimModelTracker::FCCFastSimModelTracker(G4String modelName)
+FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String modelName)
    : G4VFastSimulationModel(modelName), fCalcParam(), fParam(FCCDetectorParametrisation::eCMS)
 {}
 
-FCCFastSimModelTracker::~FCCFastSimModelTracker()
+FCCFastSimModelEMCal::~FCCFastSimModelEMCal()
 {}
 
-G4bool FCCFastSimModelTracker::IsApplicable(const G4ParticleDefinition& particleType)
+G4bool FCCFastSimModelEMCal::IsApplicable(const G4ParticleDefinition& particleType)
 {
-   return  particleType.GetPDGCharge() != 0;
-      // &particleType == G4Electron::Definition() ||
-      // &particleType == G4Positron::Definition() ||
-      // &particleType == G4Gamma::Definition();
+   return &particleType == G4Electron::Definition() ||
+      &particleType == G4Positron::Definition() ||
+      &particleType == G4Gamma::Definition();
 }
 
-G4bool FCCFastSimModelTracker::ModelTrigger(const G4FastTrack& fastTrack)
+G4bool FCCFastSimModelEMCal::ModelTrigger(const G4FastTrack& fastTrack)
 {
-   // G4ThreeVector posFT = fastTrack.GetPrimaryTrackLocalPosition();
-   // G4ThreeVector dirFT = fastTrack.GetPrimaryTrackLocalDirection();
-   // return (fastTrack.GetEnvelopeSolid()->DistanceToIn(posFT,dirFT) == 0);
-   return false;
+   return true;//fastTrack.GetPrimaryTrack()->GetKineticEnergy() > 100*MeV;
 }
 
-void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
+void FCCFastSimModelEMCal::DoIt(const G4FastTrack& fastTrack,
                             G4FastStep& fastStep)
 {
-   G4cout<<fastTrack.GetPrimaryTrack()->GetPosition().perp()<<G4endl;
+   // Kill the parameterised particle:
+   fastStep.KillPrimaryTrack();
+   fastStep.ProposePrimaryTrackPathLength(0.0);
+   G4double Edep = fastTrack.GetPrimaryTrack()->GetKineticEnergy();
+
    // here Smear according to tracker resolution
+
    G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
+   G4ThreeVector Pos = fastTrack.GetPrimaryTrack()->GetPosition();
    G4ThreeVector Porg = fastTrack.GetPrimaryTrack()->GetMomentum();
-   G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
-   G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
+   G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eEMCal, fParam, Porg.mag());
+   G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eEMCal, fParam, Porg.mag());
 
    if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
    {
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       {
-         G4ThreeVector Psm = FCCSmearer::Instance()->Smear(fastTrack.GetPrimaryTrack(), res);
-         FCCOutput::Instance()->FillHistogram(0,Porg.mag() - Psm.mag() );
-         FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Psm, res, eff);
+         G4double Esm = FCCSmearer::Instance()->Smear(Edep, res);
+         FCCOutput::Instance()->FillHistogram(1,Edep-Esm );
+         FCCOutput::Instance()->SaveTrack(FCCOutput::eEMCal, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Pos, res, eff, Esm);
+         fastStep.ProposeTotalEnergyDeposited(Esm);
       }
       else
       {
-         FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Porg);
+         FCCOutput::Instance()->SaveTrack(FCCOutput::eEMCal, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Pos, Edep);
+         fastStep.ProposeTotalEnergyDeposited(Edep);
       }
    }
 }

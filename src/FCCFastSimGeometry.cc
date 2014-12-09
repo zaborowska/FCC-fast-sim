@@ -24,6 +24,7 @@
 // ********************************************************************
 //
 #include "FCCFastSimGeometry.hh"
+#include "FCCDetectorParametrisation.hh"
 #include "G4ProductionCuts.hh"
 #include "G4SystemOfUnits.hh"
 
@@ -32,9 +33,9 @@
 FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* auxmap)
 {
    std::vector<G4Region*> TrackerList;
-   std::vector<G4Region*> fECalList;
-   std::vector<G4Region*> fHCalList;
-   std::vector<G4Region*> fMuonList;
+   std::vector<G4Region*> ECalList;
+   std::vector<G4Region*> HCalList;
+   std::vector<G4Region*> MuonList;
 
    // Retrieving Auxiliary Information
 
@@ -51,18 +52,18 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* auxmap)
                TrackerList.push_back(new G4Region(myvol->GetName()));
                TrackerList.back()->AddRootLogicalVolume(myvol);
             }
-            // else if ((myvol->GetName()).find("HCal") != std::string::npos){
-            //    fHCalList.push_back(new G4Region(myvol->GetName()));
-            //    fHCalList.back()->AddRootLogicalVolume(myvol);
-            // }
-            // else if ((myvol->GetName()).find("ECal") != std::string::npos){
-            //    fECalList.push_back(new G4Region(myvol->GetName()));
-            //    fECalList.back()->AddRootLogicalVolume(myvol);
-            // }
-            // else if ((myvol->GetName()).find("Muon") != std::string::npos){
-            //    fMuonList.push_back(new G4Region(myvol->GetName()));
-            //    fMuonList.back()->AddRootLogicalVolume(myvol);
-            // }
+            else if ((myvol->GetName()).find("HCal") != std::string::npos){
+               HCalList.push_back(new G4Region(myvol->GetName()));
+               HCalList.back()->AddRootLogicalVolume(myvol);
+            }
+            else if ((myvol->GetName()).find("ECal") != std::string::npos){
+               ECalList.push_back(new G4Region(myvol->GetName()));
+               ECalList.back()->AddRootLogicalVolume(myvol);
+            }
+            else if ((myvol->GetName()).find("Muon") != std::string::npos){
+               MuonList.push_back(new G4Region(myvol->GetName()));
+               MuonList.back()->AddRootLogicalVolume(myvol);
+            }
             else {
                G4cout << G4endl << "NOT A KNOWN DETECTOR !!!" << G4endl;
             }
@@ -77,17 +78,17 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* auxmap)
          (0.5* ((*TrackerList[iterTracker]->GetRootLogicalVolumeIterator())->GetMaterial()->GetRadlen()) );
       TrackerList[iterTracker]->GetProductionCuts()->SetProductionCut(
          0.1*m, idxG4GammaCut );
-      new FCCFastSimModelTracker("fastSimModelTracker",TrackerList[iterTracker]);
+      new FCCFastSimModelTracker("fastSimModelTracker",TrackerList[iterTracker], FCCDetectorParametrisation::eCMS);
    }
-   // for (G4int iterECal=0; iterECal<G4int(fECalList.size()); iterECal++)
-   // {
-   //    fECalList[iterECal]->SetProductionCuts(new G4ProductionCuts());
-   //    fECalList[iterECal]->GetProductionCuts()->SetProductionCut
-   //       (0.5* ((*fECalList[iterECal]->GetRootLogicalVolumeIterator())->GetMaterial()->GetRadlen()) );
-   //    fECalList[iterECal]->GetProductionCuts()->SetProductionCut(
-   //       0.1*m, idxG4GammaCut );
-   //    new FCCFastSimModelTracker("fastSimModelTracker",fECalList[iterECal]);
-   // }
+   for (G4int iterECal=0; iterECal<G4int(ECalList.size()); iterECal++)
+   {
+      ECalList[iterECal]->SetProductionCuts(new G4ProductionCuts());
+      ECalList[iterECal]->GetProductionCuts()->SetProductionCut
+         (0.5* ((*ECalList[iterECal]->GetRootLogicalVolumeIterator())->GetMaterial()->GetRadlen()) );
+      ECalList[iterECal]->GetProductionCuts()->SetProductionCut(
+         0.1*m, idxG4GammaCut );
+      new FCCFastSimModelEMCal("fastSimModelEMCal",ECalList[iterECal], FCCDetectorParametrisation::eCMS);
+   }
    // for (G4int iterHCal=0; iterHCal<G4int(fHCalList.size()); iterHCal++)
    // {
    //    fHCalList[iterHCal]->SetProductionCuts(new G4ProductionCuts());
@@ -110,7 +111,7 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* auxmap)
 
    //    fMuonSmearModel.push_back(
    //       new FCCMuonSmearModel("MuonKillModel",fMuonList[iterMuon]));
-   // }z
+   // }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

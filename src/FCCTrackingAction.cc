@@ -60,7 +60,7 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
    if(aTrack->GetParentID()) return;
 
    // Fill ntuple with G4 original data
-   FCCOutput::Instance()->SaveTrack(false, PID, PID, aTrack->GetMomentum() );
+   FCCOutput::Instance()->SaveTrack(FCCOutput::eMC, aTrack->GetTrackID(), PID, aTrack->GetMomentum() );
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

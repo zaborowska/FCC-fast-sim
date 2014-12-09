@@ -45,6 +45,8 @@
 // Fast Simulation Models
 //-----------------------------------
 #include "FCCFastSimModelTracker.hh"
+#include "FCCFastSimModelEMCal.hh"
+#include "FCCFastSimModelHCal.hh"
 
 //---------------------------
 // Parameterisation manager:
@@ -59,10 +61,6 @@ class FCCFastSimGeometry
     ~FCCFastSimGeometry();
 
 private:
-   // std::vector<G4Region*> fECalList;
-   // std::vector<G4Region*> fHCalList;
-   // std::vector<G4Region*> fMuonList;
-   // //G4UserLimits* fStepLimit;
    // std::vector<FCCEmSmearModel*> fECalSmearModel;
    // std::vector<FCCHadSmearModel*> fHCalSmearModel;
    // std::vector<FCCMuonSmearModel*> fMuonSmearModel;
