@@ -26,26 +26,19 @@
 /// \file eventgenerator/HepMC/HepMCEx02/src/H02PrimaryGeneratorAction.cc
 //
 #include "G4Event.hh"
-#include "G4ParticleGun.hh"
+#include "FCCParticleGun.hh"
 #include "FCCRootReader.hh"
 #include "FCCPythiaInterface.hh"
 #include "FCCPrimaryGeneratorAction.hh"
 #include "FCCPrimaryGeneratorMessenger.hh"
 
-#include "G4MuonPlus.hh"
-#include "Randomize.hh"
-#include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCPrimaryGeneratorAction::FCCPrimaryGeneratorAction()
 {
   // default generator is particle gun.
-  currentGenerator= particleGun= new G4ParticleGun();
+  currentGenerator= particleGun= new FCCParticleGun();
   currentGeneratorName= "particleGun";
-  // default particle kinematic
-  ((G4ParticleGun*)particleGun)->SetParticleDefinition(G4MuonPlus::Definition());
-  ((G4ParticleGun*)particleGun)->SetParticlePosition(G4ThreeVector(0.,0.,0.));
-  ((G4ParticleGun*)particleGun)->SetParticleMomentumDirection(G4ThreeVector(1.,0.,0.));
 
   hepmcRoot = new FCCRootReader();
 #ifdef G4LIB_USE_PYTHIA8
@@ -75,28 +68,28 @@ void FCCPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   if(currentGenerator)
   {
-     if(currentGenerator == particleGun)
-    {
-       // randomize particle momentum direction
-       G4double x0  = 0, y0  = 0, z0  = 0;
-       G4double dx0 = 1, dy0 = 1, dz0 = 1;
-       x0 = x0+ dx0*(G4UniformRand()-0.5);
-       y0 = y0+ dy0*(G4UniformRand()-0.5);
-       z0 = z0+ dz0*(G4UniformRand()-0.5);
-       G4ThreeVector pos(x0,y0,z0);
-       ((G4ParticleGun*)particleGun)->SetParticlePosition(pos);
-       G4double px0  = 0, py0  = 0, pz0  = 0;
-       G4double dpx0 = 1, dpy0 = 1, dpz0 = 1;
-       px0 = px0+ dpx0*(G4UniformRand()-0.5);
-       py0 = py0+ dpy0*(G4UniformRand()-0.5);
-       pz0 = pz0+ dpz0*(G4UniformRand()-0.5);
-       G4ThreeVector eP(px0,py0,pz0);
-       ((G4ParticleGun*)particleGun)->SetParticleMomentumDirection(eP.unit());
-       // ensure that particle pT = given energy in G4 macro
-       G4double pTval[] = {1,3,6,10,16,20,25,30,35,40,50,60,70,80,100}; // in GeV
-       G4double Egiven = pTval[(int)(G4UniformRand()*sizeof(pTval)/sizeof(G4double))]*GeV;
-       ((G4ParticleGun*)particleGun)->SetParticleEnergy( Egiven/eP.unit().perp() );
-    }
+    //  if(currentGenerator == particleGun)
+    // {
+    //    // randomize particle momentum direction
+    //    G4double x0  = 0, y0  = 0, z0  = 0;
+    //    G4double dx0 = 1, dy0 = 1, dz0 = 1;
+    //    x0 = x0+ dx0*(G4UniformRand()-0.5);
+    //    y0 = y0+ dy0*(G4UniformRand()-0.5);
+    //    z0 = z0+ dz0*(G4UniformRand()-0.5);
+    //    G4ThreeVector pos(x0,y0,z0);
+    //    ((G4ParticleGun*)particleGun)->SetParticlePosition(pos);
+    //    G4double px0  = 0, py0  = 0, pz0  = 0;
+    //    G4double dpx0 = 1, dpy0 = 1, dpz0 = 1;
+    //    px0 = px0+ dpx0*(G4UniformRand()-0.5);
+    //    py0 = py0+ dpy0*(G4UniformRand()-0.5);
+    //    pz0 = pz0+ dpz0*(G4UniformRand()-0.5);
+    //    G4ThreeVector eP(px0,py0,pz0);
+    //    ((G4ParticleGun*)particleGun)->SetParticleMomentumDirection(eP.unit());
+    //    // ensure that particle pT = given energy in G4 macro
+    //    G4double pTval[] = {1,3,6,10,16,20,25,30,35,40,50,60,70,80,100}; // in GeV
+    //    G4double Egiven = pTval[(int)(G4UniformRand()*sizeof(pTval)/sizeof(G4double))]*GeV;
+    //    ((G4ParticleGun*)particleGun)->SetParticleEnergy( Egiven/eP.unit().perp() );
+    // }
     currentGenerator-> GeneratePrimaryVertex(anEvent);
   }
   else

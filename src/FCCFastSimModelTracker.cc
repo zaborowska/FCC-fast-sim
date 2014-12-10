@@ -26,6 +26,7 @@
 
 #include "FCCFastSimModelTracker.hh"
 #include "FCCEventInformation.hh"
+#include "FCCPrimaryParticleInformation.hh"
 #include "FCCSmearer.hh"
 #include "FCCOutput.hh"
 
@@ -58,24 +59,26 @@ FCCFastSimModelTracker::~FCCFastSimModelTracker()
 G4bool FCCFastSimModelTracker::IsApplicable(const G4ParticleDefinition& particleType)
 {
    return  particleType.GetPDGCharge() != 0;
-      // &particleType == G4Electron::Definition() ||
-      // &particleType == G4Positron::Definition() ||
-      // &particleType == G4Gamma::Definition();
 }
 
 G4bool FCCFastSimModelTracker::ModelTrigger(const G4FastTrack& fastTrack)
 {
-   // G4ThreeVector posFT = fastTrack.GetPrimaryTrackLocalPosition();
-   // G4ThreeVector dirFT = fastTrack.GetPrimaryTrackLocalDirection();
-   // return (fastTrack.GetEnvelopeSolid()->DistanceToIn(posFT,dirFT) == 0);
-   return false;
+   return ! (fastTrack.GetEnvelopeSolid()->DistanceToIn( fastTrack.GetPrimaryTrackLocalPosition () ));
 }
 
 void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
                             G4FastStep& fastStep)
 {
-   G4cout<<fastTrack.GetPrimaryTrack()->GetPosition().perp()<<G4endl;
-   // here Smear according to tracker resolution
+   // move track to the edgeol/exec of tracker
+// ================
+   G4double distance = fastTrack.GetEnvelopeSolid()->DistanceToOut( fastTrack.GetPrimaryTrackLocalPosition(),
+                                                                    fastTrack.GetPrimaryTrackLocalDirection() );
+   G4ThreeVector position = fastTrack.GetPrimaryTrackLocalPosition() +  distance*fastTrack.GetPrimaryTrackLocalDirection();
+   fastStep.ProposePrimaryTrackFinalPosition( position );
+
+// ================
+
+   // smear according to tracker resolution
    G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
    G4ThreeVector Porg = fastTrack.GetPrimaryTrack()->GetMomentum();
    G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());

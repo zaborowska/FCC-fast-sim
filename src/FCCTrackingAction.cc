@@ -26,10 +26,13 @@
 
 #include "FCCTrackingAction.hh"
 #include "FCCEventInformation.hh"
+#include "FCCPrimaryParticleInformation.hh"
+#include "FCCPrimaryGeneratorAction.hh"
 #include "FCCOutput.hh"
 
 #include "G4ThreeVector.hh"
 #include "G4EventManager.hh"
+#include "G4RunManager.hh"
 
 #include "Randomize.hh"
 #include "G4TrackingManager.hh"
@@ -61,6 +64,7 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 
    // Fill ntuple with G4 original data
    FCCOutput::Instance()->SaveTrack(FCCOutput::eMC, aTrack->GetTrackID(), PID, aTrack->GetMomentum() );
+   ((FCCPrimaryParticleInformation*)aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->Print();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

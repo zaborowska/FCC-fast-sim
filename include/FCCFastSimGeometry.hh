@@ -53,6 +53,8 @@
 //---------------------------
 #include "G4GlobalFastSimulationManager.hh"
 
+#include "G4UniformMagField.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 class FCCFastSimGeometry
 {
@@ -61,8 +63,10 @@ class FCCFastSimGeometry
     ~FCCFastSimGeometry();
 
 private:
-   // std::vector<FCCEmSmearModel*> fECalSmearModel;
-   // std::vector<FCCHadSmearModel*> fHCalSmearModel;
+    G4UniformMagField*        fEMfield;
+   std::vector<FCCFastSimModelTracker*> fTrackerSmearModel;
+   std::vector<FCCFastSimModelEMCal*> fEMCalSmearModel;
+   std::vector<FCCFastSimModelHCal*> fHCalSmearModel;
    // std::vector<FCCMuonSmearModel*> fMuonSmearModel;
 };
 

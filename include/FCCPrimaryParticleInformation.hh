@@ -35,18 +35,15 @@ class FCCPrimaryParticleInformation: public G4VUserPrimaryParticleInformation
 {
   public:
     FCCPrimaryParticleInformation();
-   FCCPrimaryParticleInformation(G4int, G4LorentzVector*, G4LorentzVector*);
-   FCCPrimaryParticleInformation(G4int, G4double, G4double, G4double, G4double, G4double, G4double, G4double, G4double);
+   FCCPrimaryParticleInformation(G4int);
     virtual ~FCCPrimaryParticleInformation();
 
     virtual void Print() const;
-   G4LorentzVector* GetMomentumProduction() const;
-   G4LorentzVector* GetVertexProduction() const;
+   // G4LorentzVector* GetMomentumProduction() const;
+   // G4LorentzVector* GetVertexProduction() const;
    G4int GetID() const;
 
   private:
-   G4LorentzVector* vertexProduction;
-   G4LorentzVector* momentumProduction; // initial momentum
    G4int id; // unique id within the event
 };
 

@@ -114,12 +114,13 @@ void FCCPhysicsList::ConstructProcess()
   AddTransportation();
   AddParameterisation();
 
-  ConstructEM();
-  ConstructGeneral();
+  // ConstructEM();
+  // ConstructGeneral();
 }
 
 void FCCPhysicsList::AddTransportation()
 {
+  UseCoupledTransportation();
   G4VUserPhysicsList::AddTransportation();
 }
 

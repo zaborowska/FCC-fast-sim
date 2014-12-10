@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 
-#include "FCCFastSimModelEMCal.hh"
+#include "FCCFastSimModelHCal.hh"
 #include "FCCEventInformation.hh"
 #include "FCCSmearer.hh"
 #include "FCCOutput.hh"
@@ -36,38 +36,37 @@
 
 #include "Randomize.hh"
 
-#include "G4Electron.hh"
-#include "G4Positron.hh"
-#include "G4Gamma.hh"
-
-FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String modelName, G4Region* envelope, FCCDetectorParametrisation::Parametrisation type)
+FCCFastSimModelHCal::FCCFastSimModelHCal(G4String modelName, G4Region* envelope, FCCDetectorParametrisation::Parametrisation type)
    : G4VFastSimulationModel(modelName, envelope), fCalcParam(), fParam(type)
 {}
 
-FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String modelName, G4Region* envelope)
+FCCFastSimModelHCal::FCCFastSimModelHCal(G4String modelName, G4Region* envelope)
    : G4VFastSimulationModel(modelName, envelope), fCalcParam(), fParam(FCCDetectorParametrisation::eCMS)
 {}
 
-FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String modelName)
+FCCFastSimModelHCal::FCCFastSimModelHCal(G4String modelName)
    : G4VFastSimulationModel(modelName), fCalcParam(), fParam(FCCDetectorParametrisation::eCMS)
 {}
 
-FCCFastSimModelEMCal::~FCCFastSimModelEMCal()
+FCCFastSimModelHCal::~FCCFastSimModelHCal()
 {}
 
-G4bool FCCFastSimModelEMCal::IsApplicable(const G4ParticleDefinition& particleType)
+G4bool FCCFastSimModelHCal::IsApplicable(const G4ParticleDefinition& particleType)
 {
-   return &particleType == G4Electron::Definition() ||
-      &particleType == G4Positron::Definition() ||
-      &particleType == G4Gamma::Definition();
+   return (particleType.GetQuarkContent(1) +
+           particleType.GetQuarkContent(2) +
+           particleType.GetQuarkContent(3) +
+           particleType.GetQuarkContent(4) +
+           particleType.GetQuarkContent(5) +
+           particleType.GetQuarkContent(6) );
 }
 
-G4bool FCCFastSimModelEMCal::ModelTrigger(const G4FastTrack& fastTrack)
+G4bool FCCFastSimModelHCal::ModelTrigger(const G4FastTrack& fastTrack)
 {
    return true;
 }
 
-void FCCFastSimModelEMCal::DoIt(const G4FastTrack& fastTrack,
+void FCCFastSimModelHCal::DoIt(const G4FastTrack& fastTrack,
                             G4FastStep& fastStep)
 {
    // Kill the parameterised particle:
@@ -80,8 +79,8 @@ void FCCFastSimModelEMCal::DoIt(const G4FastTrack& fastTrack,
    G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
    G4ThreeVector Pos = fastTrack.GetPrimaryTrack()->GetPosition();
    G4ThreeVector Porg = fastTrack.GetPrimaryTrack()->GetMomentum();
-   G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eEMCal, fParam, Porg.mag());
-   G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eEMCal, fParam, Porg.mag());
+   G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eHCal, fParam, Porg.mag());
+   G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eHCal, fParam, Porg.mag());
 
    if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
    {
@@ -89,12 +88,12 @@ void FCCFastSimModelEMCal::DoIt(const G4FastTrack& fastTrack,
       {
          G4double Esm = FCCSmearer::Instance()->Smear(Edep, res);
          FCCOutput::Instance()->FillHistogram(1,Edep-Esm );
-         FCCOutput::Instance()->SaveTrack(FCCOutput::eEMCal, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Pos, res, eff, Esm);
+         FCCOutput::Instance()->SaveTrack(FCCOutput::eHCal, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Pos, res, eff, Esm);
          fastStep.ProposeTotalEnergyDeposited(Esm);
       }
       else
       {
-         FCCOutput::Instance()->SaveTrack(FCCOutput::eEMCal, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Pos, Edep);
+         FCCOutput::Instance()->SaveTrack(FCCOutput::eHCal, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Pos, Edep);
          fastStep.ProposeTotalEnergyDeposited(Edep);
       }
    }
