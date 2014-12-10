@@ -101,39 +101,15 @@ G4cout << "Default units: " << HepMC::Units::name(HepMC::Units::default_momentum
             vpitr= (*vitr)->particles_begin(HepMC::children);
          vpitr != (*vitr)->particles_end(HepMC::children); ++vpitr) {
 
-       G4int pdgcode= (*vpitr)-> pdg_id();
-       //  if ( abs(pdgcode) == 13 )
-       {
-          std::cout << "______________A mu has been found: " << std::endl;
-          (*vpitr)->print();
-       }
        if( (*vpitr)->status() != 1 ) continue;
+       G4int pdgcode= (*vpitr)-> pdg_id();
        pos= (*vpitr)-> momentum();
        HepMC::FourVector vert= (*vpitr)->production_vertex()->position();
        G4LorentzVector p(pos.px(), pos.py(), pos.pz(), pos.e());
        G4PrimaryParticle* g4prim=
           new G4PrimaryParticle(pdgcode, p.x()*GeV, p.y()*GeV, p.z()*GeV);
 
-       if ( abs(pdgcode) == 13 )
-       {
-          // std::cout << "______________A mu has been found: " << std::endl;
-         // (*vpitr)->print();
-         // std::cout << "\t Its parents are: " << std::endl;
-//          if ( (*vpitr)->production_vertex() ) {
-//             for ( HepMC::GenVertex::particle_iterator mother = (*vpitr)->production_vertex()->particles_begin(HepMC::parents);
-//                   mother != (*vpitr)->production_vertex()->particles_end(HepMC::parents);  ++mother )
-//             {
-//                std::cout << "\t";
-//                if((*mother)->pdg_id() == 23) (*mother)->print();
-// g4prim->SetUserInformation(new FCCPrimaryParticleInformation(
-//                     -25,
-//                     vert.x(), vert.y(), vert.z(), vert.t(),
-//                     pos.px(), pos.py(), pos.pz(), pos.e()
-//                     ));
-//             }
-//          }
          g4vtx-> SetPrimary(g4prim);
-      }
 
     }
     g4event-> AddPrimaryVertex(g4vtx);

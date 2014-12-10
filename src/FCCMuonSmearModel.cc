@@ -83,7 +83,7 @@ void FCCMuonSmearModel::DoIt(const G4FastTrack& fastTrack,
          G4ThreeVector eP = fastTrack.GetPrimaryTrack()->GetVertexMomentumDirection();
          G4double Ekin = fastTrack.GetPrimaryTrack()->GetVertexKineticEnergy();
          G4ThreeVector P = eP * sqrt (Ekin*Ekin+2*mass*Ekin);
-         FCCOutput::Instance()->SaveTrack(true, ((FCCPrimaryParticleInformation*) fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID(), PID, q, P, params);
+         FCCOutput::Instance()->SaveTrack(true,  fastTrack.GetPrimaryTrack()->GetTrackID(), PID, q, P, params);
       }
       else
       {
@@ -91,8 +91,7 @@ void FCCMuonSmearModel::DoIt(const G4FastTrack& fastTrack,
          G4double Ekin = fastTrack.GetPrimaryTrack()->GetVertexKineticEnergy();
          G4ThreeVector P = eP * sqrt (Ekin*Ekin+2*mass*Ekin);
          G4ThreeVector pos = fastTrack.GetPrimaryTrack()->GetVertexPosition();
-         FCCOutput::Instance()->SaveTrack(true, ((FCCPrimaryParticleInformation*) fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->GetID(), PID, q,  P, pos);
+         FCCOutput::Instance()->SaveTrack(true,fastTrack.GetPrimaryTrack()->GetTrackID(), PID, q,  P, pos);
       }
    }
-   G4cout<<fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode()<<"  Detected Track ID: "<<fastTrack.GetPrimaryTrack()->GetTrackID()<<G4endl;
 }
