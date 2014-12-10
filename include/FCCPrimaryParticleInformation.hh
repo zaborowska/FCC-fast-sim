@@ -28,7 +28,7 @@
 #define FCC_PRIMARY_PARTICLE_INFORMATION_H
 
 #include "G4VUserPrimaryParticleInformation.hh"
-#include "G4LorentzVector.hh"
+#include "G4ThreeVector.hh"
 #include "globals.hh"
 
 class FCCPrimaryParticleInformation: public G4VUserPrimaryParticleInformation
@@ -39,12 +39,39 @@ class FCCPrimaryParticleInformation: public G4VUserPrimaryParticleInformation
     virtual ~FCCPrimaryParticleInformation();
 
     virtual void Print() const;
-   // G4LorentzVector* GetMomentumProduction() const;
-   // G4LorentzVector* GetVertexProduction() const;
+   void SetTrackerMomentum(G4ThreeVector mom){momentumTracker = mom;};
+   G4ThreeVector GetTrackerMomentum() {return momentumTracker;};
+   void SetTrackerResolution(G4double res) {resTracker = res;};
+   G4double GetTrackerResolution() {return resTracker;};
+   void SetTrackerEfficiency(G4double eff) {effTracker = eff;};
+   G4double GetTrackerEfficiency() {return effTracker;};
+   void SetEMCalEnergy(G4double en) {energyEMCal = en;};
+   G4double GetEMCalEnergy() {return energyEMCal;};
+   void SetEMCalResolution(G4double res) {resEMCal = res;};
+   G4double GetEMCalResolution() {return resEMCal;};
+   void SetEMCalEfficiency(G4double eff) {effEMCal = eff;};
+   G4double GetEMCalEfficiency() {return effEMCal;};
+   void SetHCalEnergy(G4double en) {energyHCal = en;};
+   G4double GetHCalEnergy() {return energyHCal;};
+   void SetHCalResolution(G4double res) {resHCal = res;};
+   G4double GetHCalResolution() {return resHCal;};
+   void SetHCalEfficiency(G4double eff) {effHCal = eff;};
+   G4double GetHCalEfficiency() {return effHCal;};
    G4int GetID() const;
 
   private:
    G4int id; // unique id within the event
+   G4int pid;
+   G4ThreeVector momentumTracker;
+   G4double resTracker;
+   G4double effTracker;
+   G4double energyEMCal;
+   G4double resEMCal;
+   G4double effEMCal;
+   G4double energyHCal;
+   G4double resHCal;
+   G4double effHCal;
+
 };
 
 #endif

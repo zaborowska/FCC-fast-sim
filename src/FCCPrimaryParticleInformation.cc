@@ -51,8 +51,8 @@ G4int FCCPrimaryParticleInformation::GetID() const
 
 void FCCPrimaryParticleInformation::Print() const
 {
-   // G4cout<<"FCCPrimaryParticleInformation: "<<G4endl
-   //       <<"Particle unique ID:  "<<id<<G4endl
+    G4cout<<"FCCPrimaryParticleInformation: "<<G4endl
+          <<"Particle unique ID:  "<<id<<G4endl
    //       <<"Production vertex: ( "<<vertexProduction->x()<<" , "
    //       <<vertexProduction->y()<<" , "
    //       <<vertexProduction->z()<<" , "
@@ -60,5 +60,6 @@ void FCCPrimaryParticleInformation::Print() const
    //       <<"Initial momentum: ( "<<momentumProduction->px()<<" , "
    //       <<momentumProduction->py()<<" , "
    //       <<momentumProduction->pz()<<" , "
-   //       <<momentumProduction->e()<<" ) "<<G4endl;
+   //       <<momentumProduction->e()<<" ) "<<G4endl
+       ;
 }

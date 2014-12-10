@@ -75,6 +75,10 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 // in the case of neutrons with _HP Physics Lists.
 // To be sure that we collect information about a track only once
 // when its   if ( aTrack->GetTrackStatus() == fStopAndKill )
-{}
+{
+G4cout<<" particle momentum: "<<((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>(aTrack->
+                                                                          GetDynamicParticle()->GetPrimaryParticle())
+                                                                            ->GetUserInformation()))->GetTrackerMomentum()<<G4endl;
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

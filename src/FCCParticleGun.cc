@@ -27,7 +27,7 @@ FCCParticleGun::~FCCParticleGun()
 
 void FCCParticleGun::SetParticleDefinition
                  (G4ParticleDefinition * aParticleDefinition)
-{ 
+{
   if(!aParticleDefinition)
   {
     G4Exception("FCCParticleGun::SetParticleDefinition()","Event0101",
@@ -46,7 +46,7 @@ void FCCParticleGun::SetParticleDefinition
       return;
     }
   }
-  particle_definition = aParticleDefinition; 
+  particle_definition = aParticleDefinition;
   particle_charge = particle_definition->GetPDGCharge();
   if(particle_momentum>0.0)
   {
@@ -66,9 +66,9 @@ void FCCParticleGun::SetParticleEnergy(G4double aKineticEnergy)
     }else{
       G4cout << "FCCParticleGun::" << " " << G4endl;
     }
-    G4cout << " was defined in terms of Momentum: " 
+    G4cout << " was defined in terms of Momentum: "
            << particle_momentum/GeV << "GeV/c" << G4endl;
-    G4cout << " is now defined in terms of KineticEnergy: " 
+    G4cout << " is now defined in terms of KineticEnergy: "
            << particle_energy/GeV   << "GeV"   << G4endl;
     particle_momentum = 0.0;
   }
@@ -103,7 +103,7 @@ void FCCParticleGun::SetParticleMomentum(G4double aMomentum)
                  std::sqrt(particle_momentum*particle_momentum+mass*mass)-mass;
   }
 }
- 
+
 void FCCParticleGun::SetParticleMomentum(G4ParticleMomentum aMomentum)
 {
   if(particle_energy>0.0){
@@ -125,13 +125,13 @@ void FCCParticleGun::SetParticleMomentum(G4ParticleMomentum aMomentum)
     particle_momentum_direction =  aMomentum.unit();
     particle_momentum = aMomentum.mag();
     particle_energy = aMomentum.mag();
-  } 
-  else 
+  }
+  else
   {
     G4double mass =  particle_definition->GetPDGMass();
     particle_momentum = aMomentum.mag();
     particle_momentum_direction =  aMomentum.unit();
-    particle_energy = 
+    particle_energy =
                  std::sqrt(particle_momentum*particle_momentum+mass*mass)-mass;
   }
 }
@@ -180,9 +180,6 @@ void FCCParticleGun::GeneratePrimaryVertex(G4Event* evt)
                                 particle_polarization.z());
       particle->SetUserInformation( new FCCPrimaryParticleInformation(i));
       vertex->SetPrimary( particle );
-   G4cout<<" Primary particle : E ="<<  particle_energy <<G4endl
-         <<" \t\t P = "<<particle_momentum_direction<<G4endl
-         <<" \t\t info (id) = "<<i<<G4endl;
    }
 
    evt->AddPrimaryVertex( vertex );

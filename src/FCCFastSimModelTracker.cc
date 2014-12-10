@@ -90,11 +90,17 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
       {
          G4ThreeVector Psm = FCCSmearer::Instance()->Smear(fastTrack.GetPrimaryTrack(), res);
          FCCOutput::Instance()->FillHistogram(0,Porg.mag() - Psm.mag() );
-         FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Psm, res, eff);
+         //FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Psm, res, eff);
+         ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>(fastTrack.GetPrimaryTrack()->
+                                                                          GetDynamicParticle()->GetPrimaryParticle())
+                                           ->GetUserInformation()))->SetTrackerMomentum(Psm);
+          G4cout<<" particle momentum: "<<((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>(fastTrack.GetPrimaryTrack()->
+                                                                          GetDynamicParticle()->GetPrimaryParticle())
+                                                                            ->GetUserInformation()))->GetTrackerMomentum()<<G4endl;
       }
       else
       {
-         FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Porg);
+         //FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Porg);
       }
    }
 }
