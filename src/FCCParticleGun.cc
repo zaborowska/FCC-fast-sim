@@ -155,9 +155,10 @@ void FCCParticleGun::GeneratePrimaryVertex(G4Event* evt)
    G4ThreeVector eP(px0,py0,pz0);
    SetParticleMomentumDirection(eP.unit());
    // ensure that particle pT = given energy in G4 macro
-   G4double pTval[] = {1,3,6,10,16,20,25,30,35,40,50,60,70,80,100}; // in GeV
-   G4double Egiven = pTval[(int)(G4UniformRand()*sizeof(pTval)/sizeof(G4double))]*GeV;
-   SetParticleEnergy( Egiven/eP.unit().perp() );
+   // G4double pTval[] = {1,3,6,10,16,20,25,30,35,40,50,60,70,80,100}; // in GeV
+   // G4double pTval[] = {10}; // in GeV
+   // G4double Egiven = pTval[(int)(G4UniformRand()*sizeof(pTval)/sizeof(G4double))]*GeV;
+   // SetParticleEnergy( Egiven/eP.unit().perp() );
 
 
    if(particle_definition==0) return;
@@ -178,7 +179,7 @@ void FCCParticleGun::GeneratePrimaryVertex(G4Event* evt)
       particle->SetPolarization(particle_polarization.x(),
                                 particle_polarization.y(),
                                 particle_polarization.z());
-      particle->SetUserInformation( new FCCPrimaryParticleInformation(i));
+      particle->SetUserInformation( new FCCPrimaryParticleInformation(i, particle_definition->GetPDGEncoding() , (eP.unit())*particle_energy) );
       vertex->SetPrimary( particle );
    }
 

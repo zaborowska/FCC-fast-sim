@@ -62,9 +62,6 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 // filling data only for primary particles
    if(aTrack->GetParentID()) return;
 
-   // Fill ntuple with G4 original data
-   FCCOutput::Instance()->SaveTrack(FCCOutput::eMC, aTrack->GetTrackID(), PID, aTrack->GetMomentum() );
-   ((FCCPrimaryParticleInformation*)aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation())->Print();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -76,9 +73,34 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 // To be sure that we collect information about a track only once
 // when its   if ( aTrack->GetTrackStatus() == fStopAndKill )
 {
-G4cout<<" particle momentum: "<<((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>(aTrack->
-                                                                          GetDynamicParticle()->GetPrimaryParticle())
-                                                                            ->GetUserInformation()))->GetTrackerMomentum()<<G4endl;
+   if ( aTrack->GetTrackStatus() == fStopAndKill )
+   {
+      FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*)aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
+      FCCOutput::Instance()->SaveTrack(FCCOutput::eMC,
+                                       info->GetID(),
+                                       info->GetPID(),
+                                       info->GetMCMomentum() );
+      FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker,
+                                       info->GetID(),
+                                       info->GetPID(),
+                                       info->GetTrackerMomentum(),
+                                       info->GetTrackerResolution(),
+                                       info->GetTrackerEfficiency());
+      FCCOutput::Instance()->SaveTrack(FCCOutput::eEMCal,
+                                       info->GetID(),
+                                       info->GetPID(),
+                                       info->GetEMCalPosition(),
+                                       info->GetEMCalResolution(),
+                                       info->GetEMCalEfficiency(),
+                                       info->GetEMCalEnergy());
+      FCCOutput::Instance()->SaveTrack(FCCOutput::eHCal,
+                                       info->GetID(),
+                                       info->GetPID(),
+                                       info->GetHCalPosition(),
+                                       info->GetHCalResolution(),
+                                       info->GetHCalEfficiency(),
+                                       info->GetHCalEnergy());
+   }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

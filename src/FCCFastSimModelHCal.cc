@@ -26,6 +26,7 @@
 
 #include "FCCFastSimModelHCal.hh"
 #include "FCCEventInformation.hh"
+#include "FCCPrimaryParticleInformation.hh"
 #include "FCCSmearer.hh"
 #include "FCCOutput.hh"
 
@@ -78,22 +79,30 @@ void FCCFastSimModelHCal::DoIt(const G4FastTrack& fastTrack,
 
    G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
    G4ThreeVector Pos = fastTrack.GetPrimaryTrack()->GetPosition();
-   G4ThreeVector Porg = fastTrack.GetPrimaryTrack()->GetMomentum();
-   G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eHCal, fParam, Porg.mag());
-   G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eHCal, fParam, Porg.mag());
 
    if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
    {
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       {
+         G4ThreeVector Porg = fastTrack.GetPrimaryTrack()->GetMomentum();
+         G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eHCal, fParam, Porg.mag());
+         G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eHCal, fParam, Porg.mag());
          G4double Esm = FCCSmearer::Instance()->Smear(Edep, res);
-         FCCOutput::Instance()->FillHistogram(1,Edep-Esm );
-         FCCOutput::Instance()->SaveTrack(FCCOutput::eHCal, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Pos, res, eff, Esm);
+         FCCOutput::Instance()->FillHistogram(2,Edep-Esm );
+         ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
+                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetHCalPosition(Pos);
+         ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
+                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetHCalEnergy(Esm);
+         ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
+                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetHCalResolution(res);
+         ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
+                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetHCalEfficiency(eff);
          fastStep.ProposeTotalEnergyDeposited(Esm);
       }
       else
       {
-         FCCOutput::Instance()->SaveTrack(FCCOutput::eHCal, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Pos, Edep);
+         ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
+                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetHCalEnergy(Edep);
          fastStep.ProposeTotalEnergyDeposited(Edep);
       }
    }

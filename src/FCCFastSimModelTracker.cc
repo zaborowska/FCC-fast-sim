@@ -81,26 +81,28 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
    // smear according to tracker resolution
    G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
    G4ThreeVector Porg = fastTrack.GetPrimaryTrack()->GetMomentum();
-   G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
-   G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
 
    if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
    {
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       {
+         G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
+         G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
          G4ThreeVector Psm = FCCSmearer::Instance()->Smear(fastTrack.GetPrimaryTrack(), res);
          FCCOutput::Instance()->FillHistogram(0,Porg.mag() - Psm.mag() );
-         //FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Psm, res, eff);
-         ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>(fastTrack.GetPrimaryTrack()->
-                                                                          GetDynamicParticle()->GetPrimaryParticle())
-                                           ->GetUserInformation()))->SetTrackerMomentum(Psm);
-          G4cout<<" particle momentum: "<<((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>(fastTrack.GetPrimaryTrack()->
-                                                                          GetDynamicParticle()->GetPrimaryParticle())
-                                                                            ->GetUserInformation()))->GetTrackerMomentum()<<G4endl;
+         // setting values of Psm, res and eff
+         ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
+                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerMomentum(Psm);
+         ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
+                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerResolution(res);
+         ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
+                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerEfficiency(eff);
       }
       else
       {
-         //FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker, fastTrack.GetPrimaryTrack()->GetTrackID(), PID, Porg);
+         // setting a value of Porg
+         ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
+                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerMomentum(Porg);
       }
    }
 }

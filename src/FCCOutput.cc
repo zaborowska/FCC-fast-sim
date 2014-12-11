@@ -96,19 +96,19 @@ void FCCOutput::CreateNtuples()
    analysisManager->CreateNtupleDColumn("tracker_pY"); // column Id = 8
    analysisManager->CreateNtupleDColumn("tracker_pZ"); // column Id = 9
 
-   analysisManager->CreateNtupleDColumn("emcal_eff"); // column Id = 10
-   analysisManager->CreateNtupleIColumn("emcal_E");  // column Id = 11
+   analysisManager->CreateNtupleDColumn("emcal_res"); // column Id = 10
+   analysisManager->CreateNtupleDColumn("emcal_eff");  // column Id = 11
    analysisManager->CreateNtupleDColumn("emcal_X");  // column Id = 12
    analysisManager->CreateNtupleDColumn("emcal_Y"); // column Id = 13
    analysisManager->CreateNtupleDColumn("emcal_Z"); // column Id = 14
-   analysisManager->CreateNtupleDColumn("emcal_res"); // column Id = 15
+   analysisManager->CreateNtupleDColumn("emcal_E"); // column Id = 15
 
    analysisManager->CreateNtupleDColumn("hcal_res"); // column Id = 16
    analysisManager->CreateNtupleDColumn("hcal_eff"); // column Id = 17
    analysisManager->CreateNtupleDColumn("hcal_X");  // column Id = 18
    analysisManager->CreateNtupleDColumn("hcal_Y"); // column Id = 19
    analysisManager->CreateNtupleDColumn("hcal_Z"); // column Id = 20
-   analysisManager->CreateNtupleIColumn("hcal_E");  // column Id = 21
+   analysisManager->CreateNtupleDColumn("hcal_E");  // column Id = 21
    analysisManager->FinishNtuple(ntupID);
 }
 
@@ -116,8 +116,15 @@ void FCCOutput::CreateNtuples()
 void FCCOutput::CreateHistograms()
 {
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   analysisManager->CreateH1("Pdiff","P smeared in tracker", 101, -100.*GeV, 100*GeV);
-   analysisManager->CreateH1("ECalEdiff","E smeared in EMCal", 101, 0., 100*GeV);
+   analysisManager->CreateH1("Pdiff","P smeared in tracker", 100, -10.*GeV, 10*GeV);
+   analysisManager->SetH1XAxisTitle(0, "#Delta p (MeV)");
+   analysisManager->SetH1YAxisTitle(0, "Entries");
+   analysisManager->CreateH1("EMCalEdiff","E smeared in EMCal", 100, -1.*GeV, 1*GeV);
+   analysisManager->SetH1XAxisTitle(1, "#Delta E (MeV)");
+   analysisManager->SetH1YAxisTitle(1, "Entries");
+   analysisManager->CreateH1("HCalEdiff","E smeared in HCal", 100, -10.*GeV, 10*GeV);
+   analysisManager->SetH1XAxisTitle(2, "#Delta E (MeV)");
+   analysisManager->SetH1YAxisTitle(2, "Entries");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

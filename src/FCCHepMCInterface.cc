@@ -109,7 +109,10 @@ G4cout << "Default units: " << HepMC::Units::name(HepMC::Units::default_momentum
       G4LorentzVector p(pos.px(), pos.py(), pos.pz(), pos.e());
       G4PrimaryParticle* g4prim=
         new G4PrimaryParticle(pdgcode, p.x()*GeV, p.y()*GeV, p.z()*GeV);
-      g4prim->SetUserInformation(new FCCPrimaryParticleInformation((*vpitr)->barcode()));
+      g4prim->SetUserInformation(new FCCPrimaryParticleInformation(
+                                    (*vpitr)->barcode(),
+                                    pdgcode,
+                                    G4ThreeVector(p.x(), p.y(), p.z())));
       g4vtx-> SetPrimary(g4prim);
     }
     g4event-> AddPrimaryVertex(g4vtx);
