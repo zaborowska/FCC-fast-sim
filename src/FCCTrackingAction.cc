@@ -73,7 +73,7 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 // To be sure that we collect information about a track only once
 // when its   if ( aTrack->GetTrackStatus() == fStopAndKill )
 {
-   if ( aTrack->GetTrackStatus() == fStopAndKill )
+   if ( aTrack->GetTrackStatus() == fStopAndKill && aTrack->GetParentID()==0 )
    {
       FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*)aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
       FCCOutput::Instance()->SaveTrack(FCCOutput::eMC,

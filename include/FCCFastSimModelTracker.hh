@@ -32,6 +32,7 @@
 #include "G4VFastSimulationModel.hh"
 #include "FCCDetectorParametrisation.hh"
 #include "G4Step.hh"
+#include "G4Navigator.hh"
 
 class FCCFastSimModelTracker : public G4VFastSimulationModel
 {

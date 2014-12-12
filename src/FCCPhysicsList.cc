@@ -115,13 +115,13 @@ void FCCPhysicsList::ConstructProcess()
   AddParameterisation();
 
   // ConstructEM();
-  // ConstructGeneral();
+  ConstructGeneral();
 }
 
 void FCCPhysicsList::AddTransportation()
 {
-  UseCoupledTransportation();
-  G4VUserPhysicsList::AddTransportation();
+   UseCoupledTransportation();
+   G4VUserPhysicsList::AddTransportation();
 }
 
 #include "G4ComptonScattering.hh"

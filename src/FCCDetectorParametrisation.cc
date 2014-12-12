@@ -1,10 +1,13 @@
 #include "FCCDetectorParametrisation.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
 
 FCCDetectorParametrisation::FCCDetectorParametrisation(){}
 FCCDetectorParametrisation::~FCCDetectorParametrisation(){}
 
 G4double FCCDetectorParametrisation::GetResolution(Detector det, Parametrisation par, G4double mom)
 {
+   mom /= GeV; // to make sure momentum's unit is GeV
    G4double res = 1;
    if(par == eCMS)
    {

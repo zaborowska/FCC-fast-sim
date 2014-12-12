@@ -23,7 +23,7 @@ void Res(const char* filename)
    hP->Fit("gaus");
    hP->Draw();
    hP->SetTitle(Form("%s: %s", filename, hP->GetTitle()));
-   hP->GetXaxis()->SetRangeUser(-1000,1000);
+   // hP->GetXaxis()->SetRangeUser(-1000,1000);
    if(hP->GetEntries())
    {
       latex.DrawLatexNDC(0.15,0.85 ,Form("#color[4]{resolution: %.1f%}",tres*100 ));
@@ -35,7 +35,7 @@ void Res(const char* filename)
    hEE->Fit("gaus");
    hEE->Draw();
    hEE->SetTitle(Form("%s: %s", filename, hEE->GetTitle()));
-   hEE->GetXaxis()->SetRangeUser(-200,200);
+   // hEE->GetXaxis()->SetRangeUser(-200,200);
    if(hEE->GetEntries())
    {
       latex.DrawLatexNDC(0.15,0.85,Form("#color[4]{resolution: %.1f%}",eres*100 ));
@@ -46,7 +46,7 @@ void Res(const char* filename)
    hEH->Fit("gaus");
    hEH->Draw();
    hEH->SetTitle(Form("%s: %s", filename, hEH->GetTitle()));
-   hEH->GetXaxis()->SetRangeUser(-2500,2500);
+   // hEH->GetXaxis()->SetRangeUser(-2500,2500);
    if(hEH->GetEntries())
    {
       latex.DrawLatexNDC(0.15,0.85,Form("#color[4]{resolution: %.1f%}",hres*100 ));

@@ -118,8 +118,7 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* auxmap): fEMfield
    // set a number of parametrisations to ensure a proper ntuple numbering
 
 
-
-   // fEMfield = new G4UniformMagField(G4ThreeVector(0.,0.,0.2));
+   // fEMfield = new G4UniformMagField(G4ThreeVector(0.,0.,0.1));
    // G4FieldManager* fieldMgr
    //    = G4TransportationManager::GetTransportationManager()
    //      ->GetFieldManager();
