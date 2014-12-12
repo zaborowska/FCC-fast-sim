@@ -118,12 +118,12 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* auxmap): fEMfield
    // set a number of parametrisations to ensure a proper ntuple numbering
 
 
-   // fEMfield = new G4UniformMagField(G4ThreeVector(0.,0.,0.1));
-   // G4FieldManager* fieldMgr
-   //    = G4TransportationManager::GetTransportationManager()
-   //      ->GetFieldManager();
-   //     fieldMgr->SetDetectorField(fEMfield);
-   //  fieldMgr->CreateChordFinder(fEMfield);
+   fEMfield = new G4UniformMagField(G4ThreeVector(0.,0.,0.01));
+   G4FieldManager* fieldMgr
+      = G4TransportationManager::GetTransportationManager()
+        ->GetFieldManager();
+       fieldMgr->SetDetectorField(fEMfield);
+    fieldMgr->CreateChordFinder(fEMfield);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
