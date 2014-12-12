@@ -48,18 +48,19 @@ find_package(ROOT REQUIRED)
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
-include_directories(${PROJECT_SOURCE_DIR}/include
+include_directories(${PROJECT_SOURCE_DIR}/include/FCCMain ${PROJECT_SOURCE_DIR}/include/FCCGenerator
+                    ${PROJECT_SOURCE_DIR}/include/FCCFastSim ${PROJECT_SOURCE_DIR}/include/FCCInfo
                     ${Geant4_INCLUDE_DIR}
                     ${HEPMC_INCLUDE_DIR}
                     ${PYTHIA8_INCLUDE_DIR}
                     ${ROOT_INCLUDE_DIR})
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*/*.cc)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*/*.hh)
 
 #----------------------------------------------------------------------------
 # Generate dictionaries
 #
-ROOT_GENERATE_DICTIONARY(HepMC include/FCCHepMCClasses.hh  LINKDEF include/FCCHepMCLinkDef.h )
+ROOT_GENERATE_DICTIONARY(HepMC include/FCCGenerator/FCCHepMCClasses.hh  LINKDEF include/FCCGenerator/FCCHepMCLinkDef.h )
 add_library(HepMCdict SHARED ${sources} HepMC.cxx)
 target_link_libraries(HepMCdict ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES})
 
