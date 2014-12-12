@@ -73,6 +73,7 @@
   </materials>
 
   <solids>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="TrackerBarrel" rmax="1490" rmin="500" startphi="0" z="6000"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="ECalBarrel0x7ff5f9e7b300" rmax="2990" rmin="1500" startphi="0" z="6000"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="ECalEndCap_10x7ff5f9e7b630" rmax="2990" rmin="1500" startphi="0" z="2000"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="ECalEndCap_20x7ff5f9e7bc30" rmax="2990" rmin="1500" startphi="0" z="2000"/>
@@ -104,6 +105,14 @@
 
 
  <structure>
+
+<!-- Tracker -->
+
+    <volume name="TrackerBarrelLog">
+      <materialref ref="Beryllium0x7ff5f9e3baf0"/>
+      <solidref ref="TrackerBarrel"/>
+      <auxiliary auxtype="SensDet" auxvalue="TrackerBarrel"/>
+    </volume>
 
 <!-- EM Calorimeters -->
 
@@ -229,6 +238,12 @@
     <volume name="world_volume0x7ff5f9e77ca0">
       <materialref ref="Air0x7ff5f9e72ea0"/>
       <solidref ref="world_volume0x7ff5f9e788a0"/>
+
+<!-- Tracker -->
+
+      <physvol name="TrackerBarrelVol">
+        <volumeref ref="TrackerBarrelLog"/>
+      </physvol>
 
 <!-- EM Calorimeters -->
 
