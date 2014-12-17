@@ -66,7 +66,6 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
    if( !( abs(aTrack->GetMomentum().pseudoRapidity())<5.5) )
       ((G4Track*)aTrack)->SetTrackStatus(fStopAndKill);
 
-
    // Fill ntuple with G4 original data
    //FCCOutput::Instance()->SaveTrack(false, PID, PID, aTrack->GetDynamicParticle()->GetCharge(), aTrack->GetMomentum(), aTrack->GetPosition() );
 

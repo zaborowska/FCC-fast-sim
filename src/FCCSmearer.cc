@@ -18,8 +18,7 @@ FCCSmearer::~FCCSmearer()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCSmearer* FCCSmearer::Instance()
-{
-   if(!fFCCSmearer)
+{   if(!fFCCSmearer)
    {
       fFCCSmearer = new FCCSmearer();
    }
@@ -50,7 +49,7 @@ G4double* FCCSmearer::Smear(const G4Track* aTrackOriginal)
    else if(abs(PID) == 211)
       smearVariables = fPionManager->getVariables( *aTrackOriginal, sigma );
    else return NULL;
-/*
+
    // original track position, momentum and charge
    G4ThreeVector originP = aTrackOriginal->GetMomentum();
    double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
@@ -58,8 +57,8 @@ G4double* FCCSmearer::Smear(const G4Track* aTrackOriginal)
 
    G4double* originParams;
    originParams = ComputeTrackParams(originCharge, originP, originPos);
- G4cout<<"_________OLD: "<<G4endl
-        <<"\td0: "<<G4BestUnit(originParams[0],"Length")<<"\tz0: "<<G4BestUnit(originParams[1],"Length")<<"\tphi0: "<<G4BestUnit(originParams[2],"Angle")<<"\tcottheta: "<<originParams[3]<<"\tpT: "<<G4BestUnit(1./originParams[4],"Energy")<<G4endl;
+ // G4cout<<"_________OLD: "<<G4endl
+ //        <<"\td0: "<<G4BestUnit(originParams[0],"Length")<<"\tz0: "<<G4BestUnit(originParams[1],"Length")<<"\tphi0: "<<G4BestUnit(originParams[2],"Angle")<<"\tcottheta: "<<originParams[3]<<"\tpT: "<<G4BestUnit(1./originParams[4],"Energy")<<G4endl;
 
    // // Atlfast smeared variables
    // G4double smearUnits[] = {um, um, mrad, 1e-3, 1./TeV };
@@ -68,8 +67,16 @@ G4double* FCCSmearer::Smear(const G4Track* aTrackOriginal)
  double Phi = CheckPhi(originParams[2] + smearVariables[2]);// * smearUnits[2]); //[2]
  double cotTheta = originParams[3] + smearVariables[3];// * smearUnits[3]; //[3]
  double invPtCharge = originParams[4] +  smearVariables[4];// * smearUnits[4]; // q/pT where q = q/|q| (just sign) //[4]
- G4cout<<"_________NEW: "<<G4endl
-        <<"\td0: "<<G4BestUnit(impactParameter,"Length")<<"\tz0: "<<G4BestUnit(zPerigee,"Length")<<"\tphi0: "<<G4BestUnit(Phi,"Angle")<<"\tcottheta: "<<cotTheta<<"\tpT: "<<G4BestUnit(1./invPtCharge,"Energy")<<G4endl;
+ // G4cout<<G4endl<<G4endl<<"_________DIFF: "<<G4endl
+ //       <<"\tphi0: "<<(Phi-originParams[2])/originParams[2]*100.
+ //       <<"% \tcottheta: "<<(cotTheta-originParams[3])/originParams[3]*100.
+ //       <<"% \tpT: "<<(1./invPtCharge-1./originParams[4])*originParams[4]*100.<<"%"
+ //       <<"\t Delta pT: "<<G4BestUnit(1./invPtCharge,"Energy")
+ //       <<" for pT "<<G4BestUnit(originP.perp(),"Energy")<<G4endl<<G4endl<<G4endl;
+
+
+ // G4cout<<"_________NEW: "<<G4endl
+ //        <<"\td0: "<<G4BestUnit(impactParameter,"Length")<<"\tz0: "<<G4BestUnit(zPerigee,"Length")<<"\tphi0: "<<G4BestUnit(Phi,"Angle")<<"\tcottheta: "<<cotTheta<<"\tpT: "<<G4BestUnit(1./invPtCharge,"Energy")<<G4endl;
 
    G4double* params = new G4double[5];
    params[0] = impactParameter;
@@ -77,13 +84,13 @@ G4double* FCCSmearer::Smear(const G4Track* aTrackOriginal)
    params[2] = Phi;
    params[3] = cotTheta;
    params[4] = invPtCharge;
-*/
-   G4double* params = new G4double[5];
-   params[0] = smearVariables[0] ;//* smearUnits[0]; // [0]
-   params[1] = smearVariables[1] ;//* smearUnits[1]; //[1]
-   params[2] = CheckPhi(smearVariables[2]) ;//* smearUnits[2]); //[2]
-   params[3] = smearVariables[3] ;//* smearUnits[3]; //[3]
-   params[4] = smearVariables[4];// * smearUnits[4]; // q/pT where q = q/|q| (just sign) //[4]
+
+   // G4double* params = new G4double[5];
+   // params[0] = smearVariables[0] ;//* smearUnits[0]; // [0]
+   // params[1] = smearVariables[1] ;//* smearUnits[1]; //[1]
+   // params[2] = CheckPhi(smearVariables[2]) ;//* smearUnits[2]); //[2]
+   // params[3] = smearVariables[3] ;//* smearUnits[3]; //[3]
+   // params[4] = smearVariables[4];// * smearUnits[4]; // q/pT where q = q/|q| (just sign) //[4]
 
    return params;
 
@@ -162,7 +169,7 @@ G4ThreeVector FCCSmearer::ComputeMomFromParams(G4double* params)
 {
    double Px = abs(1./params[4])*sin(params[2]);
    double Py = abs(1./params[4])*cos(params[2]);
-   double Pz = abs(1./params[4])/sin( atan(1./params[3]) );
+   double Pz = abs(1./params[4])/sin( atan(1./params[3]) ) * cos( atan(1./params[3]) );
 
    G4ThreeVector P (Px,Py,Pz);
    return P;

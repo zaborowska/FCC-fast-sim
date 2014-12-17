@@ -1,9 +1,12 @@
+
 #include "Pythia8/Pythia.h"
 #include "Pythia8/Pythia8ToHepMC.h"
 #include "HepMC/GenEvent.h"
 #include "TROOT.h"
 #include "TFile.h"
 #include "TSystem.h"
+#include <ostream>
+#include <vector>
 
 int main(int argc, char* argv[])
 {
@@ -32,6 +35,19 @@ int main(int argc, char* argv[])
    // Generator.
    Pythia8::Pythia pythia;
 
+  ofstream file;
+  double mass;
+  int Hid, mu1, mu2;
+  vector<double> muMe;
+  vector<double> muMpx;
+  vector<double> muMpy;
+  vector<double> muMpz;
+  vector<double> muPe;
+  vector<double> muPpx;
+  vector<double> muPpy;
+  vector<double> muPpz;
+  file.open("out_minv_Hto2mu_10k.txt");
+
    // Read in commands from external file.
    pythia.readFile(argv[1]);
 
@@ -41,14 +57,14 @@ int main(int argc, char* argv[])
 
    // PYTHIA Initialization.
    pythia.init();
-
   // Begin event loop.
    int iAbort = 0;
+   int Mid =0;
    for (int iEvent = 0; iEvent < nEvent; ++iEvent) {
 
       // Generate event.
-      if (!pythia.next()) {
-
+      if (!pythia.next())
+      {
          // If failure because reached end of file then exit event loop.
          if (pythia.info.atEndOfFile()) {
             cout << " Aborted since reached end of Les Houches Event File\n";
@@ -61,16 +77,63 @@ int main(int argc, char* argv[])
          break;
       }
 
+      // save to txt file
+      if( !muMe.empty())
+      {
+         muMe.clear();
+         muMpx.clear();
+         muMpy.clear();
+         muMpz.clear();
+      }
+      if( !muPe.empty())
+      {
+         muPe.clear();
+         muPpx.clear();
+         muPpy.clear();
+         muPpz.clear();
+      }
+
+      // Loop over particles in event.
+      for (int i = 0; i < pythia.event.size(); ++i)
+      {
+         // Mid = pythia.event[i].mother1();
+         // if(pythia.event[i].status() > 0 && pythia.event[Mid].id() == 25)
+         {
+            if ((pythia.event[i].id()) == -13)
+            {
+               muMe.push_back(pythia.event[i].e());
+               muMpx.push_back(pythia.event[i].px());
+               muMpy.push_back(pythia.event[i].py());
+               muMpz.push_back(pythia.event[i].pz());
+            }
+            else if ((pythia.event[i].id()) == 13)
+            {
+               muPe.push_back(pythia.event[i].e());
+               muPpx.push_back(pythia.event[i].px());
+               muPpy.push_back(pythia.event[i].py());
+               muPpz.push_back(pythia.event[i].pz());
+            }
+         }
+      }
+      for (int i=0; i<muMe.size(); i++)
+         for(int j=0; j<muPe.size(); j++)
+         {
+            mass = sqrt( pow(muMe[i] + muPe[j] , 2)
+                         - pow(muMpx[i] + muPpx[j] , 2)
+                         - pow(muMpy[i] + muPpy[j] , 2)
+                         - pow(muMpz[i] + muPpz[j] , 2) );
+            file << mass << endl ;
+         }
+
       // Construct new empty HepMC event and fill it.
       // Units will be as chosen for HepMC build, but can be changed
       // by arguments, e.g. GenEvt( HepMC::Units::GEV, HepMC::Units::MM)
-      HepMC::GenEvent* hepmcevt = new HepMC::GenEvent();
+      HepMC::GenEvent* hepmcevt = new HepMC::GenEvent( HepMC::Units::MEV, HepMC::Units::MM);
       ToHepMC.fill_next_event( pythia, hepmcevt );
 
       // Write the HepMC event to Root file.
-      std::cout<<"Saving "<<Form("Event_%d",iEvent)<< " into Root file"<< std::endl;
+      // std::cout<<"Saving "<<Form("Event_%d",iEvent)<< " into Root file"<< std::endl;
       fFile->WriteObject(hepmcevt, Form("Event_%d",iEvent));
-
       delete hepmcevt;
 
       // End of event loop. Statistics.
@@ -79,5 +142,6 @@ int main(int argc, char* argv[])
    fFile->Print();
    fFile->ls();
    fFile->Close();
+   file.close();
    return 0;
 }
