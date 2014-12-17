@@ -63,7 +63,8 @@ void FCCEventAction::BeginOfEventAction(const G4Event* event)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void FCCEventAction::EndOfEventAction(const G4Event* event){
-
+   if(G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID()%1000 == 0)
+      G4cout<<"Event "<<G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID()<<G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
