@@ -28,7 +28,7 @@ FCCSmearer* FCCSmearer::Instance()
 void FCCSmearer::MakeManagers()
 {
   //Create mangers for smeaing muons, pions and electrons
-  fMuonManager = new Atlfast::MuonMatrixManager("data/Atlfast_MuonResParam_CSC.dat",time(NULL));
+   fMuonManager = new Atlfast::MuonMatrixManager("data/Atlfast_MuonResParam_CSC.dat",time(NULL));
   fPionManager = new Atlfast::PionMatrixManager("data/Atlfast_PionResParam_DC1_NewUnits.dat",time(NULL));
   fElectronManager = new Atlfast::ElectronMatrixManager("data/Atlfast_ElectronResParam_CSC.dat","data/Atlfast_ElectronBremParam_CSC.dat",time(NULL));
 }
@@ -57,26 +57,26 @@ G4double* FCCSmearer::Smear(const G4Track* aTrackOriginal)
 
    G4double* originParams;
    originParams = ComputeTrackParams(originCharge, originP, originPos);
- // G4cout<<"_________OLD: "<<G4endl
- //        <<"\td0: "<<G4BestUnit(originParams[0],"Length")<<"\tz0: "<<G4BestUnit(originParams[1],"Length")<<"\tphi0: "<<G4BestUnit(originParams[2],"Angle")<<"\tcottheta: "<<originParams[3]<<"\tpT: "<<G4BestUnit(1./originParams[4],"Energy")<<G4endl;
+   // G4cout<<"_________OLD: "<<G4endl
+   //        <<"\td0: "<<G4BestUnit(originParams[0],"Length")<<"\tz0: "<<G4BestUnit(originParams[1],"Length")<<"\tphi0: "<<G4BestUnit(originParams[2],"Angle")<<"\tcottheta: "<<originParams[3]<<"\tpT: "<<G4BestUnit(1./originParams[4],"Energy")<<G4endl;
 
    // // Atlfast smeared variables
    // G4double smearUnits[] = {um, um, mrad, 1e-3, 1./TeV };
- double impactParameter = originParams[0] + smearVariables[0] ;// * smearUnits[0]; // [0]
- double zPerigee = originParams[1]  + smearVariables[1] ;// * smearUnits[1]; //[1]
- double Phi = CheckPhi(originParams[2] + smearVariables[2]);// * smearUnits[2]); //[2]
- double cotTheta = originParams[3] + smearVariables[3];// * smearUnits[3]; //[3]
- double invPtCharge = originParams[4] +  smearVariables[4];// * smearUnits[4]; // q/pT where q = q/|q| (just sign) //[4]
- // G4cout<<G4endl<<G4endl<<"_________DIFF: "<<G4endl
- //       <<"\tphi0: "<<(Phi-originParams[2])/originParams[2]*100.
- //       <<"% \tcottheta: "<<(cotTheta-originParams[3])/originParams[3]*100.
- //       <<"% \tpT: "<<(1./invPtCharge-1./originParams[4])*originParams[4]*100.<<"%"
- //       <<"\t Delta pT: "<<G4BestUnit(1./invPtCharge,"Energy")
- //       <<" for pT "<<G4BestUnit(originP.perp(),"Energy")<<G4endl<<G4endl<<G4endl;
+   double impactParameter = originParams[0] + smearVariables[0] ;// * smearUnits[0]; // [0]
+   double zPerigee = originParams[1]  + smearVariables[1] ;// * smearUnits[1]; //[1]
+   double Phi = CheckPhi(originParams[2] + smearVariables[2]);// * smearUnits[2]); //[2]
+   double cotTheta = originParams[3] + smearVariables[3];// * smearUnits[3]; //[3]
+   double invPtCharge = originParams[4] +  smearVariables[4];// * smearUnits[4]; // q/pT where q = q/|q| (just sign) //[4]
+// G4cout<<G4endl<<G4endl<<"_________DIFF: "<<G4endl
+//       <<"\tphi0: "<<(Phi-originParams[2])/originParams[2]*100.
+//       <<"% \tcottheta: "<<(cotTheta-originParams[3])/originParams[3]*100.
+//       <<"% \tpT: "<<(1./invPtCharge-1./originParams[4])*originParams[4]*100.<<"%"
+//       <<"\t Delta pT: "<<G4BestUnit(1./invPtCharge,"Energy")
+   //       <<" for pT "<<G4BestUnit(originP.perp(),"Energy")<<G4endl<<G4endl<<G4endl;
 
 
- // G4cout<<"_________NEW: "<<G4endl
- //        <<"\td0: "<<G4BestUnit(impactParameter,"Length")<<"\tz0: "<<G4BestUnit(zPerigee,"Length")<<"\tphi0: "<<G4BestUnit(Phi,"Angle")<<"\tcottheta: "<<cotTheta<<"\tpT: "<<G4BestUnit(1./invPtCharge,"Energy")<<G4endl;
+   // G4cout<<"_________NEW: "<<G4endl
+   //        <<"\td0: "<<G4BestUnit(impactParameter,"Length")<<"\tz0: "<<G4BestUnit(zPerigee,"Length")<<"\tphi0: "<<G4BestUnit(Phi,"Angle")<<"\tcottheta: "<<cotTheta<<"\tpT: "<<G4BestUnit(1./invPtCharge,"Energy")<<G4endl;
 
    G4double* params = new G4double[5];
    params[0] = impactParameter;

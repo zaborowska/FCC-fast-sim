@@ -87,7 +87,8 @@ void FCCMuonSmearModel::DoIt(const G4FastTrack& fastTrack,
          //       <<"  NEW MOM: "<<P<<G4endl<<G4endl;
          // G4cout<< "  OLD MOM: "<<fastTrack.GetPrimaryTrack()->GetMomentum().mag()
          //       <<"  NEW MOM: "<<P.mag()<<G4endl<<G4endl;
-         FCCOutput::Instance()->SaveTrack(true,  fastTrack.GetPrimaryTrack()->GetTrackID(), PID, q, P, params);
+         FCCPrimaryParticleInformation* info = ((FCCPrimaryParticleInformation*) fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation());
+         FCCOutput::Instance()->SaveTrack(true,  fastTrack.GetPrimaryTrack()->GetTrackID(), PID, q, P, *info->GetMomentumProduction(), params);
       }
       else
       {
@@ -95,7 +96,7 @@ void FCCMuonSmearModel::DoIt(const G4FastTrack& fastTrack,
          G4double Ekin = fastTrack.GetPrimaryTrack()->GetVertexKineticEnergy();
          G4ThreeVector P = eP * sqrt (Ekin*Ekin+2*mass*Ekin);
          G4ThreeVector pos = fastTrack.GetPrimaryTrack()->GetVertexPosition();
-         FCCOutput::Instance()->SaveTrack(true,fastTrack.GetPrimaryTrack()->GetTrackID(), PID, q,  P, pos);
+         //   FCCOutput::Instance()->SaveTrack(true,fastTrack.GetPrimaryTrack()->GetTrackID(), PID, q,  P, pos);
       }
    }
 }

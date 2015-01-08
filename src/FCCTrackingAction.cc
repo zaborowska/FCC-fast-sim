@@ -61,7 +61,9 @@ void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 // taking only muons
    if(abs(PID)!=13) return;
 
-   FCCOutput::Instance()->SaveTrack(false, aTrack->GetTrackID(), PID, aTrack->GetDynamicParticle()->GetCharge() , aTrack->GetMomentum(), aTrack->GetPosition());
+   FCCPrimaryParticleInformation* info = ((FCCPrimaryParticleInformation*) aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation());
+
+   FCCOutput::Instance()->SaveTrack(false, aTrack->GetTrackID(), PID, aTrack->GetDynamicParticle()->GetCharge() , aTrack->GetMomentum(), *info->GetMomentumProduction());
 
    if( !( abs(aTrack->GetMomentum().pseudoRapidity())<5.5) )
       ((G4Track*)aTrack)->SetTrackStatus(fStopAndKill);

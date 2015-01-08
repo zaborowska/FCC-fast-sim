@@ -94,6 +94,9 @@ void FCCOutput::CreateNtuples()
   analysisManager->CreateNtupleDColumn("phi0"); // column Id = 7
   analysisManager->CreateNtupleDColumn("cottheta");  // column Id = 8
   analysisManager->CreateNtupleDColumn("qpT"); // column Id = 9
+  analysisManager->CreateNtupleDColumn("pXO");
+  analysisManager->CreateNtupleDColumn("pYO");
+  analysisManager->CreateNtupleDColumn("pZO");
   analysisManager->FinishNtuple(ntupID);
 
      analysisManager->CreateNtuple(evName+"_det", evName+"_det");
@@ -107,6 +110,9 @@ void FCCOutput::CreateNtuples()
      analysisManager->CreateNtupleDColumn("phi0"); // column Id = 7
      analysisManager->CreateNtupleDColumn("cottheta");  // column Id = 8
      analysisManager->CreateNtupleDColumn("qpT"); // column Id = 9
+     analysisManager->CreateNtupleDColumn("pXO");
+     analysisManager->CreateNtupleDColumn("pYO");
+     analysisManager->CreateNtupleDColumn("pZO");
      analysisManager->FinishNtuple(ntupID + 1);
 }
 
@@ -140,12 +146,16 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
       analysisManager->AddNtupleRow(ntupID);
       delete params;
    }
+
+   analysisManager->FillNtupleDColumn(ntupID, 10, vertexPosition.x());
+   analysisManager->FillNtupleDColumn(ntupID, 11, vertexPosition.y());
+   analysisManager->FillNtupleDColumn(ntupID, 12, vertexPosition.z());
    return;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double charge, G4ThreeVector vertexMomentum,
+void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double charge, G4ThreeVector vertexMomentum, G4ThreeVector vertexPosition,
                           G4double* params) const
 {
    const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
@@ -169,6 +179,9 @@ void FCCOutput::SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double
       analysisManager->FillNtupleDColumn(ntupID, 7, params[2]);
       analysisManager->FillNtupleDColumn(ntupID, 8, params[3]);
       analysisManager->FillNtupleDColumn(ntupID, 9, params[4]);
+   analysisManager->FillNtupleDColumn(ntupID, 10, vertexPosition.x());
+   analysisManager->FillNtupleDColumn(ntupID, 11, vertexPosition.y());
+   analysisManager->FillNtupleDColumn(ntupID, 12, vertexPosition.z());
       analysisManager->AddNtupleRow(ntupID);
    }
  // G4cout<<"_________SAVING: "<<G4endl

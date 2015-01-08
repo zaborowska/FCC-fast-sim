@@ -16,8 +16,7 @@ public:
    void CreateNtuples();
    void SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double q,
                           G4ThreeVector momentum, G4ThreeVector vertex) const;
-   void SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double q, G4ThreeVector mom,
-                          G4double* params) const;
+   void SaveTrack(G4bool HitDetector, G4int partID,  G4int PID, G4double q, G4ThreeVector mom, G4ThreeVector vertex, G4double* params) const;
 protected:
    FCCOutput();
    ~FCCOutput();

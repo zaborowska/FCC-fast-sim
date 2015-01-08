@@ -104,21 +104,21 @@ void FCCHepMCInterface::HepMC2G4(const HepMC::GenEvent* hepmcevt,
          // take only muons
          if ( abs(pdgcode) == 13 )
          {
-            // if ( (*vpitr)->production_vertex() ) {
-            //    for ( HepMC::GenVertex::particle_iterator mother = (*vpitr)->production_vertex()->particles_begin(HepMC::parents);
-            //          mother != (*vpitr)->production_vertex()->particles_end(HepMC::parents);  ++mother )
-            //    {
-            //       if((*mother)->pdg_id() == 25)
-            //       {
+            if ( (*vpitr)->production_vertex() ) {
+               for ( HepMC::GenVertex::particle_iterator mother = (*vpitr)->production_vertex()->particles_begin(HepMC::parents);
+                     mother != (*vpitr)->production_vertex()->particles_end(HepMC::parents);  ++mother )
+               {
+                  if((*mother)->pdg_id() == 25)
+                  {
             g4prim->SetUserInformation(new FCCPrimaryParticleInformation(
                                           -25,
                                           vert.x(), vert.y(), vert.z(), vert.t(),
                                           pos.px(), pos.py(), pos.pz(), pos.e()
                                           ));
             g4vtx-> SetPrimary(g4prim);
-            //  }
-            //    }
-            // }
+             }
+               }
+            }
          }
 
       }
