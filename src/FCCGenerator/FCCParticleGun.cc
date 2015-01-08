@@ -149,9 +149,9 @@ void FCCParticleGun::GeneratePrimaryVertex(G4Event* evt)
    SetParticlePosition(pos);
    G4double px0  = 0, py0  = 0, pz0  = 0;
    G4double dpx0 = 1, dpy0 = 1, dpz0 = 1;
-   px0 = 2;//px0+ dpx0*(G4UniformRand()-0.5);
-   py0 = 2;//py0+ dpy0*(G4UniformRand()-0.5);
-   pz0 = 2;//pz0+ dpz0*(G4UniformRand()-0.5);
+   px0 = px0+ dpx0*(G4UniformRand()-0.5);
+   py0 = py0+ dpy0*(G4UniformRand()-0.5);
+   pz0 = pz0+ dpz0*(G4UniformRand()-0.5);
    G4ThreeVector eP(px0,py0,pz0);
    SetParticleMomentumDirection(eP.unit());
    // ensure that particle pT = given energy in G4 macro
