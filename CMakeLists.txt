@@ -49,7 +49,8 @@ find_package(ROOT REQUIRED)
 # Locate sources and headers for this project
 #
 include_directories(${PROJECT_SOURCE_DIR}/include/FCCMain ${PROJECT_SOURCE_DIR}/include/FCCGenerator
-                    ${PROJECT_SOURCE_DIR}/include/FCCFastSim ${PROJECT_SOURCE_DIR}/include/FCCInfo
+                    ${PROJECT_SOURCE_DIR}/include/FCCFastSim ${PROJECT_SOURCE_DIR}/include/FCCFastSim/Atlfast
+                    ${PROJECT_SOURCE_DIR}/include/FCCInfo
                     ${Geant4_INCLUDE_DIR}
                     ${HEPMC_INCLUDE_DIR}
                     ${PYTHIA8_INCLUDE_DIR}

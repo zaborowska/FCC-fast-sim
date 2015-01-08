@@ -44,6 +44,7 @@
 #include "G4PathFinder.hh"
 #include "G4FieldTrack.hh"
 #include "G4FieldTrackUpdator.hh"
+#include "G4SystemOfUnits.hh"
 
 FCCFastSimModelTracker::FCCFastSimModelTracker(G4String modelName, G4Region* envelope, FCCDetectorParametrisation::Parametrisation type)
    : G4VFastSimulationModel(modelName, envelope), fCalcParam(), fParam(type)
@@ -67,36 +68,45 @@ G4bool FCCFastSimModelTracker::IsApplicable(const G4ParticleDefinition& particle
 
 G4bool FCCFastSimModelTracker::ModelTrigger(const G4FastTrack& fastTrack)
 {
-   return ! (fastTrack.GetEnvelopeSolid()->DistanceToIn( fastTrack.GetPrimaryTrackLocalPosition () ));
+   return true; //! (fastTrack.GetEnvelopeSolid()->DistanceToIn( fastTrack.GetPrimaryTrackLocalPosition () ));
 }
 
 void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
                             G4FastStep& fastStep)
 {
 // ================
-   G4double distance = fastTrack.GetEnvelopeSolid()->DistanceToOut( fastTrack.GetPrimaryTrackLocalPosition(),
-                                                                    fastTrack.GetPrimaryTrackLocalDirection() );
-   G4ThreeVector position = fastTrack.GetPrimaryTrackLocalPosition() +  distance*fastTrack.GetPrimaryTrackLocalDirection();
-   fastStep.ProposePrimaryTrackFinalPosition( position );
-   // fastStep.KillPrimaryTrack();
-   // fastStep.ProposePrimaryTrackPathLength(0.0);
-   // G4double Edep = fastTrack.GetPrimaryTrack()->GetKineticEnergy();
-   //       fastStep.ProposeTotalEnergyDeposited(Edep);
+   // G4double distance = fastTrack.GetEnvelopeSolid()->DistanceToOut( fastTrack.GetPrimaryTrackLocalPosition(),
+   //                                                                  fastTrack.GetPrimaryTrackLocalDirection() );
+   // G4ThreeVector position = fastTrack.GetPrimaryTrackLocalPosition() +  distance*fastTrack.GetPrimaryTrackLocalDirection();
+   G4ThreeVector spin        = fastTrack.GetPrimaryTrack()->GetPolarization() ;
+   G4FieldTrack  theFieldTrack = G4FieldTrack( fastTrack.GetPrimaryTrack()->GetPosition(),
+                                             fastTrack.GetPrimaryTrack()->GetMomentumDirection(),
+                                             0.0,
+                                             fastTrack.GetPrimaryTrack()->GetKineticEnergy(),
+                                             fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetDefinition()->GetPDGMass(),
+                                             0.0,    // UNUSED: fastTrack.GetPrimaryTrack().GetVelocity(),
+                                             fastTrack.GetPrimaryTrack()->GetGlobalTime(), // Lab.
+                                             fastTrack.GetPrimaryTrack()->GetProperTime(), // Part.
+                                             &spin) ;
 
-    // G4double retSafety= -1.0;
-    // ELimited retStepLimited;
-    // G4FieldTrack* endTrack ;
-    // G4FieldTrack* startTrack = G4FieldTrackUpdator::CreateFieldTrack(fastTrack.GetPrimaryTrack());
-    // G4double returnedStep
-    //    = G4PathFinder::GetInstance()->ComputeStep(*startTrack,
-    //                               1000.,
-    //                               0,
-    //                               fastTrack.GetPrimaryTrack()->GetCurrentStepNumber(),
-    //                               retSafety,
-    //                               retStepLimited,
-    //                               *endTrack,
-    //                               fastTrack.GetPrimaryTrack()->GetVolume());
-    // G4cout<<"step : "<<returnedStep<<G4endl;
+    G4double retSafety= -1.0;
+    ELimited retStepLimited;
+    G4FieldTrack endTrack('a') ;
+    G4double  currentMinimumStep= 10*m; // change that to sth connected to particle momentum !!!!!
+    G4PathFinder* fPathFinder=  G4PathFinder::GetInstance();
+    G4double lengthAlongCurve = fPathFinder->ComputeStep( theFieldTrack,
+                                                    currentMinimumStep,
+                                                    0,
+                                                    fastTrack.GetPrimaryTrack()->GetCurrentStepNumber(),
+                                                    retSafety,
+                                                    retStepLimited,
+                                                    endTrack,
+                                                    fastTrack.GetPrimaryTrack()->GetVolume() ) ;
+       // G4cout << " PathFinder ComputeStep returns " << lengthAlongCurve << G4endl;
+       // G4cout << " Position: " << position << G4endl;
+       // G4cout << " PathFind: " << endTrack.GetPosition() << G4endl;
+   fastStep.ProposePrimaryTrackFinalPosition( endTrack.GetPosition() );
+
 
 // ================
 
