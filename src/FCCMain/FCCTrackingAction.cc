@@ -54,7 +54,6 @@ FCCTrackingAction::~FCCTrackingAction()
 
 void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-   G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
    if( !(abs(aTrack->GetMomentum().pseudoRapidity())<5.5) )
    {
       ((G4Track*)aTrack)->SetTrackStatus(fStopAndKill);

@@ -50,6 +50,13 @@
 #include "G4UIExecutive.hh"
 #endif
 
+/**
+	@brief     Main FCC-fast-sim class
+ 	@details   Class main
+ 	@author    Anna Zaborowska
+ */
+
+
 
 int main(int argc, char** argv)
 {

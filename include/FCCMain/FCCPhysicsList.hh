@@ -32,6 +32,12 @@
 #include "G4VUserPhysicsList.hh"
 #include "globals.hh"
 
+/**
+	@brief     Construction of a physics list.
+ 	@details   A mandatory initialization class of the physics list. For the purposes of fast simulation, only transportation, decays and parametrisation is used. Based on G4 examples/extended/parametrisations/Par01/include/Par01PhysicsList.hh.
+ 	@author    Anna Zaborowska
+ */
+
 class FCCPhysicsList: public G4VUserPhysicsList
 {
 public:

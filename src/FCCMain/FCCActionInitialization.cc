@@ -41,8 +41,6 @@ FCCActionInitialization::FCCActionInitialization()
 {}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 FCCActionInitialization::FCCActionInitialization(const G4String aOutName, const G4String aSmear)
    : G4VUserActionInitialization(), fFileName(aOutName),fSmear(G4UIcommand::ConvertToBool(aSmear))
 {}

@@ -32,8 +32,12 @@
 #include "G4VUserActionInitialization.hh"
 #include "globals.hh"
 
-/// Action initialization class.
-///
+/**
+	@brief     Action initialization class.
+ 	@details   Initialization of all user defined actions as well as mandatory particle generator. Based on G4 examples/extended/parametrisations/Par01/include/Par01ActionInitialization.hh.
+ 	@author    Anna Zaborowska
+ */
+
 
 class FCCActionInitialization : public G4VUserActionInitialization
 {
