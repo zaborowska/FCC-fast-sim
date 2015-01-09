@@ -35,6 +35,7 @@
 #include "G4RunManager.hh"
 
 #include "Randomize.hh"
+#include "G4SystemOfUnits.hh"
 #include "G4TrackingManager.hh"
 #include <iomanip>
 #include <vector>
@@ -79,27 +80,27 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       FCCOutput::Instance()->SaveTrack(FCCOutput::eMC,
                                        info->GetID(),
                                        info->GetPID(),
-                                       info->GetMCMomentum() );
+                                       info->GetMCMomentum()/MeV );
       FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker,
                                        info->GetID(),
                                        info->GetPID(),
-                                       info->GetTrackerMomentum(),
+                                       info->GetTrackerMomentum()/MeV,
                                        info->GetTrackerResolution(),
                                        info->GetTrackerEfficiency());
       FCCOutput::Instance()->SaveTrack(FCCOutput::eEMCal,
                                        info->GetID(),
                                        info->GetPID(),
-                                       info->GetEMCalPosition(),
+                                       info->GetEMCalPosition()/mm,
                                        info->GetEMCalResolution(),
                                        info->GetEMCalEfficiency(),
-                                       info->GetEMCalEnergy());
+                                       info->GetEMCalEnergy()/MeV);
       FCCOutput::Instance()->SaveTrack(FCCOutput::eHCal,
                                        info->GetID(),
                                        info->GetPID(),
-                                       info->GetHCalPosition(),
+                                       info->GetHCalPosition()/mm,
                                        info->GetHCalResolution(),
                                        info->GetHCalEfficiency(),
-                                       info->GetHCalEnergy());
+                                       info->GetHCalEnergy()/MeV);
    }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

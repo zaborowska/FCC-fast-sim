@@ -36,6 +36,7 @@
 #include "g4root.hh"
 
 #include "Randomize.hh"
+#include "G4SystemOfUnits.hh"
 
 FCCFastSimModelHCal::FCCFastSimModelHCal(G4String modelName, G4Region* envelope, FCCDetectorParametrisation::Parametrisation type)
    : G4VFastSimulationModel(modelName, envelope), fCalcParam(), fParam(type)
@@ -87,8 +88,8 @@ void FCCFastSimModelHCal::DoIt(const G4FastTrack& fastTrack,
          G4ThreeVector Porg = fastTrack.GetPrimaryTrack()->GetMomentum();
          G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eHCal, fParam, Porg.mag());
          G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eHCal, fParam, Porg.mag());
-         G4double Esm= FCCSmearer::Instance()->Smear(Edep, res);
-         FCCOutput::Instance()->FillHistogram(2,Edep-Esm );
+         G4double Esm= FCCSmearer::Instance()->SmearEnergy(fastTrack.GetPrimaryTrack(), res);
+         FCCOutput::Instance()->FillHistogram(2,Edep/MeV-Esm/MeV );
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
                                            (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetHCalPosition(Pos);
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>

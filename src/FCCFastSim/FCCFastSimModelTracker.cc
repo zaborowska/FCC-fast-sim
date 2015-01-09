@@ -120,8 +120,8 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
       {
          G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
          G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
-         G4ThreeVector Psm = FCCSmearer::Instance()->Smear(fastTrack.GetPrimaryTrack(), res);
-         FCCOutput::Instance()->FillHistogram(0,Porg.mag() - Psm.mag() );
+         G4ThreeVector Psm = FCCSmearer::Instance()->SmearMomentum(fastTrack.GetPrimaryTrack(), res);
+         FCCOutput::Instance()->FillHistogram(0,(Porg.mag()/MeV - Psm.mag()/MeV) );
          // setting values of Psm, res and eff
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
                                            (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerMomentum(Psm);

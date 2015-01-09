@@ -116,14 +116,14 @@ void FCCOutput::CreateNtuples()
 void FCCOutput::CreateHistograms()
 {
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   analysisManager->CreateH1("Pdiff","P smeared in tracker", 100, -1, 1);
-   analysisManager->SetH1XAxisTitle(0, "#Delta p (GeV)");
+   analysisManager->CreateH1("Pdiff","P smeared in tracker", 100, -10, 10);
+   analysisManager->SetH1XAxisTitle(0, "#Delta p (MeV)");
    analysisManager->SetH1YAxisTitle(0, "Entries");
-   analysisManager->CreateH1("EMCalEdiff","E smeared in EMCal", 100, -1., 1);
-   analysisManager->SetH1XAxisTitle(1, "#Delta E (GeV)");
+   analysisManager->CreateH1("EMCalEdiff","E smeared in EMCal", 100, -10., 10);
+   analysisManager->SetH1XAxisTitle(1, "#Delta E (MeV)");
    analysisManager->SetH1YAxisTitle(1, "Entries");
-   analysisManager->CreateH1("HCalEdiff","E smeared in HCal", 100, -10., 10);
-   analysisManager->SetH1XAxisTitle(2, "#Delta E (GeV)");
+   analysisManager->CreateH1("HCalEdiff","E smeared in HCal", 100, -100., 100);
+   analysisManager->SetH1XAxisTitle(2, "#Delta E (MeV)");
    analysisManager->SetH1YAxisTitle(2, "Entries");
 }
 

@@ -36,6 +36,7 @@
 #include "g4root.hh"
 
 #include "Randomize.hh"
+#include "G4SystemOfUnits.hh"
 
 #include "G4Electron.hh"
 #include "G4Positron.hh"
@@ -88,8 +89,8 @@ void FCCFastSimModelEMCal::DoIt(const G4FastTrack& fastTrack,
          G4ThreeVector Porg = fastTrack.GetPrimaryTrack()->GetMomentum();
          G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eEMCal, fParam, Porg.mag());
          G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eEMCal, fParam, Porg.mag());
-         G4double Esm = abs(FCCSmearer::Instance()->Smear(Edep, res));
-         FCCOutput::Instance()->FillHistogram(1,Edep-Esm);
+         G4double Esm = abs(FCCSmearer::Instance()->SmearEnergy(fastTrack.GetPrimaryTrack(), res));
+         FCCOutput::Instance()->FillHistogram(1,Edep/MeV-Esm/MeV);
          fastStep.ProposeTotalEnergyDeposited(Esm);
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
                                            (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalPosition(Pos);

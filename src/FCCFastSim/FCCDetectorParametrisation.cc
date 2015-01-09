@@ -60,6 +60,10 @@ G4double FCCDetectorParametrisation::GetResolution(Detector det, Parametrisation
          break;
       }
    }
+   else if(par == eATLFAST)
+   {
+      res = -1;
+   }
    return res;
 }
 

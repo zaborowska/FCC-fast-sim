@@ -9,7 +9,7 @@ public:
    FCCDetectorParametrisation();
    ~FCCDetectorParametrisation();
 
-   enum Parametrisation {eCMS, eATLAS, eALEPH, eAtlFast};
+   enum Parametrisation {eCMS, eATLAS, eALEPH, eATLFAST};
    enum Detector {eTracker,eEMCal, eHCal};
 
    G4double GetResolution(Detector det, Parametrisation par, G4double mom);
