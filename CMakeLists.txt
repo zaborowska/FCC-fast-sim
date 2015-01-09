@@ -48,15 +48,17 @@ find_package(ROOT REQUIRED)
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
-include_directories(${PROJECT_SOURCE_DIR}/include/FCCMain ${PROJECT_SOURCE_DIR}/include/FCCGenerator
-                    ${PROJECT_SOURCE_DIR}/include/FCCFastSim ${PROJECT_SOURCE_DIR}/include/FCCFastSim/Atlfast
+include_directories(${PROJECT_SOURCE_DIR}/include/FCCMain
+                    ${PROJECT_SOURCE_DIR}/include/FCCGenerator
+                    ${PROJECT_SOURCE_DIR}/include/FCCFastSim
+                    ${PROJECT_SOURCE_DIR}/include/FCCFastSim/Atlfast
                     ${PROJECT_SOURCE_DIR}/include/FCCInfo
                     ${Geant4_INCLUDE_DIR}
                     ${HEPMC_INCLUDE_DIR}
                     ${PYTHIA8_INCLUDE_DIR}
                     ${ROOT_INCLUDE_DIR})
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*/*.hh)
+file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*/*.cc ${PROJECT_SOURCE_DIR}/src/*/*/*.cc)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*/*.hh ${PROJECT_SOURCE_DIR}/include/*/*/*.hh)
 
 #----------------------------------------------------------------------------
 # Generate dictionaries
