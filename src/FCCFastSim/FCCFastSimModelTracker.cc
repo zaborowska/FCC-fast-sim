@@ -74,10 +74,6 @@ G4bool FCCFastSimModelTracker::ModelTrigger(const G4FastTrack& fastTrack)
 void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
                             G4FastStep& fastStep)
 {
-// ================
-   // G4double distance = fastTrack.GetEnvelopeSolid()->DistanceToOut( fastTrack.GetPrimaryTrackLocalPosition(),
-   //                                                                  fastTrack.GetPrimaryTrackLocalDirection() );
-   // G4ThreeVector position = fastTrack.GetPrimaryTrackLocalPosition() +  distance*fastTrack.GetPrimaryTrackLocalDirection();
    G4ThreeVector spin        = fastTrack.GetPrimaryTrack()->GetPolarization() ;
    G4FieldTrack  theFieldTrack = G4FieldTrack( fastTrack.GetPrimaryTrack()->GetPosition(),
                                              fastTrack.GetPrimaryTrack()->GetMomentumDirection(),
@@ -102,9 +98,6 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
                                                     retStepLimited,
                                                     endTrack,
                                                     fastTrack.GetPrimaryTrack()->GetVolume() ) ;
-       // G4cout << " PathFinder ComputeStep returns " << lengthAlongCurve << G4endl;
-       // G4cout << " Position: " << position << G4endl;
-       // G4cout << " PathFind: " << endTrack.GetPosition() << G4endl;
    fastStep.ProposePrimaryTrackFinalPosition( endTrack.GetPosition() );
 
 
