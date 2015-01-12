@@ -38,13 +38,13 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 FCCEventAction::FCCEventAction()
-   : G4UserEventAction(), fSmear(0)
+   : G4UserEventAction(), fSmear(1)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCEventAction::FCCEventAction(G4bool smearing)
-   : G4UserEventAction(), fSmear(smearing)
+FCCEventAction::FCCEventAction(G4bool aSmear)
+   : G4UserEventAction(), fSmear(aSmear)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

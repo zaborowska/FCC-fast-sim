@@ -34,7 +34,7 @@ class G4Run;
 
 /**
 	@brief     User's run action class.
- 	@details   Defines the action at the beginning and at the end of each run. No content of G4Run can be changed. The class needs to be set in G4RunManager::SetUserAction(). 
+   @details   Defines the action at the beginning and at the end of each run. No content of G4Run can be changed. The class needs to be set in G4RunManager::SetUserAction().
  	@author    Anna Zaborowska
  */
 
@@ -49,7 +49,7 @@ class FCCRunAction : public G4UserRunAction
     virtual ~FCCRunAction();
 
    /**
-     Defines the actions at the beginning of the run. It starts the analysis (create output root file) and create all the ntuples and histograms defined in FCCOutput singleton class.
+     Defines the actions at the beginning of the run. It starts the analysis (create output root file) and create all the histograms defined in FCCOutput singleton class.
     */
    virtual void BeginOfRunAction(const G4Run*);
    /**

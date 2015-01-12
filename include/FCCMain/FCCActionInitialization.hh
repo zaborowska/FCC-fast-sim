@@ -42,15 +42,36 @@
 class FCCActionInitialization : public G4VUserActionInitialization
 {
   public:
-   FCCActionInitialization(const G4String, const G4String);
-   FCCActionInitialization(const G4String);
+		/**
+			A default constructor. Sets the output file name fFileName (passed to FCCRunAction) to DefaultOutput.root as well as flag fSmear (passed to FCCEventAction) to true indicating that smearing will be performed.
+		*/
     FCCActionInitialization();
-    virtual ~FCCActionInitialization();
+		/**
+			A constructor.  Sets the flag fSmear (passed to FCCEventAction) to true indicating that smearing will be performed.
+         @param aOutName The output file name passed to FCCRunAction.
+		*/
+   FCCActionInitialization(const G4String aOutName);
+		/**
+			A constructor.
+         @param aOutName The output file name passed to FCCRunAction.
+         @param aSmear The flag indicating if smearing is to be done passed to FCCEventAction.
+		*/
+   FCCActionInitialization(const G4String aOutName, const G4String aSmear);
+   virtual ~FCCActionInitialization();
 
     virtual void BuildForMaster() const;
+		/**
+			A method where all the user actions are created. One of them, FCCPrimaryGeneratorAction is a mandatory class.
+		*/
     virtual void Build() const;
 private:
+		/**
+			An output file name. Passed in Build() to the FCCRunAction.
+		*/
    G4String fFileName;
+		/**
+			A flag indicating if smearing should be performed. Passed in Build() to the FCCEventAction.
+		*/
    G4bool fSmear;
 };
 
