@@ -70,8 +70,14 @@ G4double FCCSmearer::SmearEnergy(const G4Track* aTrackOriginal, G4double resolut
          newE = aTrackOriginal->GetKineticEnergy() * Gauss(1,resolution);
       else
       {
-         G4ThreeVector mom = SmearPerigee(aTrackOriginal);
-         newE = sqrt(mom.mag2()+pow(aTrackOriginal->GetDynamicParticle()->GetDefinition()->GetPDGMass(),2) )-aTrackOriginal->GetDynamicParticle()->GetDefinition()->GetPDGMass();
+         G4int PID = aTrackOriginal->GetDynamicParticle()->GetPDGcode();
+         if( abs(PID) == 11 || abs(PID) == 13 || abs(PID) == 211)
+         {
+            G4ThreeVector mom = SmearPerigee(aTrackOriginal);
+            newE = sqrt(mom.mag2()+pow(aTrackOriginal->GetDynamicParticle()->GetDefinition()->GetPDGMass(),2) )-aTrackOriginal->GetDynamicParticle()->GetDefinition()->GetPDGMass();
+         }
+         else
+            newE =  aTrackOriginal->GetKineticEnergy();
       }
    }
    return newE;
@@ -101,6 +107,7 @@ G4ThreeVector FCCSmearer::SmearPerigee(const G4Track* aTrackOriginal)
 {
    G4double* params = Atlfast(aTrackOriginal);
    G4ThreeVector smearedMom =FCCSmearer::Instance()->ComputeMomFromParams(params);
+   G4ThreeVector orgMom = aTrackOriginal->GetMomentum();
    return smearedMom;
 }
 
@@ -108,9 +115,16 @@ G4ThreeVector FCCSmearer::SmearPerigee(const G4Track* aTrackOriginal)
 
 G4double* FCCSmearer::Atlfast(const G4Track* aTrackOriginal)
 {
+   // original track position, momentum and charge
+   G4ThreeVector originP = aTrackOriginal->GetMomentum();
+   double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
+   G4ThreeVector originPos = aTrackOriginal->GetPosition();
+
+   G4double* originParams;
+   originParams = ComputeTrackParams(originCharge, originP, originPos);
+
    CLHEP::HepSymMatrix sigma; // smear matrix for track
    std::vector<double> smearVariables;   // Vector of correlated gaussian variables
-
    G4int PID = aTrackOriginal->GetDynamicParticle()->GetPDGcode();
 
    if(abs(PID) == 11)
@@ -119,15 +133,7 @@ G4double* FCCSmearer::Atlfast(const G4Track* aTrackOriginal)
       smearVariables = fMuonManager->getVariables( *aTrackOriginal, sigma );
    else if(abs(PID) == 211)
       smearVariables = fPionManager->getVariables( *aTrackOriginal, sigma );
-   else return NULL;
-
-   // original track position, momentum and charge
-   G4ThreeVector originP = aTrackOriginal->GetMomentum();
-   double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
-   G4ThreeVector originPos = aTrackOriginal->GetPosition();
-
-   G4double* originParams;
-   originParams = ComputeTrackParams(originCharge, originP, originPos);
+   else return originParams;
 
    // Atlfast smeared variables
    double impactParameter = originParams[0] + smearVariables[0]; // [0]
@@ -211,10 +217,9 @@ G4ThreeVector FCCSmearer::ComputePosFromParams(G4double* params, G4double phiVer
 
 G4ThreeVector FCCSmearer::ComputeMomFromParams(G4double* params)
 {
-   double Px = abs(1./params[4])*sin(params[2]);
-   double Py = abs(1./params[4])*cos(params[2]);
-   double Pz = abs(1./params[4])/sin( atan(1./params[3]) );
-
+   double Px = (-1)*1./params[4]*cos(params[2]);
+   double Py = (-1)*1./params[4]*sin(params[2]);
+   double Pz = abs(1./params[4])*sin( atan(1./params[3]) );
    G4ThreeVector P (Px,Py,Pz);
    return P;
 }
