@@ -1,5 +1,5 @@
 //
-// Header with all the includes used to create the HepMC ROOT dictionary
+// Header file with all the includes used to create the HepMC ROOT dictionary
 //
 
 #include "HepMC/GenEvent.h"

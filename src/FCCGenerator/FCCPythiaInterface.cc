@@ -76,19 +76,6 @@ void FCCPythiaInterface::SetRandomSeed(G4int iseed)
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCPythiaInterface::PrintRandomStatus(std::ostream& /*ostr*/) const
-{
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCPythiaInterface::SetUserParameters()
-{
-  G4cout << "set user parameters of PYTHIA common." << G4endl
-         << "nothing to be done in default."
-         << G4endl;
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 HepMC::GenEvent* FCCPythiaInterface::GenerateHepMCEvent()
 {
    pythia.next();

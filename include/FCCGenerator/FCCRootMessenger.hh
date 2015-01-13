@@ -23,8 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh
-//
 
 #ifndef FCC_ROOT_MESSENGER_H
 #define FCC_ROOT_MESSENGER_H
@@ -33,23 +31,50 @@
 
 class FCCRootReader;
 class G4UIdirectory;
-class G4UIcmdWithoutParameter;
 class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
+/**
+   @brief     A reader of the ROOT file with an event.
+ 	@details   A reader of the ROOT file with an event stored in a HepMC format. Based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh.
+ 	@author    Anna Zaborowska
+*/
+
 class FCCRootMessenger : public G4UImessenger {
 public:
+   /**
+      A constructor. The directory and the commands names are set here.
+      @param agen A pointer to the FCCRootReader class object.
+   */
   FCCRootMessenger(FCCRootReader* agen);
-  ~FCCRootMessenger();
-
+  ~FCCRootMessenger();/**
+      A method calling the methods from the FCCRootReader class, depending on the command.
+      @param command A pointer to the command typed by the user in the UI.
+      @param newValues A new value of the command set by the user.
+   */
   void SetNewValue(G4UIcommand* command, G4String newValues);
-  G4String GetCurrentValue(G4UIcommand* command);
+  /**
+      A method calling the methods from the FCCRootReader class, depending on the command.
+      @param command A pointer to the command typed by the user in the UI.
+   */
+   G4String GetCurrentValue(G4UIcommand* command);
 
 private:
+   /**
+      A pointer to the FCCRootReader class that is connected to the UI.
+   */
   FCCRootReader* gen;
-
+   /**
+      A directory for the commands associated with this messenger.
+   */
   G4UIdirectory* dir;
+   /**
+      A command that takes an integer parameter. Used to set the verbose level.
+   */
   G4UIcmdWithAnInteger* verbose;
+   /**
+      A command that takes an string parameter. Sets the name of the ROOT fiel with the event.
+   */
   G4UIcmdWithAString* open;
 
 };

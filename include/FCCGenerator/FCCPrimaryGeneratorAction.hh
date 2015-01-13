@@ -23,8 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/eventgenerator/HepMC/HepMCEx02/include/H02PrimaryGeneratorAction.hh
-//
 
 #ifndef FCC_PRIMARY_GENERATOR_ACTION_H
 #define FCC_PRIMARY_GENERATOR_ACTION_H
@@ -37,36 +35,80 @@ class G4Event;
 class G4VPrimaryGenerator;
 class FCCPrimaryGeneratorMessenger;
 
+/**
+	@brief     User's primary generactor action class (mandatory).
+ 	@details   Defines the mandatory particle generator class. It allows to choose between different particle generators: user's particle gun implementation, Pythia8 generator or the events could be read from the ROOT file. Based on G4 examples/eventgenerator/HepMC/HepMCEx02/include/H02PrimaryGeneratorAction.hh.
+ 	@author    Anna Zaborowska
+*/
+
 class FCCPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
-  FCCPrimaryGeneratorAction();
-  ~FCCPrimaryGeneratorAction();
+   /**
+      A default constructor.
+   */
+   FCCPrimaryGeneratorAction();
+   ~FCCPrimaryGeneratorAction();
+   /**
+      A method invoked from G4RunManager during the event loop. It calls the selected particle generator in order to generate an event.
+   */
+   virtual void GeneratePrimaries(G4Event* anEvent);
 
-  virtual void GeneratePrimaries(G4Event* anEvent);
-
-  void SetGenerator(G4VPrimaryGenerator* gen);
-  void SetGenerator(G4String genname);
-
-  G4VPrimaryGenerator* GetGenerator() const;
-  G4String GetGeneratorName() const;
+   /**
+      A setter of the current particle generator.
+      @param gen A pointer to the particle generator.
+   */
+   void SetGenerator(G4VPrimaryGenerator* gen);
+   /**
+      A setter of the current particle generator.
+      @param genname A name of the particle generator (set in the constructor).
+   */
+   void SetGenerator(G4String genname);
+   /**
+      A getter of the current particle generator.
+   */
+   G4VPrimaryGenerator* GetGenerator() const;
+   /**
+      A getter of the name of the current particle generator.
+   */
+   G4String GetGeneratorName() const;
 
 private:
-  G4VPrimaryGenerator* particleGun;
-  G4VPrimaryGenerator* pythia8Gen;
-  G4VPrimaryGenerator* hepmcRoot;
-
-  G4VPrimaryGenerator* currentGenerator;
-  G4String currentGeneratorName;
-  std::map<G4String, G4VPrimaryGenerator*> gentypeMap;
-
-  FCCPrimaryGeneratorMessenger* messenger;
+   /**
+      A pointer to the particle gun (FCCParticleGun) .
+   */
+   G4VPrimaryGenerator* particleGun;
+   /**
+      A pointer to the Pythia generator (FCCPythiaInterface) .
+   */
+   G4VPrimaryGenerator* pythia8Gen;
+   /**
+      A pointer to the reader of the ROOT files with events stored in HepMC format (FCCRootReader) .
+   */
+   G4VPrimaryGenerator* hepmcRoot;
+   /**
+      A pointer to the current particle generator.
+   */
+   G4VPrimaryGenerator* currentGenerator;
+   /**
+      A name of the current particle generator.
+   */
+   G4String currentGeneratorName;
+   /**
+      A map storing the pointers to the particle generators and their names.
+   */
+   std::map<G4String, G4VPrimaryGenerator*> gentypeMap;
+   /**
+      A pointer to the messenger that connects the UI with this class.
+   */
+   FCCPrimaryGeneratorMessenger* messenger;
 
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 inline void FCCPrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* gen)
 {
-  currentGenerator= gen;
+   currentGenerator= gen;
 }
 
 inline void FCCPrimaryGeneratorAction::SetGenerator(G4String genname)

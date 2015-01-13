@@ -69,19 +69,8 @@ FCCPythiaMessenger::FCCPythiaMessenger(FCCPythiaInterface* agen)
   G4UIparameter* parameter= new G4UIparameter ("Parameter", 's', false);
   cpythiaread-> SetParameter(parameter);
 
-  setUserParameters=
-    new G4UIcmdWithoutParameter("/generator/pythia8/setUserParameters",this);
-  setUserParameters->
-    SetGuidance("Set user parameters in the Pythia common blocks");
-
   setSeed= new G4UIcmdWithAnInteger("/generator/pythia8/setSeed", this);
   setSeed-> SetGuidance("set initial seed.");
-
-  printRandomStatus=
-    new G4UIcmdWithAString("/generator/pythia8/printRandomStatus", this);
-  printRandomStatus-> SetGuidance("print random number status.");
-  printRandomStatus-> SetParameterName("filename", true, false);
-  printRandomStatus-> SetDefaultValue("std::cout");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -92,10 +81,7 @@ FCCPythiaMessenger::~FCCPythiaMessenger()
   delete cpythiainit;
   delete cpythiastat;
   delete cpythiaread;
-  delete setUserParameters;
   delete setSeed;
-  delete printRandomStatus;
-
   delete dir;
 }
 
@@ -104,35 +90,32 @@ void FCCPythiaMessenger::SetNewValue(G4UIcommand* command,
                                          G4String newValues)
 {
 
-  if(command == verbose) {  // /verbose ...
+  if(command == verbose)
+  {
     G4int level= verbose-> GetNewIntValue(newValues);
     gen-> SetVerboseLevel(level);
-
-  } else if (command == print) { // /print ...
+  } else if (command == print)
+  {
     gen-> Print();
-
-  } else if (command == cpythiainit) { // /pythiainit ...
+  } else if (command == cpythiainit) {
     const char* strvaluelist= newValues.c_str();
     std::istringstream is(strvaluelist);
     G4int sbeam, starget; G4double dwin;
     is >> sbeam >> starget >> dwin;
     gen-> CallPythiaInit(sbeam, starget, dwin);
 
-  } else if (command == cpythiastat) { // /pythiastat ...
+  } else if (command == cpythiastat) {
     gen-> CallPythiaStat();
 
-  } else if (command == cpythiaread) { // /pythiaread ...
+  } else if (command == cpythiaread) {
     G4String s= newValues;
     gen-> CallPythiaReadString(s);
 
-  } else if (command == setUserParameters) { // /setUserParameters ...
-    gen-> SetUserParameters();
-
-  } else if (command == setSeed) { // /setSeed ...
+  } else if (command == setSeed) {
     G4int iseed= setSeed-> GetNewIntValue(newValues);
     gen-> SetRandomSeed(iseed);
 
-  } else if (command == printRandomStatus) { // /printRandomStatus ...
+  } else if (command == printRandomStatus) {
     G4String s= newValues;
     if (newValues == "std::cout") {
       gen-> PrintRandomStatus();

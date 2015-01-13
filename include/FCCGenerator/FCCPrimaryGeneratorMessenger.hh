@@ -23,8 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/eventgenerator/HepMC/HepMCEx02/include/H02PrimaryGeneratorMessenger.hh
-//
 
 #ifndef FCC_PRIMARY_GENERATOR_MESSENGER_H
 #define FCC_PRIMARY_GENERATOR_MESSENGER_H
@@ -35,24 +33,47 @@
 class FCCPrimaryGeneratorAction;
 class G4UIdirectory;
 class G4UIcommand;
-class G4UIcmdWithoutParameter;
-class G4UIcmdWithABool;
-class G4UIcmdWithAnInteger;
 class G4UIcmdWithAString;
+
+/**
+	@brief     A class delivering the commands from the UI to FCCPrimaryGeneratorAction.
+ 	@details   A messenger class delivering the commands from the UI to FCCPrimaryGeneratorAction. Based on G4 examples/eventgenerator/HepMC/HepMCEx02/include/H02PrimaryGeneratorMessenger.hh.
+ 	@author    Anna Zaborowska
+*/
 
 class FCCPrimaryGeneratorMessenger : public G4UImessenger {
 public:
-  FCCPrimaryGeneratorMessenger(FCCPrimaryGeneratorAction* genaction);
-  ~FCCPrimaryGeneratorMessenger();
-
-  void SetNewValue(G4UIcommand* command, G4String newValues);
-  G4String GetCurrentValue(G4UIcommand* command);
+   /**
+      A constructor. The directory and the command names are set here.
+      @param genaction A pointer to the FCCPrimaryGeneratorAction class object.
+   */
+   FCCPrimaryGeneratorMessenger(FCCPrimaryGeneratorAction* genaction);
+   ~FCCPrimaryGeneratorMessenger();
+   /**
+      A method calling the methods from the FCCPrimaryGeneratorAction class, depending on the command.
+      @param command A pointer to the command typed by the user in the UI.
+      @param newValues A new value of the command set by the user.
+   */
+   void SetNewValue(G4UIcommand* command, G4String newValues);
+   /**
+      A method calling the methods from the FCCPrimaryGeneratorAction class, depending on the command.
+      @param command A pointer to the command typed by the user in the UI.
+   */
+   G4String GetCurrentValue(G4UIcommand* command);
 
 private:
-  FCCPrimaryGeneratorAction* primaryAction;
-
-  G4UIdirectory* dir;
-  G4UIcmdWithAString* select;
+   /**
+      A pointer to the FCCPrimaryGeneratorAction class that is connected to the UI.
+   */
+   FCCPrimaryGeneratorAction* primaryAction;
+   /**
+      A directory for the commands associated with this messenger.
+   */
+   G4UIdirectory* dir;
+   /**
+      A command that can take a string. Used for selection of the particle generator.
+   */
+   G4UIcmdWithAString* select;
 
 };
 

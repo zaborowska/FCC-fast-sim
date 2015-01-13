@@ -81,7 +81,6 @@ class FCCParticleGunMessenger: public G4UImessenger
     G4UIcmdWithADoubleAndUnit * timeCmd;
     G4UIcmdWith3Vector *        polCmd;
     G4UIcmdWithAnInteger *      numberCmd;
-    
     G4UIcommand *               ionCmd;
     G4UIcommand* ionLvlCmd;
 

@@ -1,6 +1,7 @@
 //
 // LinkDef file for generation of the HepMC ROOT dictionary
 //
+
 #ifdef __CINT__
 
 #pragma link C++ class HepMC::GenEvent+;

@@ -44,12 +44,6 @@ FCCPrimaryGeneratorMessenger::FCCPrimaryGeneratorMessenger
   dir= new G4UIdirectory("/generator/");
   dir-> SetGuidance("Control commands for primary generator");
 
-  //verbose= new G4UIcmdWithAnInteger("/generator/verbose", this);
-  //verbose-> SetGuidance("set verbose level (0,1,2)");
-  //verbose-> SetParameterName("verbose", false, false);
-  //verbose-> SetDefaultValue(0);
-  //verbose-> SetRange("verbose>=0 && verbose<=2");
-
   select= new G4UIcmdWithAString("/generator/select", this);
   select-> SetGuidance("select generator type");
   select-> SetParameterName("generator_type", false, false);
@@ -64,9 +58,7 @@ FCCPrimaryGeneratorMessenger::FCCPrimaryGeneratorMessenger
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCPrimaryGeneratorMessenger::~FCCPrimaryGeneratorMessenger()
 {
-  //delete verbose;
   delete select;
-
   delete dir;
 }
 

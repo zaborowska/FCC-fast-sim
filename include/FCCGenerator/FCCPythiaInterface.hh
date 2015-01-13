@@ -23,8 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/eventgenerator/HepMC/HepMCEx03/include/HepMCG4Pythia8Interface.hh
-//
 
 #ifndef FCC_PYTHIA_INTERFACE_H
 #define FCC_PYTHIA_INTERFACE_H
@@ -35,39 +33,74 @@
 
 class FCCPythiaMessenger;
 
-/// A generic interface class with Pythia8 event generator via HepMC.
+/**
+	@brief     An interface to Pythia8 event generator.
+ 	@details   An interface to Pythia8 event generator via HepMC. Based on G4 examples/eventgenerator/HepMC/HepMCEx03/include/HepMCG4Pythia8Interface.hh.
+ 	@author    Anna Zaborowska
+*/
 
 class FCCPythiaInterface : public FCCHepMCInterface {
 protected:
+   /**
+      A verbosity level.
+   */
    G4int verbose;
+   /**
+      An interface to the HepMC standard format.
+   */
    HepMC::Pythia8ToHepMC ToHepMC;
+   /**
+      Pythia8.
+   */
    Pythia8::Pythia pythia;
-
+   /**
+      A pointer to the messenger that connects the UI with this class.
+   */
   FCCPythiaMessenger* messenger;
-
+   /**
+      Generates events in a standard HepMC format.
+   */
   virtual HepMC::GenEvent* GenerateHepMCEvent();
 
 public:
+   /**
+      A default constructor.
+   */
   FCCPythiaInterface();
   ~FCCPythiaInterface();
-
-  // set/get methods
+   /**
+      A setter of the verbosity level.
+      @param i A verbosity level.
+   */
   void SetVerboseLevel(G4int i);
+   /**
+      A getter of the verbosity level.
+   */
   G4int GetVerboseLevel() const;
-
-  // call pyxxx
+   /**
+      Initializes Pythia8.
+      @param beam The beam particle PDG code.
+      @param target The target particle PDG code.
+      @param eCM The energy of the system in the centre of mass frame.
+   */
   void CallPythiaInit(G4int beam, G4int target, G4double eCM);
+   /**
+      Prints Pytia statistics.
+   */
   void CallPythiaStat();
+   /**
+      Passes a string instruction to Pythia.
+      @param par A string instruction.
+   */
   void CallPythiaReadString(G4String par);
-
-  // random numbers operations
+   /**
+      Sets the random number seed.
+      @param iseed A seed.
+   */
   void SetRandomSeed(G4int iseed);
-  void PrintRandomStatus(std::ostream& ostr=G4cout) const;
-
-  // setup user parameters (empty in default).
-  // Implement your parameters in a delived class if you want.
-  virtual void SetUserParameters();
-
+   /**
+      Printing method.
+   */
   virtual void Print() const;
 };
 

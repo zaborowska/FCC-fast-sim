@@ -23,8 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/eventgenerator/HepMC/HepMCEx01/include/HepMCG4PythiaMessenger.hh
-//
 
 #ifndef FCC_PYTHIA_MESSENGER_H
 #define FCC_PYTHIA_MESSENGER_H
@@ -37,26 +35,64 @@ class G4UIcmdWithoutParameter;
 class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
+/**
+	@brief     A class delivering the commands from the UI to FCCPythiaInterface.
+ 	@details   A messenger class delivering the commands from the UI to FCCPythiaInterface. Based on G4 examples/eventgenerator/HepMC/HepMCEx01/include/HepMCG4PythiaMessenger.hh.
+ 	@author    Anna Zaborowska
+*/
 class FCCPythiaMessenger : public G4UImessenger {
 private:
-  FCCPythiaInterface* gen;
-
-  G4UIdirectory*           dir;
-  G4UIcmdWithAnInteger*    verbose;
-  G4UIcmdWithoutParameter* print;
-  G4UIcommand*             cpythiainit;
-  G4UIcmdWithoutParameter* cpythiastat;
-  G4UIcommand*             cpythiaread;
-  G4UIcommand*             setUserParameters;
-  G4UIcmdWithAnInteger*    setSeed;
-  G4UIcmdWithAString*      printRandomStatus;
+   /**
+      A pointer to the FCCPythiaInterface class that is connected to the UI.
+   */
+   FCCPythiaInterface* gen;
+   /**
+      A directory for the commands associated with this messenger.
+   */
+   G4UIdirectory*           dir;
+   /**
+      A command that takes an integer parameter. Used to set the verbose level.
+   */
+   G4UIcmdWithAnInteger*    verbose;
+   /**
+      A command that takes no parameters. Used to print out information.
+   */
+   G4UIcmdWithoutParameter* print;
+   /**
+      A command that takes 3 parameters. Initializes Pythia. Parameters: beam particle (PDG code), target particle (PDG code) and energy of the system in the centre of mass frame.
+   */
+   G4UIcommand*             cpythiainit;
+   /**
+      A command that takes no parameters. Prints Pythia statistics.
+   */
+   G4UIcmdWithoutParameter* cpythiastat;
+   /**
+      A command that takes parameters. Allows Pythia to read the given string.
+   */
+   G4UIcommand*             cpythiaread;
+   /**
+      A command that takes an integer parameter. Sets Pythia seed.
+   */
+   G4UIcmdWithAnInteger*    setSeed;
 
 public:
-  FCCPythiaMessenger(FCCPythiaInterface* agen);
-  ~FCCPythiaMessenger();
-
-  void SetNewValue(G4UIcommand* command, G4String newValues);
-  G4String GetCurrentValue(G4UIcommand* command);
+   /**
+      A constructor. The directory and the commands names are set here.
+      @param agen A pointer to the FCCPythiaInterface class object.
+   */
+   FCCPythiaMessenger(FCCPythiaInterface* agen);
+   ~FCCPythiaMessenger();
+   /**
+      A method calling the methods from the FCCPythiaInterface class, depending on the command.
+      @param command A pointer to the command typed by the user in the UI.
+      @param newValues A new value of the command set by the user.
+   */
+   void SetNewValue(G4UIcommand* command, G4String newValues);
+   /**
+      A method calling the methods from the FCCPythiaInterface class, depending on the command.
+      @param command A pointer to the command typed by the user in the UI.
+   */
+   G4String GetCurrentValue(G4UIcommand* command);
 };
 
 #endif
