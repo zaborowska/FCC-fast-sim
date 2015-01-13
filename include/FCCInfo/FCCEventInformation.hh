@@ -30,18 +30,42 @@
 #include "G4VUserEventInformation.hh"
 #include "globals.hh"
 
+/**
+	@brief     User's event information class.
+   @details   Describes the information that can be assosiated with a G4Event class object.
+ 	@author    Anna Zaborowska
+*/
 class FCCEventInformation: public G4VUserEventInformation
 {
 public:
+   /**
+      A default constructor.
+   */
    FCCEventInformation();
-   FCCEventInformation(G4bool);
+   /**
+      A constructor.
+      @param aSmear The flag indicating if smearing should be done.
+   */
+   FCCEventInformation(G4bool aSmear);
    virtual ~FCCEventInformation();
+   /**
+      A printing method.
+   */
    virtual void Print() const;
-
-   void SetDoSmearing(G4bool);
+   /**
+      A setter of the flag indicating if smearing should be done.
+      @param aSmear A boolean flag.
+   */
+   void SetDoSmearing(G4bool aSmear);
+   /**
+      A getter of the flag indicating if smearing should be done.
+   */
    G4bool GetDoSmearing();
 
 private:
+   /**
+      A flag indicating if smearing should be performed. It is read by implementations of G4VFastSimulationModel.
+   */
    G4bool fDoSmearing;
 };
 

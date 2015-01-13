@@ -30,20 +30,45 @@
 #include "G4VUserTrackInformation.hh"
 #include "globals.hh"
 
+/**
+	@brief     User's track information class.
+   @details   Describes the information that can be assosiated with a G4Track class object.
+ 	@author    Anna Zaborowska
+ */
 class FCCTrackInformation: public G4VUserTrackInformation
 {
 public:
+   /**
+      A default constructor.
+    */
    FCCTrackInformation();
-   FCCTrackInformation(G4bool smeared);
+   /**
+      A constructor.
+      @param aSmear The flag indicating if track was smeared.
+   */
+   FCCTrackInformation(G4bool aSmear);
 
    virtual ~FCCTrackInformation();
 
+   /**
+      A printing method.
+   */
    virtual void Print() const;
 
+   /**
+      A getter of the flag indicating if track has been smeared.
+   */
    G4bool GetSmeared() const;
+   /**
+      A setter of the flag indicating if track has been smeared.
+      @param aSmear A boolean flag.
+   */
    void SetSmeared(G4bool=true);
 
 private:
+   /**
+      A flag indicating if track has been smeared.
+   */
    G4bool fIfSmeared;
 };
 
