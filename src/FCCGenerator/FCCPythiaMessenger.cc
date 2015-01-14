@@ -87,48 +87,39 @@ FCCPythiaMessenger::~FCCPythiaMessenger()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void FCCPythiaMessenger::SetNewValue(G4UIcommand* command,
-                                         G4String newValues)
+                                     G4String newValues)
 {
 
-  if(command == verbose)
-  {
-    G4int level= verbose-> GetNewIntValue(newValues);
-    gen-> SetVerboseLevel(level);
-  } else if (command == print)
-  {
-    gen-> Print();
-  } else if (command == cpythiainit) {
-    const char* strvaluelist= newValues.c_str();
-    std::istringstream is(strvaluelist);
-    G4int sbeam, starget; G4double dwin;
-    is >> sbeam >> starget >> dwin;
-    gen-> CallPythiaInit(sbeam, starget, dwin);
+   if(command == verbose)
+   {
+      G4int level= verbose-> GetNewIntValue(newValues);
+      gen-> SetVerboseLevel(level);
+   } else if (command == print)
+   {
+      gen-> Print();
+   } else if (command == cpythiainit)
+   {
+      const char* strvaluelist= newValues.c_str();
+      std::istringstream is(strvaluelist);
+      G4int sbeam, starget; G4double dwin;
+      is >> sbeam >> starget >> dwin;
+      gen-> CallPythiaInit(sbeam, starget, dwin);
 
-  } else if (command == cpythiastat) {
-    gen-> CallPythiaStat();
+   } else if (command == cpythiastat)
+   {
+      gen-> CallPythiaStat();
 
-  } else if (command == cpythiaread) {
-    G4String s= newValues;
-    gen-> CallPythiaReadString(s);
+   } else if (command == cpythiaread)
+   {
+      G4String s= newValues;
+      gen-> CallPythiaReadString(s);
 
-  } else if (command == setSeed) {
-    G4int iseed= setSeed-> GetNewIntValue(newValues);
-    gen-> SetRandomSeed(iseed);
+   } else if (command == setSeed)
+   {
+      G4int iseed= setSeed-> GetNewIntValue(newValues);
+      gen-> SetRandomSeed(iseed);
 
-  } else if (command == printRandomStatus) {
-    G4String s= newValues;
-    if (newValues == "std::cout") {
-      gen-> PrintRandomStatus();
-    } else {
-      // to a file (overwrite mode)
-      std::ofstream ofs;
-      ofs.open(s.c_str(), std::ios::out);
-      //ofs.open(randomStatusFileName.c_str(), std::ios::out|std::ios::app);
-      ofs.setf(std::ios::fixed | std::ios::showpoint);
-      gen-> PrintRandomStatus(ofs);
-      ofs.close();
-    }
-  }
+   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

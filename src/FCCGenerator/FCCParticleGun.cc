@@ -42,7 +42,7 @@ FCCParticleGun::FCCParticleGun()
    particle_time = 0.0;
    particle_polarization = zero;
    particle_charge = 0.0;
-   theMessenger = new G4ParticleGunMessenger((G4ParticleGunMessenger*)this);
+   theMessenger = new G4ParticleGunMessenger((G4ParticleGun*)this);
 }
 
 FCCParticleGun::~FCCParticleGun()
