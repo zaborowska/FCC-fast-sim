@@ -55,17 +55,40 @@
 
 #include "G4UniformMagField.hh"
 
+/**
+	@brief     Reads the auxiliary information from GDML file.
+   @details   Reads the auxiliary information from the GDML file. Creates the logical volumes based on the detector type and attaches fast simulation models. Creates the magnetic field.
+   @author    Anna Zaborowska
+*/
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 class FCCFastSimGeometry
 {
   public:
+   /**
+      A default constructor. Reads the map, creates the logical volumes for the detectors and attaches Fast Simulation Models (FCCFastSimModelTracker, FCCFastSimModelEMCal and FCCFastSimModelHCal). The magnetic field is created here.
+      @param auxmap a map of auxiliary information (type and value) from GDML file.
+    */
     FCCFastSimGeometry(const G4GDMLAuxMapType* auxmap);
     ~FCCFastSimGeometry();
 
 private:
+   /**
+      A uniform magnetic field.
+    */
     G4UniformMagField*        fEMfield;
+   /**
+      A vector of fast simulation models for a tracking detector.
+    */
    std::vector<FCCFastSimModelTracker*> fTrackerSmearModel;
+   /**
+      A vector of fast simulation models for an electromagnetic calorimeter.
+    */
    std::vector<FCCFastSimModelEMCal*> fEMCalSmearModel;
+   /**
+      A vector of fast simulation models for a hadronic calorimeter.
+    */
    std::vector<FCCFastSimModelHCal*> fHCalSmearModel;
    // std::vector<FCCMuonSmearModel*> fMuonSmearModel;
 };
