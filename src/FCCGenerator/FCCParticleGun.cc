@@ -33,23 +33,10 @@
 FCCParticleGun::FCCParticleGun()
 {
    G4ParticleGun::SetInitialValues();
-   // NumberOfParticlesToBeGenerated = 1;
-   // particle_definition = 0;
-   // G4ThreeVector zero;
-   // particle_momentum_direction = (G4ParticleMomentum)zero;
-   // particle_energy = 0.0;
-   // particle_momentum = 0.0;
-   // particle_position = zero;
-   // particle_time = 0.0;
-   // particle_polarization = zero;
-   // particle_charge = 0.0;
-   // theMessenger = new G4ParticleGunMessenger((G4ParticleGun*)this);
 }
 
 FCCParticleGun::~FCCParticleGun()
-{
-  delete theMessenger;
-}
+{}
 
 void FCCParticleGun::GeneratePrimaryVertex(G4Event* evt)
 {

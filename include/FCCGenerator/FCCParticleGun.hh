@@ -28,7 +28,7 @@
 #define FCC_PARTICLE_GUN_H
 
 #include "G4ParticleGunMessenger.hh"
-#include "G4VPrimaryGenerator.hh"
+#include "G4ParticleGun.hh"
 #include "G4Event.hh"
 #include "globals.hh"
 #include "G4VPrimaryGenerator.hh"
@@ -43,7 +43,7 @@
  	@author    Anna Zaborowska
 */
 
-class FCCParticleGun: public G4VPrimaryGenerator
+class FCCParticleGun: public G4ParticleGun
 {
 public:
    FCCParticleGun();
