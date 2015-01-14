@@ -46,9 +46,14 @@
 class FCCParticleGun: public G4ParticleGun
 {
 public:
+   /**
+      A default constructor.
+   */
    FCCParticleGun();
    virtual ~FCCParticleGun();
-
+   /**
+      Generates an event containing a particle just as in G4ParticleGun, additionally it sets a vertex position and momentum direction using randomly generated numbers. Attaches FCCPrimaryParticleInformation to all the primaries.
+   */
    void GeneratePrimaryVertex(G4Event* evt);
 };
 
