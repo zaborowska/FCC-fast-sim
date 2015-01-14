@@ -23,8 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReader.hh
-//
 
 #ifndef FCC_ROOT_READER_H
 #define FCC_ROOT_READER_H
@@ -38,35 +36,70 @@
 
 class FCCRootMessenger;
 
+/**
+   @brief     A reader of the ROOT file with an event.
+   @details   A reader of the ROOT file with an event stored in a HepMC format. Based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReader.hh.
+ 	@author    Anna Zaborowska
+*/
+
 class FCCRootReader : public FCCHepMCInterface {
 protected:
-  G4String filename;
+   /**
+      A name of the ROOT file with the event.
+   */
+   G4String filename;
+   /**
+      A pointer to the ROOT file with events.
+   */
    TFile* rootInput;
+   /**
+      A link to the file content (set to the next-to-use event).
+   */
    TObjLink *rootLnk;
-
-  G4int verbose;
-  FCCRootMessenger* messenger;
-
-  virtual HepMC::GenEvent* GenerateHepMCEvent();
+   /**
+      A verbosity level.
+   */
+   G4int verbose;
+   /**
+      A pointer to the messenger that connects the UI with this class.
+   */
+   FCCRootMessenger* messenger;
+   /**
+      Reads an event saved in a HepMC standard format, in the ROOT file.
+   */
+   virtual HepMC::GenEvent* GenerateHepMCEvent();
 
 public:
+   /**
+      A default constructor.
+   */
   FCCRootReader();
   ~FCCRootReader();
-
-  // set/get methods
+   /**
+      Sets the name of the ROOT file with events.
+      @param name A file name.
+   */
   void SetFileName(G4String name);
+   /**
+      Gets the name of the ROOT file with events.
+   */
   G4String GetFileName() const;
-
+   /**
+      Sets the verbosity level.
+      @param name A verbosity level.
+   */
   void SetVerboseLevel(G4int i);
-  G4int GetVerboseLevel() const; 
-
-  // methods...
+   /**
+      Gets the verbosity level.
+   */
+  G4int GetVerboseLevel() const;
+   /**
+      Opens the file and sets the link to the first event in the file.
+   */
   void Initialize();
 };
 
-// ====================================================================
-// inline functions
-// ====================================================================
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 inline void FCCRootReader::SetFileName(G4String name)
 {

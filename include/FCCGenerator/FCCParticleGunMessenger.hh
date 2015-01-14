@@ -23,10 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-// $Id: G4ParticleGunMessenger.hh 72940 2013-08-14 13:29:44Z gcosmo $
-//
-// 
 
 #ifndef FCC_PARTICLE_GUN_MESSENGER_H
 #define FCC_PARTICLE_GUN_MESSENGER_H
@@ -45,20 +41,33 @@ class G4UIcmdWithAnInteger;
 #include "G4UImessenger.hh"
 #include "globals.hh"
 
-// class description:
-//
-//  This is a concrete class of G4UImessenger which handles commands for
-// FCCParticleGun.
-//
+/**
+	@brief     A class handling the commands from the UI to FCCParticleGun.
+ 	@details   A messenger class handling the commands from the UI to FCCParticleGun.
+ 	@author    Anna Zaborowska
+*/
 
 class FCCParticleGunMessenger: public G4UImessenger
 {
   public:
+   /**
+      A constructor. The directory and the commands names are set here.
+      @param agen A pointer to the FCCParticleGun class object.
+   */
     FCCParticleGunMessenger(FCCParticleGun * fPtclGun);
     ~FCCParticleGunMessenger();
-    
+
   public:
+   /**
+      A method calling the methods from the FCCParticleGun class, depending on the command.
+      @param command A pointer to the command typed by the user in the UI.
+      @param newValues A new value of the command set by the user.
+   */
     void SetNewValue(G4UIcommand * command,G4String newValues);
+   /**
+      A method calling the methods from the FCCParticleGun class, depending on the command.
+      @param command A pointer to the command typed by the user in the UI.
+   */
     G4String GetCurrentValue(G4UIcommand * command);
 
   private:

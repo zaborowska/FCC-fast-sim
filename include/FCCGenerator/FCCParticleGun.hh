@@ -27,7 +27,7 @@
 #ifndef FCC_PARTICLE_GUN_H
 #define FCC_PARTICLE_GUN_H
 
-#include "FCCParticleGunMessenger.hh"
+#include "G4ParticleGunMessenger.hh"
 #include "G4VPrimaryGenerator.hh"
 #include "G4Event.hh"
 #include "globals.hh"
@@ -84,7 +84,7 @@ public:
    G4ThreeVector         particle_polarization;
 
 private:
-   FCCParticleGunMessenger* theMessenger;
+   G4ParticleGunMessenger* theMessenger;
 
 };
 

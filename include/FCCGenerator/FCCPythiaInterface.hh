@@ -58,7 +58,7 @@ protected:
    */
   FCCPythiaMessenger* messenger;
    /**
-      Generates events in a standard HepMC format.
+      Generates a Pythia event according to the parameters set with other methods. Converts it to HepMC standard format.
    */
   virtual HepMC::GenEvent* GenerateHepMCEvent();
 
@@ -105,6 +105,7 @@ public:
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 inline void FCCPythiaInterface::SetVerboseLevel(G4int i)
 {
   verbose= i;

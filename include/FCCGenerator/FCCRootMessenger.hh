@@ -35,8 +35,8 @@ class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
 /**
-   @brief     A reader of the ROOT file with an event.
- 	@details   A reader of the ROOT file with an event stored in a HepMC format. Based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh.
+   @brief     A class handling the commands from the UI to FCCRootReader.
+ 	@details   A messenger class handling the commands from the UI to FCCPythiaInterface. Based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh.
  	@author    Anna Zaborowska
 */
 
@@ -46,14 +46,15 @@ public:
       A constructor. The directory and the commands names are set here.
       @param agen A pointer to the FCCRootReader class object.
    */
-  FCCRootMessenger(FCCRootReader* agen);
-  ~FCCRootMessenger();/**
+   FCCRootMessenger(FCCRootReader* agen);
+   ~FCCRootMessenger();
+   /**
       A method calling the methods from the FCCRootReader class, depending on the command.
       @param command A pointer to the command typed by the user in the UI.
       @param newValues A new value of the command set by the user.
    */
-  void SetNewValue(G4UIcommand* command, G4String newValues);
-  /**
+   void SetNewValue(G4UIcommand* command, G4String newValues);
+   /**
       A method calling the methods from the FCCRootReader class, depending on the command.
       @param command A pointer to the command typed by the user in the UI.
    */
@@ -63,19 +64,19 @@ private:
    /**
       A pointer to the FCCRootReader class that is connected to the UI.
    */
-  FCCRootReader* gen;
+   FCCRootReader* gen;
    /**
       A directory for the commands associated with this messenger.
    */
-  G4UIdirectory* dir;
+   G4UIdirectory* dir;
    /**
       A command that takes an integer parameter. Used to set the verbose level.
    */
-  G4UIcmdWithAnInteger* verbose;
+   G4UIcmdWithAnInteger* verbose;
    /**
-      A command that takes an string parameter. Sets the name of the ROOT fiel with the event.
+      A command that takes an string parameter. Sets the name of the ROOT file with the event.
    */
-  G4UIcmdWithAString* open;
+   G4UIcmdWithAString* open;
 
 };
 
