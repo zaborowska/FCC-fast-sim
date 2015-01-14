@@ -32,135 +32,24 @@
 
 FCCParticleGun::FCCParticleGun()
 {
-   NumberOfParticlesToBeGenerated = 1;
-   particle_definition = 0;
-   G4ThreeVector zero;
-   particle_momentum_direction = (G4ParticleMomentum)zero;
-   particle_energy = 0.0;
-   particle_momentum = 0.0;
-   particle_position = zero;
-   particle_time = 0.0;
-   particle_polarization = zero;
-   particle_charge = 0.0;
-   theMessenger = new G4ParticleGunMessenger((G4ParticleGun*)this);
+   G4ParticleGun::SetInitialValues();
+   // NumberOfParticlesToBeGenerated = 1;
+   // particle_definition = 0;
+   // G4ThreeVector zero;
+   // particle_momentum_direction = (G4ParticleMomentum)zero;
+   // particle_energy = 0.0;
+   // particle_momentum = 0.0;
+   // particle_position = zero;
+   // particle_time = 0.0;
+   // particle_polarization = zero;
+   // particle_charge = 0.0;
+   // theMessenger = new G4ParticleGunMessenger((G4ParticleGun*)this);
 }
 
 FCCParticleGun::~FCCParticleGun()
 {
   delete theMessenger;
 }
-
-void FCCParticleGun::SetParticleDefinition
-                 (G4ParticleDefinition * aParticleDefinition)
-{
-  if(!aParticleDefinition)
-  {
-    G4Exception("FCCParticleGun::SetParticleDefinition()","Event0101",
-     FatalException,"Null pointer is given.");
-  }
-  if(aParticleDefinition->IsShortLived())
-  {
-    if(!(aParticleDefinition->GetDecayTable()))
-    {
-      G4ExceptionDescription ED;
-      ED << "FCCParticleGun does not support shooting a short-lived particle without a valid decay table." << G4endl;
-      ED << "FCCParticleGun::SetParticleDefinition for "
-         << aParticleDefinition->GetParticleName() << " is ignored." << G4endl;
-      G4Exception("FCCParticleGun::SetParticleDefinition()","Event0102",
-      JustWarning,ED);
-      return;
-    }
-  }
-  particle_definition = aParticleDefinition;
-  particle_charge = particle_definition->GetPDGCharge();
-  if(particle_momentum>0.0)
-  {
-    G4double mass =  particle_definition->GetPDGMass();
-    particle_energy =
-                 std::sqrt(particle_momentum*particle_momentum+mass*mass)-mass;
-  }
-}
-
-void FCCParticleGun::SetParticleEnergy(G4double aKineticEnergy)
-{
-  particle_energy = aKineticEnergy;
-  if(particle_momentum>0.0){
-    if(particle_definition){
-      G4cout << "FCCParticleGun::" << particle_definition->GetParticleName()
-             << G4endl;
-    }else{
-      G4cout << "FCCParticleGun::" << " " << G4endl;
-    }
-    G4cout << " was defined in terms of Momentum: "
-           << particle_momentum/GeV << "GeV/c" << G4endl;
-    G4cout << " is now defined in terms of KineticEnergy: "
-           << particle_energy/GeV   << "GeV"   << G4endl;
-    particle_momentum = 0.0;
-  }
-}
-
-void FCCParticleGun::SetParticleMomentum(G4double aMomentum)
-{
-  if(particle_energy>0.0){
-    if(particle_definition){
-      G4cout << "FCCParticleGun::" << particle_definition->GetParticleName()
-             << G4endl;
-    }else{
-      G4cout << "FCCParticleGun::" << " " << G4endl;
-    }
-    G4cout << " was defined in terms of KineticEnergy: "
-           << particle_energy/GeV << "GeV"   << G4endl;
-    G4cout << " is now defined in terms Momentum: "
-           << aMomentum/GeV       << "GeV/c" << G4endl;
-  }
-  if(particle_definition==0)
-  {
-    G4cout <<"Particle Definition not defined yet for FCCParticleGun"<< G4endl;
-    G4cout <<"Zero Mass is assumed"<<G4endl;
-    particle_momentum = aMomentum;
-    particle_energy = aMomentum;
-  }
-  else
-  {
-    G4double mass =  particle_definition->GetPDGMass();
-    particle_momentum = aMomentum;
-    particle_energy =
-                 std::sqrt(particle_momentum*particle_momentum+mass*mass)-mass;
-  }
-}
-
-void FCCParticleGun::SetParticleMomentum(G4ParticleMomentum aMomentum)
-{
-  if(particle_energy>0.0){
-    if(particle_definition){
-      G4cout << "G4ParticleGun::" << particle_definition->GetParticleName()
-             << G4endl;
-    }else{
-      G4cout << "G4ParticleGun::" << " " << G4endl;
-    }
-    G4cout << " was defined in terms of KineticEnergy: "
-           << particle_energy/GeV << "GeV"   << G4endl;
-    G4cout << " is now defined in terms Momentum: "
-           << aMomentum.mag()/GeV << "GeV/c" << G4endl;
-  }
-  if(particle_definition==0)
-  {
-    G4cout <<"Particle Definition not defined yet for G4ParticleGun"<< G4endl;
-    G4cout <<"Zero Mass is assumed"<<G4endl;
-    particle_momentum_direction =  aMomentum.unit();
-    particle_momentum = aMomentum.mag();
-    particle_energy = aMomentum.mag();
-  }
-  else
-  {
-    G4double mass =  particle_definition->GetPDGMass();
-    particle_momentum = aMomentum.mag();
-    particle_momentum_direction =  aMomentum.unit();
-    particle_energy =
-                 std::sqrt(particle_momentum*particle_momentum+mass*mass)-mass;
-  }
-}
-
 
 void FCCParticleGun::GeneratePrimaryVertex(G4Event* evt)
 {
