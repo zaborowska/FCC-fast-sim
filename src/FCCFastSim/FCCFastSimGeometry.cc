@@ -32,7 +32,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* auxmap): fEMfield(0)
+FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* aAuxMap): fField(0)
 {
    std::vector<G4Region*> TrackerList;
    std::vector<G4Region*> ECalList;
@@ -41,8 +41,8 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* auxmap): fEMfield
 
    // Retrieving Auxiliary Information
 
-   for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin();
-       iter!=auxmap->end(); iter++)
+   for(G4GDMLAuxMapType::const_iterator iter=aAuxMap->begin();
+       iter!=aAuxMap->end(); iter++)
    {
       for (G4GDMLAuxListType::const_iterator vit=(*iter).second.begin();
            vit!=(*iter).second.end();vit++)
@@ -118,7 +118,7 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* auxmap): fEMfield
    // set a number of parametrisations to ensure a proper ntuple numbering
 
 
-   fEMfield = new G4UniformMagField(G4ThreeVector(0.,0.,0.01));
+   fField = new G4UniformMagField(G4ThreeVector(0.,0.,0.01));
    G4FieldManager* fieldMgr
       = G4TransportationManager::GetTransportationManager()
         ->GetFieldManager();

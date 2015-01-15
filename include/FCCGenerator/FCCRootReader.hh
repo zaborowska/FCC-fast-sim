@@ -47,23 +47,23 @@ protected:
    /**
       A name of the ROOT file with the event.
    */
-   G4String filename;
+   G4String fFileName;
    /**
       A pointer to the ROOT file with events.
    */
-   TFile* rootInput;
+   TFile* fRootInput;
    /**
       A link to the file content (set to the next-to-use event).
    */
-   TObjLink *rootLnk;
+   TObjLink *fLinkToEvent;
    /**
       A verbosity level.
    */
-   G4int verbose;
+   G4int fVerbose;
    /**
       A pointer to the messenger that connects the UI with this class.
    */
-   FCCRootMessenger* messenger;
+   FCCRootMessenger* fMessenger;
    /**
       Reads an event saved in a HepMC standard format, in the ROOT file.
    */
@@ -77,18 +77,18 @@ public:
   ~FCCRootReader();
    /**
       Sets the name of the ROOT file with events.
-      @param name A file name.
+      @param aName A file name.
    */
-  void SetFileName(G4String name);
+  void SetFileName(G4String aName);
    /**
       Gets the name of the ROOT file with events.
    */
   G4String GetFileName() const;
    /**
       Sets the verbosity level.
-      @param name A verbosity level.
+      @param aLevel A verbosity level.
    */
-  void SetVerboseLevel(G4int i);
+  void SetVerboseLevel(G4int aLevel);
    /**
       Gets the verbosity level.
    */
@@ -101,24 +101,24 @@ public:
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-inline void FCCRootReader::SetFileName(G4String name)
+inline void FCCRootReader::SetFileName(G4String aName)
 {
-  filename= name;
+  fFileName= aName;
 }
 
 inline G4String FCCRootReader::GetFileName() const
 {
-  return filename;
+  return fFileName;
 }
 
-inline void FCCRootReader::SetVerboseLevel(G4int i)
+inline void FCCRootReader::SetVerboseLevel(G4int aLevel)
 {
-  verbose= i;
+  fVerbose= aLevel;
 }
 
 inline G4int FCCRootReader::GetVerboseLevel() const
 {
-  return verbose;
+  return fVerbose;
 }
 
 #endif

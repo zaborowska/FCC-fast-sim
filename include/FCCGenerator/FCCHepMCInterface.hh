@@ -44,15 +44,18 @@ protected:
    /**
       An event in a standard HepMC format.
    */
-   HepMC::GenEvent* hepmcEvent;
+   HepMC::GenEvent* fHepMCEvent;
    /**
       Should reassure that primary vertices are located inside the world volume.
+      @param aPosition A position of the vertex.
    */
-   virtual G4bool CheckVertexInsideWorld(const G4ThreeVector& pos) const;
+   virtual G4bool CheckVertexInsideWorld(const G4ThreeVector& aPosition) const;
    /**
       Convertes HepMC::GenEvent to G4Event. Attaches FCCPrimaryParticleInformation to all the primaries.
+      @param aHepMCEvent An event in HepMC format to read from.
+      @param aEvent An event to write to.
    */
-   void HepMC2G4(const HepMC::GenEvent* hepmcevt, G4Event* g4event);
+   void HepMC2G4(const HepMC::GenEvent* aHepMCEvent, G4Event* aG4Event);
    /**
       Creates an empty event by default. Should be implemented in derived classes.
    */
@@ -70,8 +73,9 @@ public:
    HepMC::GenEvent* GetHepMCGenEvent() const;
    /**
       Gets HepMC::GenEvent from GenerateHepMCEvent() method and converts it to G4Event.
+      @param aEvent an event to convert.
    */
-   virtual void GeneratePrimaryVertex(G4Event* anEvent);
+   virtual void GeneratePrimaryVertex(G4Event* aEvent);
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

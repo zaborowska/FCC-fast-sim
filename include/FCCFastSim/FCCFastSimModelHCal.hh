@@ -62,26 +62,28 @@ public:
       Checks if this model should be applied to this particle type.
       @param aParticle A particle definition (type).
     */
-   virtual G4bool IsApplicable(const G4ParticleDefinition&);
+   virtual G4bool IsApplicable(const G4ParticleDefinition& aParticle);
    /**
       Smears the energy deposit and saves it, together with the position of the deposit, the detector resolution and efficiency to the FCCPrimaryParticleInformation.
+      @param aFastTrack A track.
     */
-   virtual G4bool ModelTrigger(const G4FastTrack &);
+   virtual G4bool ModelTrigger(const G4FastTrack & aFastTrack);
    /**
       Smears the energy deposit and saves it, together with the position of the deposit, the detector resolution and efficiency to the FCCPrimaryParticleInformation.
+      @param aFastTrack A track.
+      @param aFastStep A step.
     */
-   virtual void DoIt(const G4FastTrack&, G4FastStep&);
-
+   virtual void DoIt(const G4FastTrack& aFastTrack, G4FastStep& aFastStep);
 
 private:
    /**
       A pointer to FCCDetectorParametrisation used to get the efficiency and resolution of the detector for a given particle and parametrisation type (fParam).
     */
-   FCCDetectorParametrisation* fCalcParam;
+   FCCDetectorParametrisation* fCalculateParametrisation;
    /**
       A parametrisation type.
     */
-   FCCDetectorParametrisation::Parametrisation fParam;
+   FCCDetectorParametrisation::Parametrisation fParametrisation;
 };
 #endif
 

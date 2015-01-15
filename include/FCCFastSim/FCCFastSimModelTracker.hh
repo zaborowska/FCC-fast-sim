@@ -72,19 +72,21 @@ public:
    virtual G4bool ModelTrigger(const G4FastTrack & aFastTrack);
    /**
       Calculates the final position (at the outer boundary of a detector) of a particle with the momentum at the entrance of the detector. Smears the particle momentum and saves it, together with the detector resolution and efficiency to the FCCPrimaryParticleInformation.
+      @param aFastTrack A track.
+      @param aFastStep A step.
     */
-   virtual void DoIt(const G4FastTrack&, G4FastStep&);
+   virtual void DoIt(const G4FastTrack& aFastTrack, G4FastStep& aFastStep);
 
 
 private:
    /**
       A pointer to FCCDetectorParametrisation used to get the efficiency and resolution of the detector for a given particle and parametrisation type (fParam).
     */
-   FCCDetectorParametrisation* fCalcParam;
+   FCCDetectorParametrisation* fCalculateParametrisation;
    /**
       A parametrisation type.
     */
-   FCCDetectorParametrisation::Parametrisation fParam;
+   FCCDetectorParametrisation::Parametrisation fParametrisation;
 };
 #endif
 

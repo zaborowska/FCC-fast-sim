@@ -38,7 +38,7 @@ FCCParticleGun::FCCParticleGun()
 FCCParticleGun::~FCCParticleGun()
 {}
 
-void FCCParticleGun::GeneratePrimaryVertex(G4Event* evt)
+void FCCParticleGun::GeneratePrimaryVertex(G4Event* aEvent)
 {
    // randomize particle momentum direction
    G4double x0  = 0, y0  = 0, z0  = 0;
@@ -84,5 +84,5 @@ void FCCParticleGun::GeneratePrimaryVertex(G4Event* evt)
       vertex->SetPrimary( particle );
    }
 
-   evt->AddPrimaryVertex( vertex );
+   aEvent->AddPrimaryVertex( vertex );
 }

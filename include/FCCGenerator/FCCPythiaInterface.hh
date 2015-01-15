@@ -44,19 +44,19 @@ protected:
    /**
       A verbosity level.
    */
-   G4int verbose;
+   G4int fVerbose;
    /**
       An interface to the HepMC standard format.
    */
-   HepMC::Pythia8ToHepMC ToHepMC;
+   HepMC::Pythia8ToHepMC fToHepMC;
    /**
       Pythia8.
    */
-   Pythia8::Pythia pythia;
+   Pythia8::Pythia fPythia;
    /**
       A pointer to the messenger that connects the UI with this class.
    */
-  FCCPythiaMessenger* messenger;
+  FCCPythiaMessenger* fMessenger;
    /**
       Generates a Pythia event according to the parameters set with other methods. Converts it to HepMC standard format.
    */
@@ -70,34 +70,34 @@ public:
   ~FCCPythiaInterface();
    /**
       A setter of the verbosity level.
-      @param i A verbosity level.
+      @param aLevel A verbosity level.
    */
-  void SetVerboseLevel(G4int i);
+  void SetVerboseLevel(G4int aLevel);
    /**
       A getter of the verbosity level.
    */
   G4int GetVerboseLevel() const;
    /**
       Initializes Pythia8.
-      @param beam The beam particle PDG code.
-      @param target The target particle PDG code.
-      @param eCM The energy of the system in the centre of mass frame.
+      @param aBeam The beam particle PDG code.
+      @param aTarget The target particle PDG code.
+      @param aEnergyCM The energy of the system in the centre of mass frame.
    */
-  void CallPythiaInit(G4int beam, G4int target, G4double eCM);
+  void CallPythiaInit(G4int aBeam, G4int aTarget, G4double aEnergyCM);
    /**
       Prints Pytia statistics.
    */
   void CallPythiaStat();
    /**
       Passes a string instruction to Pythia.
-      @param par A string instruction.
+      @param aInstruction A string instruction.
    */
-  void CallPythiaReadString(G4String par);
+  void CallPythiaReadString(G4String aInstruction);
    /**
       Sets the random number seed.
-      @param iseed A seed.
+      @param aSeed A seed.
    */
-  void SetRandomSeed(G4int iseed);
+  void SetRandomSeed(G4int aSeed);
    /**
       Printing method.
    */
@@ -106,14 +106,14 @@ public:
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-inline void FCCPythiaInterface::SetVerboseLevel(G4int i)
+inline void FCCPythiaInterface::SetVerboseLevel(G4int aLevel)
 {
-  verbose= i;
+  fVerbose= aLevel;
 }
 
 inline G4int FCCPythiaInterface::GetVerboseLevel() const
 {
-  return verbose;
+  return fVerbose;
 }
 
 #endif

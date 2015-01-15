@@ -36,39 +36,38 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCPrimaryGeneratorAction::FCCPrimaryGeneratorAction()
 {
-  // default generator is particle gun.
-  currentGenerator= particleGun= new FCCParticleGun();
-  currentGeneratorName= "particleGun";
+  fCurrentGenerator= fParticleGun= new FCCParticleGun();
+  fCurrentGeneratorName= "particleGun";
 
-  hepmcRoot = new FCCRootReader();
+  fHepMCRoot = new FCCRootReader();
 #ifdef G4LIB_USE_PYTHIA8
-  pythia8Gen= new FCCPythiaInterface();
+  fPythia8= new FCCPythiaInterface();
 #else
-  pythia8Gen= 0;
+  fPythia8= 0;
 #endif
 
-  gentypeMap["particleGun"]= particleGun;
+  fGeneratorTypeMap["particleGun"]= fParticleGun;
 #ifdef G4LIB_USE_PYTHIA8
-  gentypeMap["pythia8"]= pythia8Gen;
+  fGeneratorTypeMap["pythia8"]= fPythia8;
 #endif
-  gentypeMap["hepmcRoot"]= hepmcRoot;
+  fGeneratorTypeMap["hepmcRoot"]= fHepMCRoot;
 
-  messenger= new FCCPrimaryGeneratorMessenger(this);
+  fMessenger= new FCCPrimaryGeneratorMessenger(this);
 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCPrimaryGeneratorAction::~FCCPrimaryGeneratorAction()
 {
-  delete messenger;
+  delete fMessenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void FCCPrimaryGeneratorAction::GeneratePrimaries(G4Event* aEvent)
 {
-  if(currentGenerator)
+  if(fCurrentGenerator)
   {
-    currentGenerator-> GeneratePrimaryVertex(anEvent);
+    fCurrentGenerator-> GeneratePrimaryVertex(aEvent);
   }
   else
     G4Exception("FCCPrimaryGeneratorAction::GeneratePrimaries",

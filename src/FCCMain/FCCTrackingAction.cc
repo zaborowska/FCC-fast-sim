@@ -41,8 +41,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCTrackingAction::FCCTrackingAction()
-   : G4UserTrackingAction()
+FCCTrackingAction::FCCTrackingAction() : G4UserTrackingAction()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -77,24 +76,24 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
       FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*)aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
       FCCOutput::Instance()->SaveTrack(FCCOutput::eMC,
                                        info->GetID(),
-                                       info->GetPID(),
+                                       info->GetPDG(),
                                        info->GetMCMomentum() );
       FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker,
                                        info->GetID(),
-                                       info->GetPID(),
+                                       info->GetPDG(),
                                        info->GetTrackerMomentum(),
                                        info->GetTrackerResolution(),
                                        info->GetTrackerEfficiency());
       FCCOutput::Instance()->SaveTrack(FCCOutput::eEMCal,
                                        info->GetID(),
-                                       info->GetPID(),
+                                       info->GetPDG(),
                                        info->GetEMCalPosition(),
                                        info->GetEMCalResolution(),
                                        info->GetEMCalEfficiency(),
                                        info->GetEMCalEnergy());
       FCCOutput::Instance()->SaveTrack(FCCOutput::eHCal,
                                        info->GetID(),
-                                       info->GetPID(),
+                                       info->GetPDG(),
                                        info->GetHCalPosition(),
                                        info->GetHCalResolution(),
                                        info->GetHCalEfficiency(),

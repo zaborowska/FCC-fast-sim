@@ -38,41 +38,36 @@
 #include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-FCCHepMCInterface::FCCHepMCInterface()
-   : hepmcEvent(0)
-{
-}
+FCCHepMCInterface::FCCHepMCInterface(): hepmcEvent(0)
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCHepMCInterface::~FCCHepMCInterface()
 {
-   delete hepmcEvent;
+   delete fHepMcEvent;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4bool FCCHepMCInterface::CheckVertexInsideWorld
-(const G4ThreeVector& pos) const
+G4bool FCCHepMCInterface::CheckVertexInsideWorld (const G4ThreeVector& aPosition) const
 {
-   G4Navigator* navigator= G4TransportationManager::GetTransportationManager()
-      -> GetNavigatorForTracking();
+   G4Navigator* navigator= G4TransportationManager::GetTransportationManager()-> GetNavigatorForTracking();
 
    G4VPhysicalVolume* world= navigator-> GetWorldVolume();
    G4VSolid* solid= world-> GetLogicalVolume()-> GetSolid();
-   EInside qinside= solid-> Inside(pos);
+   EInside qinside= solid-> Inside(aPosition);
 
    if( qinside != kInside) return false;
    else return true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCHepMCInterface::HepMC2G4(const HepMC::GenEvent* hepmcevt,
-                                 G4Event* g4event)
+void FCCHepMCInterface::HepMC2G4(const HepMC::GenEvent* aHepMCEvent, G4Event* aG4Event)
 {
 
    G4cout << "Default units: " << HepMC::Units::name(HepMC::Units::default_momentum_unit())
           << " " << HepMC::Units::name(HepMC::Units::default_length_unit()) << G4endl;
-   for(HepMC::GenEvent::vertex_const_iterator vitr= hepmcevt->vertices_begin();
-       vitr != hepmcevt->vertices_end(); ++vitr ) { // loop for vertex ...
+   for(HepMC::GenEvent::vertex_const_iterator vitr= aHepMCEvent->vertices_begin();
+       vitr != aHepMCEvent->vertices_end(); ++vitr ) { // loop for vertex ...
 
       // real vertex?
       G4bool qvtx=false;
@@ -115,31 +110,32 @@ void FCCHepMCInterface::HepMC2G4(const HepMC::GenEvent* hepmcevt,
                                        G4ThreeVector(p.x(), p.y(), p.z())));
          g4vtx-> SetPrimary(g4prim);
       }
-      g4event-> AddPrimaryVertex(g4vtx);
+      aG4Event-> AddPrimaryVertex(g4vtx);
    }
-   G4cout<<" HepMC Event has "<<hepmcevt->particles_size()<< " particles"<<G4endl;
+   G4cout<<" HepMC Event has "<<aHepMCEvent->particles_size()<< " particles"<<G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 HepMC::GenEvent* FCCHepMCInterface::GenerateHepMCEvent()
 {
-   HepMC::GenEvent* aevent= new HepMC::GenEvent();
-   return aevent;
+   HepMC::GenEvent* event= new HepMC::GenEvent();
+   return event;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCHepMCInterface::GeneratePrimaryVertex(G4Event* anEvent)
+void FCCHepMCInterface::GeneratePrimaryVertex(G4Event* aEvent)
 {
    // delete previous event object
-   delete hepmcEvent;
+   delete fHepMcEvent;
 
    // generate next event
-   hepmcEvent= GenerateHepMCEvent();
-   if(! hepmcEvent) {
+   fHepMcEvent= GenerateHepMCEvent();
+   if(! fHepMcEvent)
+   {
       G4cout << "HepMCInterface: no generated particles. run terminated..."
              << G4endl;
       G4RunManager::GetRunManager()-> AbortRun();
       return;
    }
-   HepMC2G4(hepmcEvent, anEvent);
+   HepMC2G4(fHepMcEvent, aEvent);
 }

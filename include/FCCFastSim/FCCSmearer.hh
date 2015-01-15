@@ -17,10 +17,10 @@ class FCCSmearer
 public:
 
    static FCCSmearer* Instance();
-   G4ThreeVector Smear(const G4Track* aTrack, G4double resolution);
-   G4double Smear(const G4double energy, G4double resolution);
+   G4ThreeVector Smear(const G4Track* aTrack, G4double aResolution);
+   G4double Smear(const G4double aEnergy, G4double aResolution);
 
-   G4double Gauss(G4double mean, G4double stdDev);
+   G4double Gauss(G4double aMean, G4double aStandardDeviation);
 protected:
    FCCSmearer();
    ~FCCSmearer();

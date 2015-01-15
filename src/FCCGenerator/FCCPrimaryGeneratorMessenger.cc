@@ -37,49 +37,46 @@
 #include "FCCPrimaryGeneratorAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-FCCPrimaryGeneratorMessenger::FCCPrimaryGeneratorMessenger
-                            (FCCPrimaryGeneratorAction* genaction)
-  : primaryAction(genaction)
+FCCPrimaryGeneratorMessenger::FCCPrimaryGeneratorMessenger (FCCPrimaryGeneratorAction* aGeneratorAction) : fPrimaryAction(aGeneratorAction)
 {
-  dir= new G4UIdirectory("/generator/");
-  dir-> SetGuidance("Control commands for primary generator");
+  aDirectory= new G4UIdirectory("/generator/");
+  aDirectory-> SetGuidance("Control commands for primary generator");
 
-  select= new G4UIcmdWithAString("/generator/select", this);
-  select-> SetGuidance("select generator type");
-  select-> SetParameterName("generator_type", false, false);
+  fSelectCommand= new G4UIcmdWithAString("/generator/select", this);
+  fSelectCommand-> SetGuidance("select generator type");
+  fSelectCommand-> SetParameterName("generator_type", false, false);
 #ifdef G4LIB_USE_PYTHIA8
-  select-> SetCandidates("particleGun pythia8 hepmcRoot");
+  fSelectCommand-> SetCandidates("particleGun pythia8 hepmcRoot");
 #else
-  select-> SetCandidates("particleGun hepmcRoot");
+  fSelectCommand-> SetCandidates("particleGun hepmcRoot");
 #endif
-  select-> SetDefaultValue("particleGun");
+  fSelectCommand-> SetDefaultValue("particleGun");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCPrimaryGeneratorMessenger::~FCCPrimaryGeneratorMessenger()
 {
-  delete select;
-  delete dir;
+  delete fSelectCommand;
+  delete aDirectory;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
-                                              G4String newValues)
+void FCCPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* aCommand, G4String aNewValues)
 {
-  if ( command==select) {
-    primaryAction-> SetGenerator(newValues);
+  if ( aCommand==fSelectCommand) {
+    fPrimaryAction-> SetGenerator(aNewValues);
     G4cout << "current generator type: "
-            << primaryAction-> GetGeneratorName() << G4endl;
+            << fPrimaryAction-> GetGeneratorName() << G4endl;
   } else {
   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4String FCCPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
+G4String FCCPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* aCommand)
 {
   G4String cv, st;
-  if (command == select) {
-    cv= primaryAction-> GetGeneratorName();
+  if (aCommand == fSelectCommand) {
+    cv= fPrimaryAction-> GetGeneratorName();
   }
 
  return cv;

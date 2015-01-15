@@ -45,54 +45,54 @@ private:
    /**
       A pointer to the FCCPythiaInterface class that is connected to the UI.
    */
-   FCCPythiaInterface* gen;
+   FCCPythiaInterface* fGenerator;
    /**
       A directory for the commands associated with this messenger.
    */
-   G4UIdirectory*           dir;
+   G4UIdirectory*           fDirectory;
    /**
       A command that takes an integer parameter. Used to set the verbose level.
    */
-   G4UIcmdWithAnInteger*    verbose;
+   G4UIcmdWithAnInteger*    fVerboseCommand;
    /**
       A command that takes no parameters. Used to print out information.
    */
-   G4UIcmdWithoutParameter* print;
+   G4UIcmdWithoutParameter* fPrintCommand;
    /**
       A command that takes 3 parameters. Initializes Pythia. Parameters: beam particle (PDG code), target particle (PDG code) and energy of the system in the centre of mass frame.
    */
-   G4UIcommand*             cpythiainit;
+   G4UIcommand*             fInitCommand;
    /**
       A command that takes no parameters. Prints Pythia statistics.
    */
-   G4UIcmdWithoutParameter* cpythiastat;
+   G4UIcmdWithoutParameter* fStatCommand;
    /**
       A command that takes parameters. Allows Pythia to read the given string.
    */
-   G4UIcommand*             cpythiaread;
+   G4UIcommand*             fReadCommand;
    /**
       A command that takes an integer parameter. Sets Pythia seed.
    */
-   G4UIcmdWithAnInteger*    setSeed;
+   G4UIcmdWithAnInteger*    fSeedCommand;
 
 public:
    /**
       A constructor. The directory and the commands names are set here.
-      @param agen A pointer to the FCCPythiaInterface class object.
+      @param aGenerator A pointer to the FCCPythiaInterface class object.
    */
-   FCCPythiaMessenger(FCCPythiaInterface* agen);
+   FCCPythiaMessenger(FCCPythiaInterface* aGenerator);
    ~FCCPythiaMessenger();
    /**
       A method calling the methods from the FCCPythiaInterface class, depending on the command.
-      @param command A pointer to the command typed by the user in the UI.
-      @param newValues A new value of the command set by the user.
+      @param aCommand A pointer to the command typed by the user in the UI.
+      @param aNewValues A new value of the command set by the user.
    */
-   void SetNewValue(G4UIcommand* command, G4String newValues);
+   void SetNewValue(G4UIcommand* aCommand, G4String aNewValues);
    /**
       A method calling the methods from the FCCPythiaInterface class, depending on the command.
-      @param command A pointer to the command typed by the user in the UI.
+      @param aCommand A pointer to the command typed by the user in the UI.
    */
-   G4String GetCurrentValue(G4UIcommand* command);
+   G4String GetCurrentValue(G4UIcommand* aCommand);
 };
 
 #endif

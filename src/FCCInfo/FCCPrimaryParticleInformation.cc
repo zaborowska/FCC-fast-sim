@@ -26,39 +26,25 @@
 
 #include "FCCPrimaryParticleInformation.hh"
 
-FCCPrimaryParticleInformation::FCCPrimaryParticleInformation(G4int ID, G4int PID, G4ThreeVector mom): id(ID), pid(PID), momentumMC(mom), momentumTracker(0), resTracker(0),effTracker(0), positionEMCal(0), energyEMCal(0), resEMCal(0), effEMCal(0), positionHCal(0), energyHCal(0), resHCal(0), effHCal(0)
+FCCPrimaryParticleInformation::FCCPrimaryParticleInformation(G4int aPartID, G4int aPDG, G4ThreeVector aMomentum): fPartID(aPartID), fPDG(aPDG), fMomentumMC(aMomentum), fMomentumTracker(0), fResolutionTracker(0), fEfficiencyTracker(0), fPositionEMCal(0), fEnergyEMCal(0), fResolutionEMCal(0), fEfficiencyEMCal(0), fPositionHCal(0), fEnergyHCal(0), fResolutionHCal(0), fEfficiencyHCal(0)
 {}
 
 FCCPrimaryParticleInformation::~FCCPrimaryParticleInformation()
 {}
 
-// G4LorentzVector* FCCPrimaryParticleInformation::GetVertexProduction() const
-// {
-//    return vertexProduction;
-// }
-
-// G4LorentzVector* FCCPrimaryParticleInformation::GetMomentumProduction() const
-// {
-//    return momentumProduction;
-// }
-G4int FCCPrimaryParticleInformation::GetID() const
-{
-   return id;
-}
-
 void FCCPrimaryParticleInformation::Print() const
 {
-   G4cout<<"FCCPrimaryParticleInformation: PID "<<pid<<G4endl
-          <<"Particle unique ID:  "<<id<<G4endl
-         <<"MC momentum: "<<momentumMC<<G4endl
-         <<"Tracker momentum: "<<momentumTracker<<G4endl
-         <<"Tracker resolution: "<<resTracker<<G4endl
-         <<"Tracker efficiency: "<<effTracker<<G4endl
-         <<"EMCal energy: "<<energyEMCal<< " at "<<positionEMCal<<G4endl
-         <<"EMCal resolution: "<<resEMCal<<G4endl
-         <<"EMCal efficiency: "<<effEMCal<<G4endl
-         <<"HCal energy: "<<energyHCal<< " at "<<positionHCal<<G4endl
-         <<"HCal resolution: "<<resHCal<<G4endl
-         <<"HCal efficiency: "<<effHCal<<G4endl
+   G4cout<<"FCCPrimaryParticleInformation: PDG code "<<fPDG<<G4endl
+          <<"Particle unique ID:  "<<fPartID<<G4endl
+         <<"MC momentum: "<<fMomentumMC<<G4endl
+         <<"Tracker momentum: "<<fMomentumTracker<<G4endl
+         <<"Tracker resolution: "<<fResolutionTracker<<G4endl
+         <<"Tracker efficiency: "<<fEfficiencyTracker<<G4endl
+         <<"EMCal energy: "<<fEnergyEMCal<< " at "<<fPositionEMCal<<G4endl
+         <<"EMCal resolution: "<<fResolutionEMCal<<G4endl
+         <<"EMCal efficiency: "<<fEfficiencyEMCal<<G4endl
+         <<"HCal energy: "<<fEnergyHCal<< " at "<<fPositionHCal<<G4endl
+         <<"HCal resolution: "<<fResolutionHCal<<G4endl
+         <<"HCal efficiency: "<<fEfficiencyHCal<<G4endl
        ;
 }

@@ -53,8 +53,9 @@ public:
    virtual ~FCCParticleGun();
    /**
       Generates an event containing a particle just as in G4ParticleGun, additionally it sets a vertex position and momentum direction using randomly generated numbers. Attaches FCCPrimaryParticleInformation to all the primaries.
+      @param aEvent A generated event.
    */
-   void GeneratePrimaryVertex(G4Event* evt);
+   void GeneratePrimaryVertex(G4Event* aEvent);
 };
 
 #endif

@@ -44,39 +44,39 @@ class FCCRootMessenger : public G4UImessenger {
 public:
    /**
       A constructor. The directory and the commands names are set here.
-      @param agen A pointer to the FCCRootReader class object.
+      @param aGenerator A pointer to the FCCRootReader class object.
    */
-   FCCRootMessenger(FCCRootReader* agen);
+   FCCRootMessenger(FCCRootReader* aGenerator);
    ~FCCRootMessenger();
    /**
       A method calling the methods from the FCCRootReader class, depending on the command.
-      @param command A pointer to the command typed by the user in the UI.
-      @param newValues A new value of the command set by the user.
+      @param aCommand A pointer to the command typed by the user in the UI.
+      @param aNewValues A new value of the command set by the user.
    */
-   void SetNewValue(G4UIcommand* command, G4String newValues);
+   void SetNewValue(G4UIcommand* aCommand, G4String aNewValues);
    /**
       A method calling the methods from the FCCRootReader class, depending on the command.
-      @param command A pointer to the command typed by the user in the UI.
+      @param aCommand A pointer to the command typed by the user in the UI.
    */
-   G4String GetCurrentValue(G4UIcommand* command);
+   G4String GetCurrentValue(G4UIcommand* aCommand);
 
 private:
    /**
       A pointer to the FCCRootReader class that is connected to the UI.
    */
-   FCCRootReader* gen;
+   FCCRootReader* fGenerator;
    /**
       A directory for the commands associated with this messenger.
    */
-   G4UIdirectory* dir;
+   G4UIdirectory* fDirectory;
    /**
       A command that takes an integer parameter. Used to set the verbose level.
    */
-   G4UIcmdWithAnInteger* verbose;
+   G4UIcmdWithAnInteger* fVerboseCommand;
    /**
       A command that takes an string parameter. Sets the name of the ROOT file with the event.
    */
-   G4UIcmdWithAString* open;
+   G4UIcmdWithAString* fOpenCommand;
 
 };
 

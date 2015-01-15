@@ -50,19 +50,20 @@ public:
    ~FCCPrimaryGeneratorAction();
    /**
       A method invoked from G4RunManager during the event loop. It calls the selected particle generator in order to generate an event.
+      @param aEvent A generated event.
    */
-   virtual void GeneratePrimaries(G4Event* anEvent);
+   virtual void GeneratePrimaries(G4Event* aEvent);
 
    /**
       A setter of the current particle generator.
-      @param gen A pointer to the particle generator.
+      @param aGenerator A pointer to the particle generator.
    */
-   void SetGenerator(G4VPrimaryGenerator* gen);
+   void SetGenerator(G4VPrimaryGenerator* aGenerator);
    /**
       A setter of the current particle generator.
-      @param genname A name of the particle generator (set in the constructor).
+      @param aGeneratorName A name of the particle generator (set in the constructor).
    */
-   void SetGenerator(G4String genname);
+   void SetGenerator(G4String aGeneratorName);
    /**
       A getter of the current particle generator.
    */
@@ -76,59 +77,60 @@ private:
    /**
       A pointer to the particle gun (FCCParticleGun) .
    */
-   G4VPrimaryGenerator* particleGun;
+   G4VPrimaryGenerator* fParticleGun;
    /**
       A pointer to the Pythia generator (FCCPythiaInterface) .
    */
-   G4VPrimaryGenerator* pythia8Gen;
+   G4VPrimaryGenerator* fPythia8;
    /**
       A pointer to the reader of the ROOT files with events stored in HepMC format (FCCRootReader) .
    */
-   G4VPrimaryGenerator* hepmcRoot;
+   G4VPrimaryGenerator* fHepMCRoot;
    /**
       A pointer to the current particle generator.
    */
-   G4VPrimaryGenerator* currentGenerator;
+   G4VPrimaryGenerator* fCurrentGenerator;
    /**
       A name of the current particle generator.
    */
-   G4String currentGeneratorName;
+   G4String fCurrentGeneratorName;
    /**
       A map storing the pointers to the particle generators and their names.
    */
-   std::map<G4String, G4VPrimaryGenerator*> gentypeMap;
+   std::map<G4String, G4VPrimaryGenerator*> fGeneratorMap;
    /**
       A pointer to the messenger that connects the UI with this class.
    */
-   FCCPrimaryGeneratorMessenger* messenger;
+   FCCPrimaryGeneratorMessenger* fMessenger;
 
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-inline void FCCPrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* gen)
+inline void FCCPrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* aGenerator)
 {
-   currentGenerator= gen;
+   fCurrentGenerator= aGenerator;
 }
 
-inline void FCCPrimaryGeneratorAction::SetGenerator(G4String genname)
+inline void FCCPrimaryGeneratorAction::SetGenerator(G4String aGeneratorName)
 {
   std::map<G4String, G4VPrimaryGenerator*>::iterator
-       pos = gentypeMap.find(genname);
-  if(pos != gentypeMap.end()) {
-    currentGenerator= pos->second;
-    currentGeneratorName= genname;
+       pos = fGeneratorTypeMap.find(aGeneratorName);
+  if(pos != fGeneratorTypeMap.end())
+  {
+    fCurrentGenerator= pos->second;
+    fCurrentGeneratorName= aGeneratorName;
   }
 }
 
 inline G4VPrimaryGenerator* FCCPrimaryGeneratorAction::GetGenerator() const
 {
-  return currentGenerator;
+  return fCurrentGenerator;
 }
 
 inline G4String FCCPrimaryGeneratorAction::GetGeneratorName() const
 {
-  return currentGeneratorName;
+  return fCurrentGeneratorName;
 }
 
 #endif

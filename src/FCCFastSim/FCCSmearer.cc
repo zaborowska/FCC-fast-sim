@@ -33,7 +33,7 @@ FCCSmearer* FCCSmearer::Instance()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4ThreeVector FCCSmearer::Smear(const G4Track* aTrackOriginal, G4double resolution)
+G4ThreeVector FCCSmearer::Smear(const G4Track* aTrackOriginal, G4double aResolution)
 {
    // original track position, momentum and charge
    G4ThreeVector originP = aTrackOriginal->GetMomentum();
@@ -46,19 +46,19 @@ G4ThreeVector FCCSmearer::Smear(const G4Track* aTrackOriginal, G4double resoluti
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double FCCSmearer::Smear(const G4double Eoriginal, G4double resolution)
+G4double FCCSmearer::Smear(const G4double aEnergyOrg, G4double aResolution)
 {
    G4double newE = -1;
    while (newE < 0) // to ensure the resulting value is not negative (vital for energy smearing, not changing directin for momentum smearing)
    {
-      newE = Eoriginal * Gauss(1,resolution);
+      newE = aEnergyOrg * Gauss(1,aResolution);
    }
    return newE;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double FCCSmearer::Gauss(G4double mean, G4double stdDev)
+G4double FCCSmearer::Gauss(G4double aMean, G4double aStandardDeviation)
 {
-   return fRandomGauss->fire(mean, stdDev);
+   return fRandomGauss->fire(aMean, aStandardDeviation);
 }

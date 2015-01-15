@@ -38,96 +38,96 @@
 #include "FCCPythiaInterface.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-FCCPythiaMessenger::FCCPythiaMessenger(FCCPythiaInterface* agen)
-  : gen(agen)
+FCCPythiaMessenger::FCCPythiaMessenger(FCCPythiaInterface* aGenerator)
+  : fGenerator(aGenerator)
 {
-  dir= new G4UIdirectory("/generator/pythia8/");
-  dir-> SetGuidance("Commands for Pythia 8 event generation");
+  fDirectory= new G4UIdirectory("/generator/pythia8/");
+  fDirectory-> SetGuidance("Commands for Pythia 8 event generation");
 
-  verbose= new G4UIcmdWithAnInteger("/generator/pythia8/verbose",this);
-  verbose-> SetGuidance("set verbose level");
-  verbose-> SetParameterName("verboseLevel", false, false);
-  verbose-> SetRange("verboseLevel>=0 && verboseLevel<=2");
+  fVerboseCommand= new G4UIcmdWithAnInteger("/generator/pythia8/verbose",this);
+  fVerboseCommand-> SetGuidance("set verbose level");
+  fVerboseCommand-> SetParameterName("verboseLevel", false, false);
+  fVerboseCommand-> SetRange("verboseLevel>=0 && verboseLevel<=2");
 
-  print= new G4UIcmdWithoutParameter("/generator/pythia8/print", this);
-  print-> SetGuidance("print user information.");
+  fPrintCommand= new G4UIcmdWithoutParameter("/generator/pythia8/print", this);
+  fPrintCommand-> SetGuidance("print user information.");
 
-  cpythiainit= new G4UIcommand("/generator/pythia8/init", this);
-  cpythiainit-> SetGuidance("call INIT");
+  fInitCommand= new G4UIcommand("/generator/pythia8/init", this);
+  fInitCommand-> SetGuidance("call INIT");
   G4UIparameter* beam= new G4UIparameter("beam particle (pdg code)", 's', false);
-  cpythiainit-> SetParameter(beam);
+  fInitCommand-> SetParameter(beam);
   G4UIparameter* target= new G4UIparameter("target particle (pdg code)", 's', false);
-  cpythiainit-> SetParameter(target);
+  fInitCommand-> SetParameter(target);
   G4UIparameter* eCM= new G4UIparameter("energy of system in CM frame (GeV)", 'd', false);
-  cpythiainit-> SetParameter(eCM);
+  fInitCommand-> SetParameter(eCM);
 
-  cpythiastat= new G4UIcmdWithoutParameter("/generator/pythia8/stat", this);
-  cpythiastat-> SetGuidance("print statistics");
+  fStatCommand= new G4UIcmdWithoutParameter("/generator/pythia8/stat", this);
+  fStatCommand-> SetGuidance("print statistics");
 
-  cpythiaread= new G4UIcommand("/generator/pythia8/read",this);
-  cpythiaread-> SetGuidance("call PYTHIAREAD");
+  fReadCommand= new G4UIcommand("/generator/pythia8/read",this);
+  fReadCommand-> SetGuidance("call PYTHIAREAD");
   G4UIparameter* parameter= new G4UIparameter ("Parameter", 's', false);
-  cpythiaread-> SetParameter(parameter);
+  fReadCommand-> SetParameter(parameter);
 
-  setSeed= new G4UIcmdWithAnInteger("/generator/pythia8/setSeed", this);
-  setSeed-> SetGuidance("set initial seed.");
+  fSeedCommand= new G4UIcmdWithAnInteger("/generator/pythia8/setSeed", this);
+  fSeedCommand-> SetGuidance("set initial seed.");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCPythiaMessenger::~FCCPythiaMessenger()
 {
-  delete verbose;
-  delete print;
-  delete cpythiainit;
-  delete cpythiastat;
-  delete cpythiaread;
-  delete setSeed;
-  delete dir;
+  delete fVerboseCommand;
+  delete fPrintCommand;
+  delete fInitCommand;
+  delete fStatCommand;
+  delete fReadCommand;
+  delete fSeedCommand;
+  delete fDirectory;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCPythiaMessenger::SetNewValue(G4UIcommand* command,
-                                     G4String newValues)
+void FCCPythiaMessenger::SetNewValue(G4UIcommand* aCommand, G4String aNewValues)
 {
 
-   if(command == verbose)
+   if(aCommand == fVerboseCommand)
    {
-      G4int level= verbose-> GetNewIntValue(newValues);
-      gen-> SetVerboseLevel(level);
-   } else if (command == print)
+      G4int level= fVerboseCommand-> GetNewIntValue(aNewValues);
+      fGenerator-> SetVerboseLevel(level);
+   } else if (aCommand == fPrintCommand)
    {
-      gen-> Print();
-   } else if (command == cpythiainit)
+      fGenerator-> Print();
+   } else if (aCommand == fInitCommand)
    {
-      const char* strvaluelist= newValues.c_str();
+      const char* strvaluelist= aNewValues.c_str();
       std::istringstream is(strvaluelist);
       G4int sbeam, starget; G4double dwin;
       is >> sbeam >> starget >> dwin;
-      gen-> CallPythiaInit(sbeam, starget, dwin);
+      fGenerator-> CallPythiaInit(sbeam, starget, dwin);
 
-   } else if (command == cpythiastat)
+   } else if (aCommand == fStatCommand)
    {
-      gen-> CallPythiaStat();
+      fGenerator-> CallPythiaStat();
 
-   } else if (command == cpythiaread)
+   } else if (aCommand == fReadCommand)
    {
       G4String s= newValues;
-      gen-> CallPythiaReadString(s);
+      fGenerator-> CallPythiaReadString(s);
 
-   } else if (command == setSeed)
+   } else if (aCommand == fSeedCommand)
    {
-      G4int iseed= setSeed-> GetNewIntValue(newValues);
-      gen-> SetRandomSeed(iseed);
+      G4int iseed= fSeedCommand-> GetNewIntValue(aNewValues);
+      fGenerator-> SetRandomSeed(iseed);
 
    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4String FCCPythiaMessenger::GetCurrentValue(G4UIcommand* command)
+G4String FCCPythiaMessenger::GetCurrentValue(G4UIcommand* aCommand)
 {
   G4String cv;
-  if (command == verbose) {
-    cv= verbose-> ConvertToString(gen->GetVerboseLevel());
+  if (aCommand == fVerboseCommand)
+  {
+    cv= fVerboseCommand-> ConvertToString(gen->GetVerboseLevel());
   }
   return cv;
 }

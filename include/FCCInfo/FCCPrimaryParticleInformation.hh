@@ -35,7 +35,7 @@
 	@brief     Primary particle information
    @details   Describes the information that can be assosiated with a G4PrimaryParticle class object.
  	@author    Anna Zaborowska
- */
+*/
 
 class FCCPrimaryParticleInformation: public G4VUserPrimaryParticleInformation
 {
@@ -49,184 +49,183 @@ public:
    FCCPrimaryParticleInformation(G4int aID, G4int aPDG, G4ThreeVector aMomentum);
    virtual ~FCCPrimaryParticleInformation();
    /**
-      A printing method.
+      Prints the information about the particle.
    */
    virtual void Print() const;
    /**
-      A setter of the initial particle momentum (from particle generator).
+      Sets the initial particle momentum (from particle generator).
       @param aMomentum The particle momentum.
    */
-   void SetMCMomentum(G4ThreeVector aMomentum){momentumMC = aMomentum;};
+   inline void SetMCMomentum(G4ThreeVector aMomentum){momentumMC = aMomentum;};
    /**
-      A getter of the initial particle momentum (from particle generator).
+      Gets the initial particle momentum (from particle generator).
    */
-   G4ThreeVector GetMCMomentum() {return momentumMC;};
+   inline G4ThreeVector GetMCMomentum() {return fMomentumMC;};
    /**
-      A setter of the particle momentum at the entrance to the tracker detector.
+      Sets the particle momentum at the entrance to the tracker detector.
       @param aMomentum The particle momentum.
    */
-   void SetTrackerMomentum(G4ThreeVector aMomentum){momentumTracker = aMomentum;};
+   inline void SetTrackerMomentum(G4ThreeVector aMomentum){fMomentumTracker = aMomentum;};
    /**
-      A getter of the particle momentum at the entrance to the tracker detector.
+      Gets the particle momentum at the entrance to the tracker detector.
    */
-   G4ThreeVector GetTrackerMomentum() {return momentumTracker;}
+   inline G4ThreeVector GetTrackerMomentum() {return fMomentumTracker;}
    /**
-      A setter of the tracker detector resolution. Currently equal to -1 if AtlFast type of smearing is used.
+      Sets the tracker detector resolution. Currently equal to -1 if AtlFast type of smearing is used.
       @param aResolution The detector resolution (particle type and momentum dependent).
    */
-   void SetTrackerResolution(G4double aResolution) {resTracker = aResolution;};
+   inline void SetTrackerResolution(G4double aResolution) {fResolutionTracker = aResolution;};
    /**
-      A getter of the tracking detector resolution. Currently equal to -1 if AtlFast type of smearing is used.
+      Gets of the tracking detector resolution. Currently equal to -1 if AtlFast type of smearing is used.
    */
-   G4double GetTrackerResolution() {return resTracker;};
+   inline G4double GetTrackerResolution() {return fResolutionTracker;};
    /**
-      A setter of the tracking detector efficiency. Currently not used (efficiency is 1).
+      Sets the tracking detector efficiency. Currently not used (efficiency is 1).
       @param aEfficiency The detector efficiency.
    */
-   void SetTrackerEfficiency(G4double aEfficiency) {effTracker = aEfficiency;};
+   inline void SetTrackerEfficiency(G4double aEfficiency) {fEfficiencyTracker = aEfficiency;};
    /**
-      A getter of the tracker detector efficiency. Currently not used (efficiency is 1).
+      Gets the tracker detector efficiency. Currently not used (efficiency is 1).
    */
-   G4double GetTrackerEfficiency() {return effTracker;};
+   inline G4double GetTrackerEfficiency() {return fEfficiencyTracker;};
    /**
-      A setter of the position of the energy deposit in the electromagnetic calorimeter.
+      Sets the position of the energy deposit in the electromagnetic calorimeter.
       @param aPosition The position of the energy deposit.
    */
-   void SetEMCalPosition(G4ThreeVector aPosition){positionEMCal = aPosition;};
+   inline void SetEMCalPosition(G4ThreeVector aPosition){fPositionEMCal = aPosition;};
    /**
-      A getter of the position of the energy deposit in the electromagnetic calorimeter.
+      Gets the position of the energy deposit in the electromagnetic calorimeter.
    */
-   G4ThreeVector GetEMCalPosition() {return positionEMCal;};
+   inline G4ThreeVector GetEMCalPosition() {return fPositionEMCal;};
    /**
-      A setter of the energy deposit in the electromagnetic calorimeter.
+      Sets the energy deposit in the electromagnetic calorimeter.
       @param aEnergy The energy deposited in the detector.
    */
-   void SetEMCalEnergy(G4double aEnergy) {energyEMCal = aEnergy;};
+   inline void SetEMCalEnergy(G4double aEnergy) {fEnergyEMCal = aEnergy;};
    /**
-      A setter of the energy deposit in the electromagnetic calorimeter.
+      Sets the energy deposit in the electromagnetic calorimeter.
    */
-   G4double GetEMCalEnergy() {return energyEMCal;};
+   inline G4double GetEMCalEnergy() {return fEnergyEMCal;};
    /**
-      A setter of the electromagnetic calorimeter resolution. Currently equal to -1 if AtlFast type of smearing is used.
+      Sets the electromagnetic calorimeter resolution. Currently equal to -1 if AtlFast type of smearing is used.
       @param aResolution The calorimeter resolution (particle type and momentum dependent).
    */
-   void SetEMCalResolution(G4double aResolution) {resEMCal = aResolution;};
+   inline void SetEMCalResolution(G4double aResolution) {fResolutionEMCal = aResolution;};
    /**
-      A getter of the electromagnetic calorimeter resolution. Currently equal to -1 if AtlFast type of smearing is used.
+      Gets the electromagnetic calorimeter resolution. Currently equal to -1 if AtlFast type of smearing is used.
    */
-   G4double GetEMCalResolution() {return resEMCal;};
+   inline G4double GetEMCalResolution() {return fResolutionEMCal;};
    /**
-      A setter of the electromagnetic calorimeter efficiency. Currently not used (efficiency is 1).
+      Sets the electromagnetic calorimeter efficiency. Currently not used (efficiency is 1).
       @param aResolution The detector efficiency.
    */
-   void SetEMCalEfficiency(G4double aEfficiency) {effEMCal = aEfficiency;};
+   inline void SetEMCalEfficiency(G4double aEfficiency) {fEfficiencyEMCal = aEfficiency;};
    /**
-      A getter of the electromagnetic calorimeter efficiency. Currently not used (efficiency is 1).
+      Gets the electromagnetic calorimeter efficiency. Currently not used (efficiency is 1).
    */
-   G4double GetEMCalEfficiency() {return effEMCal;};
+   inline G4double GetEMCalEfficiency() {return fEfficiencyEMCal;};
    /**
-      A setter of the position of the energy deposit in the hadronic calorimeter.
+      Sets the position of the energy deposit in the hadronic calorimeter.
       @param aPosition The position of the energy deposit.
    */
-   void SetHCalPosition(G4ThreeVector aPosition){positionHCal = aPosition;};
+   inline void SetHCalPosition(G4ThreeVector aPosition){fPositionHCal = aPosition;};
    /**
-      A getter of the position of the energy deposit in the hadronic calorimeter.
+      Gets the position of the energy deposit in the hadronic calorimeter.
    */
-   G4ThreeVector GetHCalPosition() {return positionHCal;};
+   inline G4ThreeVector GetHCalPosition() {return fPositionHCal;};
    /**
-      A setter of the energy deposit in the hadronic calorimeter.
+      Sets the energy deposit in the hadronic calorimeter.
       @param aEnergy The energy deposited in the detector.
    */
-   void SetHCalEnergy(G4double aEnergy) {energyHCal = aEnergy;};
+   inline void SetHCalEnergy(G4double aEnergy) {fEnergyHCal = aEnergy;};
    /**
-      A setter of the energy deposit in the hadronic calorimeter.
+      Sets the energy deposit in the hadronic calorimeter.
    */
-   G4double GetHCalEnergy() {return energyHCal;};
+   inline G4double GetHCalEnergy() {return fEnergyHCal;};
    /**
-      A setter of the hadronic calorimeter resolution. Currently equal to -1 if AtlFast type of smearing is used.
+      Sets the hadronic calorimeter resolution. Currently equal to -1 if AtlFast type of smearing is used.
       @param aResolution The calorimeter resolution (particle type and momentum dependent).
    */
-   void SetHCalResolution(G4double aResolution) {resHCal = aResolution;};
+   inline void SetHCalResolution(G4double aResolution) {fResolutionHCal = aResolution;};
    /**
-      A getter of the hadronic calorimeter resolution. Currently equal to -1 if AtlFast type of smearing is used.
+      Gets the hadronic calorimeter resolution. Currently equal to -1 if AtlFast type of smearing is used.
    */
-   G4double GetHCalResolution() {return resHCal;};
+   inline G4double GetHCalResolution() {return fResolutionHCal;};
    /**
-      A setter of the hadronic calorimeter efficiency. Currently not used (efficiency is 1).
+      Sets the hadronic calorimeter efficiency. Currently not used (efficiency is 1).
       @param aResolution The detector efficiency.
    */
-   void SetHCalEfficiency(G4double aEfficiency) {effHCal = aEfficiency;};
+   inline void SetHCalEfficiency(G4double aEfficiency) {fEfficiencyHCal = aEfficiency;};
    /**
-      A getter of the hadronic calorimeter efficiency. Currently not used (efficiency is 1).
+      Gets the hadronic calorimeter efficiency. Currently not used (efficiency is 1).
    */
-   G4double GetHCalEfficiency() {return effHCal;};
+   inline G4double GetHCalEfficiency() {return fEfficiencyHCal;};
    /**
-      A getter of the particle unique ID (within event). Can be set only in the constructor.
+      Gets the particle unique ID (within event). Can be set only in the constructor.
    */
-   G4int GetID() const;
+   inline G4int GetPartID() const {return fPartID;};
    /**
-      A getter of the standard PDG code. Can be set only in the constructor.
+      Gets the standard PDG code. Can be set only in the constructor.
    */
-   G4int GetPID() const {return pid;};
+   inline G4int GetPDG() const {return fPDG;};
 
   private:
    /**
       A particle unique ID.
    */
-   G4int id;
+   G4int fPartID;
    /**
       A particle type (PDG code).
    */
-   G4int pid;
+   G4int fPDG;
    /**
       A particle initial momentum (from particle generator).
    */
-   G4ThreeVector momentumMC;
+   G4ThreeVector fMomentumMC;
    /**
       A particle momentum at the entrance to the tracking detector.
    */
-   G4ThreeVector momentumTracker;
+   G4ThreeVector fMomentumTracker;
    /**
       A resolution of the tracking detector.
    */
-   G4double resTracker;
+   G4double fResolutionTracker;
    /**
       An efficiency of the tracking detector. Currently not used (equal to 1).
    */
-   G4double effTracker;
+   G4double fEfficiencyTracker;
    /**
       A position of the energy deposited in the electromagnetic calorimeter.
    */
-   G4ThreeVector positionEMCal;
+   G4ThreeVector fPositionEMCal;
    /**
       An energy deposited in the electromagnetic calorimeter.
    */
-   G4double energyEMCal;
+   G4double fEnergyEMCal;
    /**
       A resolution of the electormagnetic calorimeter.
    */
-   G4double resEMCal;
+   G4double fResolutionEMCal;
    /**
       An efficiency of the electormagnetic calorimeter. Currently not used (equal to 1).
    */
-   G4double effEMCal;
+   G4double fEfficiencyEMCal;
    /**
       A position of the energy deposited in the hadronic calorimeter.
    */
-   G4ThreeVector positionHCal;
+   G4ThreeVector fPositionHCal;
    /**
       An energy deposited in the hadronic calorimeter.
    */
-   G4double energyHCal;
+   G4double fEnergyHCal;
    /**
       A resolution of the hadronic calorimeter.
    */
-   G4double resHCal;
+   G4double fResolutionHCal;
    /**
       An efficiency of the hadronic calorimeter. Currently not used (equal to 1).
    */
-   G4double effHCal;
-
+   G4double fEfficiencyHCal;
 };
 
 #endif

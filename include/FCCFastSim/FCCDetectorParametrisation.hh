@@ -24,21 +24,21 @@ public:
    /**
       A detector type (tracking detector, electromagnetic calorimeter or hadronic calorimeter).
     */
-   enum Detector {eTracker,eEMCal, eHCal};
+   enum Detector {eTRACKER,eEMCAL, eHCAL};
    /**
       Gets the resolution of a detector for a given particle.
-      @param det A detector type.
-      @param par A parametrisation type.
-      @param mom A particle momentum.
+      @param aDetector A detector type.
+      @param aParamterisation A parametrisation type.
+      @param aMomentum A particle momentum.
     */
-   G4double GetResolution(Detector det, Parametrisation par, G4double mom);
+   G4double GetResolution(Detector aDetector, Parametrisation aParamterisation, G4double aMomentum);
    /**
       Gets the efficiency of a detector for a given particle.
-      @param det A detector type.
-      @param par A parametrisation type.
-      @param mom A particle momentum.
+      @param aDetector A detector type.
+      @param aParamterisation A parametrisation type.
+      @param aMomentum A particle momentum.
     */
-   G4double GetEfficiency(Detector det, Parametrisation par, G4double mom);
+   G4double GetEfficiency(Detector aDetector, Parametrisation aParamterisation, G4double aMomentum);
 
 };
 

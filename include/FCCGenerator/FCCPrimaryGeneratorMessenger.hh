@@ -45,35 +45,35 @@ class FCCPrimaryGeneratorMessenger : public G4UImessenger {
 public:
    /**
       A constructor. The directory and the command names are set here.
-      @param genaction A pointer to the FCCPrimaryGeneratorAction class object.
+      @param aGeneratorAction A pointer to the FCCPrimaryGeneratorAction class object.
    */
-   FCCPrimaryGeneratorMessenger(FCCPrimaryGeneratorAction* genaction);
+   FCCPrimaryGeneratorMessenger(FCCPrimaryGeneratorAction* aGeneratorAction);
    ~FCCPrimaryGeneratorMessenger();
    /**
       A method calling the methods from the FCCPrimaryGeneratorAction class, depending on the command.
-      @param command A pointer to the command typed by the user in the UI.
-      @param newValues A new value of the command set by the user.
+      @param aCommand A pointer to the command typed by the user in the UI.
+      @param aNewValues A new value of the command set by the user.
    */
-   void SetNewValue(G4UIcommand* command, G4String newValues);
+   void SetNewValue(G4UIcommand* aCommand, G4String aNewValues);
    /**
       A method calling the methods from the FCCPrimaryGeneratorAction class, depending on the command.
-      @param command A pointer to the command typed by the user in the UI.
+      @param aCommand A pointer to the command typed by the user in the UI.
    */
-   G4String GetCurrentValue(G4UIcommand* command);
+   G4String GetCurrentValue(G4UIcommand* aCommand);
 
 private:
    /**
       A pointer to the FCCPrimaryGeneratorAction class that is connected to the UI.
    */
-   FCCPrimaryGeneratorAction* primaryAction;
+   FCCPrimaryGeneratorAction* fPrimaryAction;
    /**
       A directory for the commands associated with this messenger.
    */
-   G4UIdirectory* dir;
+   G4UIdirectory* fDirectory;
    /**
       A command that can take a string. Used for selection of the particle generator.
    */
-   G4UIcmdWithAString* select;
+   G4UIcmdWithAString* fSelectCommand;
 
 };
 
