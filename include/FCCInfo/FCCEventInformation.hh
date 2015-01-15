@@ -31,7 +31,7 @@
 #include "globals.hh"
 
 /**
-	@brief     User's event information class.
+	@brief     Event information
    @details   Describes the information that can be assosiated with a G4Event class object.
  	@author    Anna Zaborowska
 */

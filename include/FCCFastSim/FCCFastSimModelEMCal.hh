@@ -34,7 +34,7 @@
 #include "G4Step.hh"
 
 /**
-	@brief     A shortcut to the ordinary tracking for electromagnetic calorimeters.
+	@brief     Shortcut to the ordinary tracking for electromagnetic calorimeters.
    @details   Fast simulation model describes what should be done instead of a normal tracking. Instead of the ordinary tracking, a particle deposits its energy at the entrance to the detector and its value is smeared (by FCCSmearer::SmearMomentum()). Based on G4 examples/extended/parametrisations/Par01/include/Par01EMShowerModel.hh.
    @author    Anna Zaborowska
 */

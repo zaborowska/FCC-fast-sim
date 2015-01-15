@@ -35,7 +35,7 @@ class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
 /**
-   @brief     A class handling the commands from the UI to FCCRootReader.
+   @brief     Communicator between UI and FCCRootReader.
  	@details   A messenger class handling the commands from the UI to FCCPythiaInterface. Based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh.
  	@author    Anna Zaborowska
 */

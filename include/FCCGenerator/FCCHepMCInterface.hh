@@ -33,7 +33,7 @@
 #include "HepMC/GenEvent.h"
 
 /**
-   @brief     A base class converting HepMC::GenEvent to G4Event.
+   @brief     Convertion of HepMC::GenEvent to G4Event.
    @details   A base class for event generation using a standard HepMC format. Converts a HepMC::GenEvent to G4event.
  	@author    Anna Zaborowska
 */

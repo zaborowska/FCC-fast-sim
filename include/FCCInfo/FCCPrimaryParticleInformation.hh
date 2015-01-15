@@ -32,7 +32,7 @@
 #include "globals.hh"
 
 /**
-	@brief     User's primary particle information class.
+	@brief     Primary particle information
    @details   Describes the information that can be assosiated with a G4PrimaryParticle class object.
  	@author    Anna Zaborowska
  */

@@ -31,7 +31,7 @@
 #include "globals.hh"
 
 /**
-	@brief     User's event action class.
+	@brief     Event action (before/after event processing)
  	@details   Defines the action at the beginning and at the end of each event. It is invoked by a G4EventManager when a G4Event object is sent (that contains primary vertices and particles created by the FCCPrimaryGeneratorAction).
  	@author    Anna Zaborowska
  */

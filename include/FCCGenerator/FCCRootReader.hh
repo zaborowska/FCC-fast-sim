@@ -37,7 +37,7 @@
 class FCCRootMessenger;
 
 /**
-   @brief     A reader of the ROOT file with an event.
+   @brief     Reader of a ROOT file containing events.
    @details   A reader of the ROOT file with an event stored in a HepMC format. Based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReader.hh.
  	@author    Anna Zaborowska
 */

@@ -36,7 +36,7 @@ class G4UIcommand;
 class G4UIcmdWithAString;
 
 /**
-	@brief     A class delivering the commands from the UI to FCCPrimaryGeneratorAction.
+	@brief     Communicator between UI and FCCPrimaryGeneratorAction.
  	@details   A messenger class delivering the commands from the UI to FCCPrimaryGeneratorAction. Based on G4 examples/eventgenerator/HepMC/HepMCEx02/include/H02PrimaryGeneratorMessenger.hh.
  	@author    Anna Zaborowska
 */

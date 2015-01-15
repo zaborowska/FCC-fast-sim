@@ -33,7 +33,7 @@
 class G4Run;
 
 /**
-	@brief     User's run action class.
+	@brief     Run action (before/after run processing).
    @details   Defines the action at the beginning and at the end of each run. No content of G4Run can be changed. The class needs to be set in G4RunManager::SetUserAction().
  	@author    Anna Zaborowska
  */

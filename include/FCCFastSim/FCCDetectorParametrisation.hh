@@ -4,8 +4,8 @@
 #include "globals.hh"
 
 /**
-	@brief     Obtains a detector resolution and efficiency.
-   @details   A simple class used to obtain the detector resolution and efficiency (dependent on the detector, parametrisation type and particle momentum).
+	@brief     Definition of detector resolution and efficiency.
+   @details   A simple class used to provide the detector resolution and efficiency (dependent on the detector, parametrisation type and particle momentum).
    @author    Anna Zaborowska
 */
 

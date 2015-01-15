@@ -36,7 +36,7 @@ class G4VPrimaryGenerator;
 class FCCPrimaryGeneratorMessenger;
 
 /**
-	@brief     User's primary generactor action class (mandatory).
+	@brief     Primary generactor action.
  	@details   Defines the mandatory particle generator class. It allows to choose between different particle generators: user's particle gun implementation, Pythia8 generator or the events could be read from the ROOT file. Based on G4 examples/eventgenerator/HepMC/HepMCEx02/include/H02PrimaryGeneratorAction.hh.
  	@author    Anna Zaborowska
 */

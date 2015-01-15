@@ -38,7 +38,7 @@
 #include "G4ParticleMomentum.hh"
 
 /**
-   @brief     An extension of G4ParticleGun to shoot particles in random directions.
+   @brief     Extension of G4ParticleGun to shoot particles in random directions.
    @details   An extension of G4ParticleGun. Shoots in a random direction a particle with given momentum and type).
  	@author    Anna Zaborowska
 */

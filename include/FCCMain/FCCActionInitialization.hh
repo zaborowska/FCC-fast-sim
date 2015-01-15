@@ -33,7 +33,7 @@
 #include "globals.hh"
 
 /**
-	@brief     Action initialization class.
+	@brief     Actions initialization.
  	@details   Initialization of all user defined actions as well as mandatory particle generator. Based on G4 examples/extended/parametrisations/Par01/include/Par01ActionInitialization.hh.
  	@author    Anna Zaborowska
  */

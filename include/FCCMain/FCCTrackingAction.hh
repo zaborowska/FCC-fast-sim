@@ -31,7 +31,7 @@
 #include "globals.hh"
 
 /**
-	@brief     User's tracking action class.
+	@brief     Tracking action (before/after track processing).
    @details   Defines the action at the start and at the end of processing of each track. The class needs to be set in G4RunManager::SetUserAction().
  	@author    Anna Zaborowska
 */

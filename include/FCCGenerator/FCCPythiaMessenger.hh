@@ -36,7 +36,7 @@ class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
 /**
-	@brief     A class handling the commands from the UI to FCCPythiaInterface.
+	@brief     Communicator between UI and UI and FCCPythiaInterface.
  	@details   A messenger class handling the commands from the UI to FCCPythiaInterface. Based on G4 examples/eventgenerator/HepMC/HepMCEx01/include/HepMCG4PythiaMessenger.hh.
  	@author    Anna Zaborowska
 */

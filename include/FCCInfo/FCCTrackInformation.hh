@@ -31,7 +31,7 @@
 #include "globals.hh"
 
 /**
-	@brief     User's track information class.
+	@brief     Track information.
    @details   Describes the information that can be assosiated with a G4Track class object.
  	@author    Anna Zaborowska
  */

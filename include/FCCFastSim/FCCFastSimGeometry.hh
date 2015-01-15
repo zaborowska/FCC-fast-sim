@@ -56,7 +56,7 @@
 #include "G4UniformMagField.hh"
 
 /**
-	@brief     Reads the auxiliary information from GDML file.
+	@brief     Handling the auxiliary information from GDML file
    @details   Reads the auxiliary information from the GDML file. Creates the logical volumes based on the detector type and attaches fast simulation models. Creates the magnetic field.
    @author    Anna Zaborowska
 */

@@ -5,7 +5,7 @@
 #include "globals.hh"
 
 /**
-	@brief     Manages saving to file.
+	@brief     Handling saving to the file.
  	@details   A singleton class manages creation, writing to and closing thr root output file.
  	@author    Anna Zaborowska
  */

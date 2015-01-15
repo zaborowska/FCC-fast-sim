@@ -34,7 +34,7 @@
 class FCCPythiaMessenger;
 
 /**
-	@brief     An interface to Pythia8 event generator.
+	@brief     Interface to Pythia8 event generator.
  	@details   An interface to Pythia8 event generator via HepMC. Based on G4 examples/eventgenerator/HepMC/HepMCEx03/include/HepMCG4Pythia8Interface.hh.
  	@author    Anna Zaborowska
 */
