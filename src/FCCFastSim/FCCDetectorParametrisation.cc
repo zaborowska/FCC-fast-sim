@@ -63,20 +63,20 @@ G4double FCCDetectorParametrisation::GetResolution(Detector det, Parametrisation
    return res;
 }
 
-G4double FCCDetectorParametrisation::GetEfficiency(Detector det, Parametrisation par, G4double mom)
+G4double FCCDetectorParametrisation::GetEfficiency(Detector det, Parametrisation /*par*/, G4double /*mom*/)
 {
    G4double eff = 1;
    switch(det)
    {
    case FCCDetectorParametrisation::eTracker:
       eff = 1;
-         break;
+      break;
    case FCCDetectorParametrisation::eEMCal:
       eff = 1;
-         break;
+      break;
    case FCCDetectorParametrisation::eHCal:
       eff = 1;
-         break;
+      break;
    }
    return eff;
 }

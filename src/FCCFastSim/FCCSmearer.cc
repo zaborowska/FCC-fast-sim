@@ -35,11 +35,8 @@ FCCSmearer* FCCSmearer::Instance()
 
 G4ThreeVector FCCSmearer::Smear(const G4Track* aTrackOriginal, G4double resolution)
 {
-   G4int PID = aTrackOriginal->GetDynamicParticle()->GetPDGcode();
-
    // original track position, momentum and charge
    G4ThreeVector originP = aTrackOriginal->GetMomentum();
-   double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
    G4ThreeVector originPos = aTrackOriginal->GetPosition();
    G4double rdm = Gauss(1,resolution);
    G4ThreeVector smearedMom (originP.x()*rdm,  originP.y()*rdm,  originP.z()*rdm);

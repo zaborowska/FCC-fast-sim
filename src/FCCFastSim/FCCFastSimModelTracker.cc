@@ -66,9 +66,9 @@ G4bool FCCFastSimModelTracker::IsApplicable(const G4ParticleDefinition& particle
    return  particleType.GetPDGCharge() != 0;
 }
 
-G4bool FCCFastSimModelTracker::ModelTrigger(const G4FastTrack& fastTrack)
+G4bool FCCFastSimModelTracker::ModelTrigger(const G4FastTrack& /*fastTrack*/)
 {
-   return true; //! (fastTrack.GetEnvelopeSolid()->DistanceToIn( fastTrack.GetPrimaryTrackLocalPosition () ));
+   return true;
 }
 
 void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
@@ -90,7 +90,7 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
     G4FieldTrack endTrack('a') ;
     G4double  currentMinimumStep= 10*m; // change that to sth connected to particle momentum !!!!!
     G4PathFinder* fPathFinder=  G4PathFinder::GetInstance();
-    G4double lengthAlongCurve = fPathFinder->ComputeStep( theFieldTrack,
+    /*G4double lengthAlongCurve = */ fPathFinder->ComputeStep( theFieldTrack,
                                                     currentMinimumStep,
                                                     0,
                                                     fastTrack.GetPrimaryTrack()->GetCurrentStepNumber(),
@@ -104,9 +104,7 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
 // ================
 
    // smear according to tracker resolution
-   G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
    G4ThreeVector Porg = fastTrack.GetPrimaryTrack()->GetMomentum();
-
    if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
    {
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())

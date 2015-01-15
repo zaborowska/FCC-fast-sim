@@ -105,7 +105,7 @@ void FCCHepMCInterface::HepMC2G4(const HepMC::GenEvent* hepmcevt,
 
          G4int pdgcode= (*vpitr)-> pdg_id();
          pos= (*vpitr)-> momentum();
-         HepMC::FourVector vert= (*vpitr)->production_vertex()->position();
+         //HepMC::FourVector vert= (*vpitr)->production_vertex()->position();
          G4LorentzVector p(pos.px(), pos.py(), pos.pz(), pos.e());
          G4PrimaryParticle* g4prim=
             new G4PrimaryParticle(pdgcode, p.x()*GeV, p.y()*GeV, p.z()*GeV);

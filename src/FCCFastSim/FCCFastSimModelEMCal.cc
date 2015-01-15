@@ -63,7 +63,7 @@ G4bool FCCFastSimModelEMCal::IsApplicable(const G4ParticleDefinition& particleTy
       &particleType == G4Gamma::Definition();
 }
 
-G4bool FCCFastSimModelEMCal::ModelTrigger(const G4FastTrack& fastTrack)
+G4bool FCCFastSimModelEMCal::ModelTrigger(const G4FastTrack& /*fastTrack*/)
 {
    return true;
 }
@@ -78,7 +78,6 @@ void FCCFastSimModelEMCal::DoIt(const G4FastTrack& fastTrack,
 
    // here Smear according to tracker resolution
 
-   G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
    G4ThreeVector Pos = fastTrack.GetPrimaryTrack()->GetPosition();
 
    if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
