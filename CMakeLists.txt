@@ -43,7 +43,7 @@ find_package(ROOT REQUIRED)
 find_package(Doxygen)
 
 if(DOXYGEN_FOUND)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/FCCDoc/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                       COMMENT "Generating API documentation with Doxygen" VERBATIM
@@ -73,7 +73,7 @@ target_link_libraries(HepMCdict ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES})
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(FCCfastsim FCCmain.cc ${sources} ${headers})
+add_executable(FCCfastsim ${sources} ${headers})
 target_link_libraries(FCCfastsim ${Geant4_LIBRARIES}
                       ${HEPMC_LIBRARIES}
                        ${PYTHIA8_LIBRARY}
