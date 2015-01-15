@@ -13,15 +13,15 @@ G4double FCCDetectorParametrisation::GetResolution(Detector aDetector, Parametri
    {
       switch(aDetector)
       {
-      case FCCDetectorParametrisation::eTracker:
+      case FCCDetectorParametrisation::eTRACKER:
          res = 0.013;
          break;
-      case FCCDetectorParametrisation::eEMCal:
+      case FCCDetectorParametrisation::eEMCAL:
          res = sqrt(pow(0.03/sqrt(aMomentum),2) // stochastic
                     + pow(0.12/aMomentum, 2)    // noise
                     + pow(0.003,2));      // constant
          break;
-      case FCCDetectorParametrisation::eHCal:
+      case FCCDetectorParametrisation::eHCAL:
          res = sqrt(pow(1.1/sqrt(aMomentum),2) // stochastic
                     + pow(0.09,2));      // constant
          break;
@@ -31,14 +31,14 @@ G4double FCCDetectorParametrisation::GetResolution(Detector aDetector, Parametri
    {
       switch(aDetector)
       {
-      case FCCDetectorParametrisation::eTracker:
+      case FCCDetectorParametrisation::eTRACKER:
          res = 0.01;
          break;
-      case FCCDetectorParametrisation::eEMCal:
+      case FCCDetectorParametrisation::eEMCAL:
          res = sqrt(pow(0.18/sqrt(aMomentum),2) // stochastic
                     + pow(0.009,2));      // constant
          break;
-      case FCCDetectorParametrisation::eHCal:
+      case FCCDetectorParametrisation::eHCAL:
          res = 0.85/sqrt(aMomentum); // stochastic
          break;
       }
@@ -47,14 +47,14 @@ G4double FCCDetectorParametrisation::GetResolution(Detector aDetector, Parametri
    {
       switch(aDetector)
       {
-      case FCCDetectorParametrisation::eTracker:
+      case FCCDetectorParametrisation::eTRACKER:
          res = 0.01;
          break;
-      case FCCDetectorParametrisation::eEMCal:
+      case FCCDetectorParametrisation::eEMCAL:
          res = sqrt(pow(0.1/sqrt(aMomentum),2) // stochastic
                     + pow(0.17,2));      // constant
          break;
-      case FCCDetectorParametrisation::eHCal:
+      case FCCDetectorParametrisation::eHCAL:
          res = sqrt(pow(0.55/sqrt(aMomentum),2) // stochastic
                     + pow(0.06,2));      // constant
          break;
@@ -68,13 +68,13 @@ G4double FCCDetectorParametrisation::GetEfficiency(Detector aDetector, Parametri
    G4double eff = 1;
    switch(aDetector)
    {
-   case FCCDetectorParametrisation::eTracker:
+   case FCCDetectorParametrisation::eTRACKER:
       eff = 1;
       break;
-   case FCCDetectorParametrisation::eEMCal:
+   case FCCDetectorParametrisation::eEMCAL:
       eff = 1;
       break;
-   case FCCDetectorParametrisation::eHCal:
+   case FCCDetectorParametrisation::eHCAL:
       eff = 1;
       break;
    }

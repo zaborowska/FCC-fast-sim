@@ -52,7 +52,7 @@ class FCCFastSimGeometry
   public:
    /**
       A default constructor. Reads the map, creates the logical volumes for the detectors and attaches Fast Simulation Models (FCCFastSimModelTracker, FCCFastSimModelEMCal and FCCFastSimModelHCal). The magnetic field is created here.
-      @param auxmap a map of auxiliary information (type and value) from GDML file.
+      @param aAuxMap a map of auxiliary information (type and value) from GDML file.
     */
     FCCFastSimGeometry(const G4GDMLAuxMapType* aAuxMap);
     ~FCCFastSimGeometry();

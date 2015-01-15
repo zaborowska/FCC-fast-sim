@@ -45,9 +45,9 @@ FCCRootMessenger::FCCRootMessenger (FCCRootReader* aGenerator) : fGenerator(aGen
   fVerboseCommand-> SetParameterName("verboseLevel", false, false);
   fVerboseCommand-> SetRange("verboseLevel>=0 && verboseLevel<=1");
 
-  open= new G4UIcmdWithAString("/generator/hepmcRoot/open", this);
-  open-> SetGuidance("(re)open data file (HepMC Root format)");
-  open-> SetParameterName("input root file", true, true);
+  fOpenCommand= new G4UIcmdWithAString("/generator/hepmcRoot/open", this);
+  fOpenCommand-> SetGuidance("(re)open data file (HepMC Root format)");
+  fOpenCommand-> SetParameterName("input root file", true, true);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -83,9 +83,9 @@ G4String FCCRootMessenger::GetCurrentValue(G4UIcommand* aCommand)
 {
   G4String cv;
 
-  if (aCommand == fVerboseLevel)
+  if (aCommand == fVerboseCommand)
   {
-    cv= fVerboseLevel-> ConvertToString(fGenerator-> GetVerboseLevel());
+    cv= fVerboseCommand-> ConvertToString(fGenerator-> GetVerboseLevel());
   }
   else  if (aCommand == fOpenCommand)
   {

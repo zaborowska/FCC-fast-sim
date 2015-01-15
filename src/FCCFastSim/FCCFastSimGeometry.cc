@@ -47,7 +47,7 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* aAuxMap): fField(
       for (G4GDMLAuxListType::const_iterator vit=(*iter).second.begin();
            vit!=(*iter).second.end();vit++)
       {
-         if ((*vit).type=="SensDet")
+         if ((*vit).type=="FastSimModel")
          {
             G4LogicalVolume* myvol = (*iter).first;
             if ((myvol->GetName()).find("Tracker") != std::string::npos){
@@ -122,15 +122,15 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* aAuxMap): fField(
    G4FieldManager* fieldMgr
       = G4TransportationManager::GetTransportationManager()
         ->GetFieldManager();
-       fieldMgr->SetDetectorField(fEMfield);
-    fieldMgr->CreateChordFinder(fEMfield);
+       fieldMgr->SetDetectorField(fField);
+    fieldMgr->CreateChordFinder(fField);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
 FCCFastSimGeometry::~FCCFastSimGeometry()
 {
-   delete fEMfield;
+   delete fField;
    for (G4int iterTracker=0; iterTracker<G4int(fTrackerSmearModel.size()); iterTracker++)
    {
       delete fTrackerSmearModel[iterTracker];

@@ -42,7 +42,7 @@ FCCFastSimModelHCal::FCCFastSimModelHCal(G4String aModelName, G4Region* aEnvelop
 {}
 
 FCCFastSimModelHCal::FCCFastSimModelHCal(G4String aModelName, G4Region* aEnvelope)
-   : G4VFastSimulationModel(aModelName, envelope), fCalcParam(), fParam(FCCDetectorParametrisation::eCMS)
+   : G4VFastSimulationModel(aModelName, aEnvelope), fCalculateParametrisation(), fParametrisation(FCCDetectorParametrisation::eCMS)
 {}
 
 FCCFastSimModelHCal::FCCFastSimModelHCal(G4String aModelName)
@@ -84,8 +84,8 @@ void FCCFastSimModelHCal::DoIt(const G4FastTrack& aFastTrack,
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       {
          G4ThreeVector Porg = aFastTrack.GetPrimaryTrack()->GetMomentum();
-         G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eHCal, fParam, Porg.mag());
-         G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eHCal, fParam, Porg.mag());
+         G4double res = fCalculateParametrisation->GetResolution(FCCDetectorParametrisation::eHCAL, fParametrisation, Porg.mag());
+         G4double eff = fCalculateParametrisation->GetEfficiency(FCCDetectorParametrisation::eHCAL, fParametrisation, Porg.mag());
          G4double Esm= FCCSmearer::Instance()->Smear(Edep, res);
          FCCOutput::Instance()->FillHistogram(2,Edep-Esm );
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>

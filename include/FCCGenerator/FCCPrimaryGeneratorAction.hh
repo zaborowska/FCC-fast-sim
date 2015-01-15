@@ -115,8 +115,8 @@ inline void FCCPrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* aGenera
 inline void FCCPrimaryGeneratorAction::SetGenerator(G4String aGeneratorName)
 {
   std::map<G4String, G4VPrimaryGenerator*>::iterator
-       pos = fGeneratorTypeMap.find(aGeneratorName);
-  if(pos != fGeneratorTypeMap.end())
+       pos = fGeneratorMap.find(aGeneratorName);
+  if(pos != fGeneratorMap.end())
   {
     fCurrentGenerator= pos->second;
     fCurrentGeneratorName= aGeneratorName;

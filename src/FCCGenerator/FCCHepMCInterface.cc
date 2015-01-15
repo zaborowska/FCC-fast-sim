@@ -38,13 +38,13 @@
 #include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-FCCHepMCInterface::FCCHepMCInterface(): hepmcEvent(0)
+FCCHepMCInterface::FCCHepMCInterface(): fHepMCEvent(0)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCHepMCInterface::~FCCHepMCInterface()
 {
-   delete fHepMcEvent;
+   delete fHepMCEvent;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -126,16 +126,16 @@ HepMC::GenEvent* FCCHepMCInterface::GenerateHepMCEvent()
 void FCCHepMCInterface::GeneratePrimaryVertex(G4Event* aEvent)
 {
    // delete previous event object
-   delete fHepMcEvent;
+   delete fHepMCEvent;
 
    // generate next event
-   fHepMcEvent= GenerateHepMCEvent();
-   if(! fHepMcEvent)
+   fHepMCEvent= GenerateHepMCEvent();
+   if(! fHepMCEvent)
    {
       G4cout << "HepMCInterface: no generated particles. run terminated..."
              << G4endl;
       G4RunManager::GetRunManager()-> AbortRun();
       return;
    }
-   HepMC2G4(fHepMcEvent, aEvent);
+   HepMC2G4(fHepMCEvent, aEvent);
 }

@@ -39,8 +39,8 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCPrimaryGeneratorMessenger::FCCPrimaryGeneratorMessenger (FCCPrimaryGeneratorAction* aGeneratorAction) : fPrimaryAction(aGeneratorAction)
 {
-  aDirectory= new G4UIdirectory("/generator/");
-  aDirectory-> SetGuidance("Control commands for primary generator");
+  fDirectory= new G4UIdirectory("/generator/");
+  fDirectory-> SetGuidance("Control commands for primary generator");
 
   fSelectCommand= new G4UIcmdWithAString("/generator/select", this);
   fSelectCommand-> SetGuidance("select generator type");
@@ -57,7 +57,7 @@ FCCPrimaryGeneratorMessenger::FCCPrimaryGeneratorMessenger (FCCPrimaryGeneratorA
 FCCPrimaryGeneratorMessenger::~FCCPrimaryGeneratorMessenger()
 {
   delete fSelectCommand;
-  delete aDirectory;
+  delete fDirectory;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

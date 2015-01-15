@@ -38,7 +38,7 @@ G4ThreeVector FCCSmearer::Smear(const G4Track* aTrackOriginal, G4double aResolut
    // original track position, momentum and charge
    G4ThreeVector originP = aTrackOriginal->GetMomentum();
    G4ThreeVector originPos = aTrackOriginal->GetPosition();
-   G4double rdm = Gauss(1,resolution);
+   G4double rdm = Gauss(1,aResolution);
    G4ThreeVector smearedMom (originP.x()*rdm,  originP.y()*rdm,  originP.z()*rdm);
 
    return smearedMom;

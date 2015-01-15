@@ -85,8 +85,8 @@ void FCCFastSimModelEMCal::DoIt(const G4FastTrack& aFastTrack,
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       {
          G4ThreeVector Porg = aFastTrack.GetPrimaryTrack()->GetMomentum();
-         G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eEMCal, fParam, Porg.mag());
-         G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eEMCal, fParam, Porg.mag());
+         G4double res = fCalculateParametrisation->GetResolution(FCCDetectorParametrisation::eEMCAL, fParametrisation, Porg.mag());
+         G4double eff = fCalculateParametrisation->GetEfficiency(FCCDetectorParametrisation::eEMCAL, fParametrisation, Porg.mag());
          G4double Esm = abs(FCCSmearer::Instance()->Smear(Edep, res));
          FCCOutput::Instance()->FillHistogram(1,Edep-Esm);
          aFastStep.ProposeTotalEnergyDeposited(Esm);

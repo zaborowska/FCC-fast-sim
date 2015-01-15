@@ -46,11 +46,11 @@ FCCPrimaryGeneratorAction::FCCPrimaryGeneratorAction()
   fPythia8= 0;
 #endif
 
-  fGeneratorTypeMap["particleGun"]= fParticleGun;
+  fGeneratorMap["particleGun"]= fParticleGun;
 #ifdef G4LIB_USE_PYTHIA8
-  fGeneratorTypeMap["pythia8"]= fPythia8;
+  fGeneratorMap["pythia8"]= fPythia8;
 #endif
-  fGeneratorTypeMap["hepmcRoot"]= fHepMCRoot;
+  fGeneratorMap["hepmcRoot"]= fHepMCRoot;
 
   fMessenger= new FCCPrimaryGeneratorMessenger(this);
 

@@ -56,7 +56,7 @@ public:
       Sets the initial particle momentum (from particle generator).
       @param aMomentum The particle momentum.
    */
-   inline void SetMCMomentum(G4ThreeVector aMomentum){momentumMC = aMomentum;};
+   inline void SetMCMomentum(G4ThreeVector aMomentum){fMomentumMC = aMomentum;};
    /**
       Gets the initial particle momentum (from particle generator).
    */
@@ -117,7 +117,7 @@ public:
    inline G4double GetEMCalResolution() {return fResolutionEMCal;};
    /**
       Sets the electromagnetic calorimeter efficiency. Currently not used (efficiency is 1).
-      @param aResolution The detector efficiency.
+      @param aEfficiency The detector efficiency.
    */
    inline void SetEMCalEfficiency(G4double aEfficiency) {fEfficiencyEMCal = aEfficiency;};
    /**
@@ -153,7 +153,7 @@ public:
    inline G4double GetHCalResolution() {return fResolutionHCal;};
    /**
       Sets the hadronic calorimeter efficiency. Currently not used (efficiency is 1).
-      @param aResolution The detector efficiency.
+      @param aEfficiency The detector efficiency.
    */
    inline void SetHCalEfficiency(G4double aEfficiency) {fEfficiencyHCal = aEfficiency;};
    /**

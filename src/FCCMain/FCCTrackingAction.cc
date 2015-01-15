@@ -75,24 +75,24 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
    {
       FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*)aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
       FCCOutput::Instance()->SaveTrack(FCCOutput::eMC,
-                                       info->GetID(),
+                                       info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetMCMomentum() );
       FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker,
-                                       info->GetID(),
+                                       info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetTrackerMomentum(),
                                        info->GetTrackerResolution(),
                                        info->GetTrackerEfficiency());
       FCCOutput::Instance()->SaveTrack(FCCOutput::eEMCal,
-                                       info->GetID(),
+                                       info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetEMCalPosition(),
                                        info->GetEMCalResolution(),
                                        info->GetEMCalEfficiency(),
                                        info->GetEMCalEnergy());
       FCCOutput::Instance()->SaveTrack(FCCOutput::eHCal,
-                                       info->GetID(),
+                                       info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetHCalPosition(),
                                        info->GetHCalResolution(),

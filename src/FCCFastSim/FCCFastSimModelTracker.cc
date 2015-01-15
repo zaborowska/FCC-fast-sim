@@ -47,15 +47,15 @@
 #include "G4SystemOfUnits.hh"
 
 FCCFastSimModelTracker::FCCFastSimModelTracker(G4String aModelName, G4Region* aEnvelope, FCCDetectorParametrisation::Parametrisation aType)
-   : G4VFastSimulationModel(aModelName, aEnvelope), fCalculationParametrisation(), fParametrisation(aType)
+   : G4VFastSimulationModel(aModelName, aEnvelope), fCalculateParametrisation(), fParametrisation(aType)
 {}
 
 FCCFastSimModelTracker::FCCFastSimModelTracker(G4String aModelName, G4Region* aEnvelope)
-   : G4VFastSimulationModel(aModelName, aEnvelope), fCalculationParametrisation(), fParametrisation(FCCDetectorParametrisation::eCMS)
+   : G4VFastSimulationModel(aModelName, aEnvelope), fCalculateParametrisation(), fParametrisation(FCCDetectorParametrisation::eCMS)
 {}
 
 FCCFastSimModelTracker::FCCFastSimModelTracker(G4String aModelName)
-   : G4VFastSimulationModel(aModelName), fCalculationParametrisation(), fParametrisation(FCCDetectorParametrisation::eCMS)
+   : G4VFastSimulationModel(aModelName), fCalculateParametrisation(), fParametrisation(FCCDetectorParametrisation::eCMS)
 {}
 
 FCCFastSimModelTracker::~FCCFastSimModelTracker()
@@ -109,8 +109,8 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& aFastTrack,
    {
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       {
-         G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
-         G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
+         G4double res = fCalculateParametrisation->GetResolution(FCCDetectorParametrisation::eTRACKER, fParametrisation, Porg.mag());
+         G4double eff = fCalculateParametrisation->GetEfficiency(FCCDetectorParametrisation::eTRACKER, fParametrisation, Porg.mag());
          G4ThreeVector Psm = FCCSmearer::Instance()->Smear(aFastTrack.GetPrimaryTrack(), res);
          FCCOutput::Instance()->FillHistogram(0,Porg.mag() - Psm.mag() );
          // setting values of Psm, res and eff

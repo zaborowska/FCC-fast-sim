@@ -53,7 +53,7 @@ protected:
    /**
       Convertes HepMC::GenEvent to G4Event. Attaches FCCPrimaryParticleInformation to all the primaries.
       @param aHepMCEvent An event in HepMC format to read from.
-      @param aEvent An event to write to.
+      @param aG4Event An event to write to.
    */
    void HepMC2G4(const HepMC::GenEvent* aHepMCEvent, G4Event* aG4Event);
    /**
@@ -81,7 +81,7 @@ public:
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 inline HepMC::GenEvent* FCCHepMCInterface::GetHepMCGenEvent() const
 {
-   return hepmcEvent;
+   return fHepMCEvent;
 }
 
 #endif
