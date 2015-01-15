@@ -31,19 +31,24 @@ find_package(HepMC REQUIRED)
 # Find Pythia8 (required package)
 #
 find_package(Pythia8 REQUIRED)
-if(PYTHIA8_FOUND)
-  add_definitions(-DG4LIB_USE_PYTHIA8)
-else()
-  message(STATUS "Pythia8 -- NOT found.")
-  set(PYTHIA8_LIBRARY "")
-  set(PYTHIA8_HEPMC_LIBRARY "")
-  set(PYTHIA8_HAPDF_LIBRARY "")
-endif()
 
 #----------------------------------------------------------------------------
 # Find ROOT (required package)
 #
 find_package(ROOT REQUIRED)
+
+#----------------------------------------------------------------------------
+# add a target to generate API documentation with Doxygen
+#
+find_package(Doxygen)
+
+if(DOXYGEN_FOUND)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                      COMMENT "Generating API documentation with Doxygen" VERBATIM
+                      )
+endif(DOXYGEN_FOUND)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
