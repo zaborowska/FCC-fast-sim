@@ -35,7 +35,7 @@
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-FCCPythiaInterface::FCCPythiaInterface() : verbose(0)
+FCCPythiaInterface::FCCPythiaInterface() : fVerbose(0)
 {
   fMessenger= new FCCPythiaMessenger(this);
 }
@@ -78,7 +78,7 @@ HepMC::GenEvent* FCCPythiaInterface::GenerateHepMCEvent()
 {
    fPythia.next();
    HepMC::GenEvent* hepmcevt = new HepMC::GenEvent();
-   ToHepMC.fill_next_event( fPythia, hepmcevt );
+   fToHepMC.fill_next_event( fPythia, hepmcevt );
    if(fVerbose>0) hepmcevt-> print();
 
   return hepmcevt;

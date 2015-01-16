@@ -110,7 +110,7 @@ void FCCPythiaMessenger::SetNewValue(G4UIcommand* aCommand, G4String aNewValues)
 
    } else if (aCommand == fReadCommand)
    {
-      G4String s= newValues;
+      G4String s= aNewValues;
       fGenerator-> CallPythiaReadString(s);
 
    } else if (aCommand == fSeedCommand)
@@ -127,7 +127,7 @@ G4String FCCPythiaMessenger::GetCurrentValue(G4UIcommand* aCommand)
   G4String cv;
   if (aCommand == fVerboseCommand)
   {
-    cv= fVerboseCommand-> ConvertToString(gen->GetVerboseLevel());
+    cv= fVerboseCommand-> ConvertToString(fGenerator->GetVerboseLevel());
   }
   return cv;
 }

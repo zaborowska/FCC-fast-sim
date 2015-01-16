@@ -31,6 +31,9 @@ find_package(HepMC REQUIRED)
 # Find Pythia8 (required package)
 #
 find_package(Pythia8 REQUIRED)
+if(PYTHIA8_FOUND)
+  add_definitions(-DG4LIB_USE_PYTHIA8)
+endif()
 
 #----------------------------------------------------------------------------
 # Find ROOT (required package)
