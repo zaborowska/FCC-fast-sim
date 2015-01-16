@@ -24,19 +24,14 @@
 // ********************************************************************
 //
 
-// Generator action:
 #include "FCCActionInitialization.hh"
-// Parameterisation manager:
 #include "G4GlobalFastSimulationManager.hh"
-// Geometry:
 #include "FCCDetectorConstruction.hh"
-//Sensitive Detectors
 #include "G4GDMLParser.hh"
 #include "FCCFastSimGeometry.hh"
-// PhysicsList
 #include "FCCPhysicsList.hh"
 #include "FTFP_BERT.hh"
-// UI
+
 #include "G4UImanager.hh"
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
@@ -59,17 +54,12 @@ int main(int argc, char** argv)
       G4cout << "Error! Mandatory input files are not specified!" << G4endl;
       G4cout << G4endl;
       G4cout << "Usage: "<<argv[0]<<"\n\t\t<intput gdml filename : mandatory>"
-             <<"\n\t\t<output root filename : optional (default \"DefaultOutput.root\")>"
+             <<"\n\t\t<output root filename : optional (default \"DefaultOutput\")>"
              <<"\n\t\t<do smearing : optional (default true)>"
              <<"\n\t\t<settings macro : optional (if not ->GUI)>"<< G4endl;
       G4cout << G4endl;
       return -1;
    }
-
-   G4GDMLParser parser;
-   // Load geometry
-   G4cout << "Geometry loaded from  file ......." << argv[1]<<G4endl;
-   parser.Read(argv[1]);
 
 
    //-------------------------------
@@ -88,15 +78,23 @@ int main(int argc, char** argv)
    G4cout<<"+-------------------------------------------------------+"<<G4endl;
 #endif
 
-   // Geometry:
-   G4VUserDetectorConstruction* detector = new FCCDetectorConstruction(parser.GetWorldVolume());
-   runManager->SetUserInitialization(detector);
-
+   //-------------------------------
    // PhysicsList (including G4FastSimulationManagerProcess)
+   //-------------------------------
    G4VUserPhysicsList* physicsList = new FCCPhysicsList();
-    runManager->SetUserInitialization(physicsList);
+   runManager->SetUserInitialization(physicsList);
    G4Gamma::GammaDefinition()->SetApplyCutsFlag(TRUE);
 
+   //-------------------------------
+   // Load geometry (attach fast simulation models)
+   //-------------------------------
+   G4GDMLParser parser;
+   G4cout << "Geometry loaded from  file ......." << argv[1]<<G4endl;
+   parser.Read(argv[1]);
+   G4VUserDetectorConstruction* detector = new FCCDetectorConstruction(parser.GetWorldVolume());
+   runManager->SetUserInitialization(detector);
+   const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
+   FCCFastSimGeometry FastSimGeometry(auxmap);
 
    //-------------------------------
    // UserAction classes
@@ -107,16 +105,8 @@ int main(int argc, char** argv)
       runManager->SetUserInitialization( new FCCActionInitialization(argv[2]) );
    else
       runManager->SetUserInitialization( new FCCActionInitialization() );
-   // Initialize Run manager
+
    runManager->Initialize();
-
-
-   //-------------------------------
-   // Sensitive detectors
-   //------------------------------------------------
-
-   const G4GDMLAuxMapType* auxmap = parser.GetAuxMap();
-   FCCFastSimGeometry FastSimGeometry(auxmap);
 
    //-------------------------------
    // UI

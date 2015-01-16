@@ -33,17 +33,25 @@ find_package(HepMC REQUIRED)
 find_package(Pythia8 REQUIRED)
 if(PYTHIA8_FOUND)
   add_definitions(-DG4LIB_USE_PYTHIA8)
-else()
-  message(STATUS "Pythia8 -- NOT found.")
-  set(PYTHIA8_LIBRARY "")
-  set(PYTHIA8_HEPMC_LIBRARY "")
-  set(PYTHIA8_HAPDF_LIBRARY "")
 endif()
 
 #----------------------------------------------------------------------------
 # Find ROOT (required package)
 #
 find_package(ROOT REQUIRED)
+
+#----------------------------------------------------------------------------
+# add a target to generate API documentation with Doxygen
+#
+find_package(Doxygen)
+
+if(DOXYGEN_FOUND)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/FCCDoc/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                      COMMENT "Generating API documentation with Doxygen" VERBATIM
+                      )
+endif(DOXYGEN_FOUND)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
@@ -70,7 +78,7 @@ target_link_libraries(HepMCdict ${HEPMC_LIBRARIES} ${ROOT_LIBRARIES})
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(FCCfastsim FCCmain.cc ${sources} ${headers})
+add_executable(FCCfastsim ${sources} ${headers})
 target_link_libraries(FCCfastsim ${Geant4_LIBRARIES}
                       ${HEPMC_LIBRARIES}
                        ${PYTHIA8_LIBRARY}

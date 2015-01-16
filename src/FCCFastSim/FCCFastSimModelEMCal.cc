@@ -42,70 +42,69 @@
 #include "G4Positron.hh"
 #include "G4Gamma.hh"
 
-FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String modelName, G4Region* envelope, FCCDetectorParametrisation::Parametrisation type)
-   : G4VFastSimulationModel(modelName, envelope), fCalcParam(), fParam(type)
+FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String aModelName, G4Region* aEnvelope, FCCDetectorParametrisation::Parametrisation aType)
+   : G4VFastSimulationModel(aModelName, aEnvelope), fCalculateParametrisation(), fParametrisation(aType)
 {}
 
-FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String modelName, G4Region* envelope)
-   : G4VFastSimulationModel(modelName, envelope), fCalcParam(), fParam(FCCDetectorParametrisation::eCMS)
+FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String aModelName, G4Region* aEnvelope)
+   : G4VFastSimulationModel(aModelName, aEnvelope), fCalculateParametrisation(), fParametrisation(FCCDetectorParametrisation::eCMS)
 {}
 
-FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String modelName)
-   : G4VFastSimulationModel(modelName), fCalcParam(), fParam(FCCDetectorParametrisation::eCMS)
+FCCFastSimModelEMCal::FCCFastSimModelEMCal(G4String aModelName)
+   : G4VFastSimulationModel(aModelName), fCalculateParametrisation(), fParametrisation(FCCDetectorParametrisation::eCMS)
 {}
 
 FCCFastSimModelEMCal::~FCCFastSimModelEMCal()
 {}
 
-G4bool FCCFastSimModelEMCal::IsApplicable(const G4ParticleDefinition& particleType)
+G4bool FCCFastSimModelEMCal::IsApplicable(const G4ParticleDefinition& aParticleType)
 {
-   return &particleType == G4Electron::Definition() ||
-      &particleType == G4Positron::Definition() ||
-      &particleType == G4Gamma::Definition();
+   return &aParticleType == G4Electron::Definition() ||
+      &aParticleType == G4Positron::Definition() ||
+      &aParticleType == G4Gamma::Definition();
 }
 
-G4bool FCCFastSimModelEMCal::ModelTrigger(const G4FastTrack& fastTrack)
+G4bool FCCFastSimModelEMCal::ModelTrigger(const G4FastTrack& /*aFastTrack*/)
 {
    return true;
 }
 
-void FCCFastSimModelEMCal::DoIt(const G4FastTrack& fastTrack,
-                            G4FastStep& fastStep)
+void FCCFastSimModelEMCal::DoIt(const G4FastTrack& aFastTrack,
+                            G4FastStep& aFastStep)
 {
    // Kill the parameterised particle:
-   fastStep.KillPrimaryTrack();
-   fastStep.ProposePrimaryTrackPathLength(0.0);
-   G4double Edep = fastTrack.GetPrimaryTrack()->GetKineticEnergy();
+   aFastStep.KillPrimaryTrack();
+   aFastStep.ProposePrimaryTrackPathLength(0.0);
+   G4double Edep = aFastTrack.GetPrimaryTrack()->GetKineticEnergy();
 
    // here Smear according to tracker resolution
 
-   G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
-   G4ThreeVector Pos = fastTrack.GetPrimaryTrack()->GetPosition();
+   G4ThreeVector Pos = aFastTrack.GetPrimaryTrack()->GetPosition();
 
-   if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
+   if ( !aFastTrack.GetPrimaryTrack()->GetParentID() )
    {
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       {
-         G4ThreeVector Porg = fastTrack.GetPrimaryTrack()->GetMomentum();
-         G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eEMCal, fParam, Porg.mag());
-         G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eEMCal, fParam, Porg.mag());
-         G4double Esm = abs(FCCSmearer::Instance()->SmearEnergy(fastTrack.GetPrimaryTrack(), res));
+         G4ThreeVector Porg = aFastTrack.GetPrimaryTrack()->GetMomentum();
+         G4double res = fCalculateParametrisation->GetResolution(FCCDetectorParametrisation::eEMCAL, fParametrisation, Porg.mag());
+         G4double eff = fCalculateParametrisation->GetEfficiency(FCCDetectorParametrisation::eEMCAL, fParametrisation, Porg.mag());
+         G4double Esm = abs(FCCSmearer::Instance()->SmearEnergy(aFastTrack.GetPrimaryTrack(), res));
          FCCOutput::Instance()->FillHistogram(1,Edep/MeV-Esm/MeV);
-         fastStep.ProposeTotalEnergyDeposited(Esm);
+
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
-                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalPosition(Pos);
+                                           (aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalPosition(Pos);
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
-                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalEnergy(Esm);
+                                           (aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalEnergy(Esm);
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
-                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalResolution(res);
+                                           (aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalResolution(res);
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
-                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalEfficiency(eff);
+                                           (aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalEfficiency(eff);
       }
       else
       {
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
-                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalEnergy(Edep);
-         fastStep.ProposeTotalEnergyDeposited(Edep);
+                                           (aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalEnergy(Edep);
+         aFastStep.ProposeTotalEnergyDeposited(Edep);
       }
    }
 }

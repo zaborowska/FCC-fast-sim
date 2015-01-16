@@ -34,58 +34,62 @@
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-FCCRootMessenger::FCCRootMessenger
-                             (FCCRootReader* agen)
-  : gen(agen)
+FCCRootMessenger::FCCRootMessenger (FCCRootReader* aGenerator) : fGenerator(aGenerator)
 {
-  dir= new G4UIdirectory("/generator/hepmcRoot/");
-  dir-> SetGuidance("Reading HepMC event from an Root file");
+  fDirectory= new G4UIdirectory("/generator/hepmcRoot/");
+  fDirectory-> SetGuidance("Reading HepMC event from an Root file");
 
-  verbose=
+  fVerboseCommand=
     new G4UIcmdWithAnInteger("/generator/hepmcRoot/verbose", this);
-  verbose-> SetGuidance("Set verbose level");
-  verbose-> SetParameterName("verboseLevel", false, false);
-  verbose-> SetRange("verboseLevel>=0 && verboseLevel<=1");
+  fVerboseCommand-> SetGuidance("Set verbose level");
+  fVerboseCommand-> SetParameterName("verboseLevel", false, false);
+  fVerboseCommand-> SetRange("verboseLevel>=0 && verboseLevel<=1");
 
-  open= new G4UIcmdWithAString("/generator/hepmcRoot/open", this);
-  open-> SetGuidance("(re)open data file (HepMC Root format)");
-  open-> SetParameterName("input root file", true, true);
+  fOpenCommand= new G4UIcmdWithAString("/generator/hepmcRoot/open", this);
+  fOpenCommand-> SetGuidance("(re)open data file (HepMC Root format)");
+  fOpenCommand-> SetParameterName("input root file", true, true);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCRootMessenger::~FCCRootMessenger()
 {
-  delete verbose;
-  delete open;
+  delete fVerboseCommand;
+  delete fOpenCommand;
 
-  delete dir;
+  delete fDirectory;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCRootMessenger::SetNewValue(G4UIcommand* command,
-                                              G4String newValues)
+void FCCRootMessenger::SetNewValue(G4UIcommand* aCommand,
+                                              G4String aNewValues)
 {
-  if (command==verbose) {
-    int level= verbose-> GetNewIntValue(newValues);
-    gen-> SetVerboseLevel(level);
-  } else if (command==open) {
-    gen-> SetFileName(newValues);
+  if (aCommand==fVerboseCommand)
+  {
+    int level= fVerboseCommand-> GetNewIntValue(aNewValues);
+    fGenerator-> SetVerboseLevel(level);
+  }
+  else if (aCommand==fOpenCommand)
+  {
+    fGenerator-> SetFileName(aNewValues);
     G4cout << "HepMC Root inputfile: "
-           << gen-> GetFileName() << G4endl;
-    gen-> Initialize();
+           << fGenerator-> GetFileName() << G4endl;
+    fGenerator-> Initialize();
   }
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4String FCCRootMessenger::GetCurrentValue(G4UIcommand* command)
+G4String FCCRootMessenger::GetCurrentValue(G4UIcommand* aCommand)
 {
   G4String cv;
 
-  if (command == verbose) {
-    cv= verbose-> ConvertToString(gen-> GetVerboseLevel());
-  } else  if (command == open) {
-    cv= gen-> GetFileName();
+  if (aCommand == fVerboseCommand)
+  {
+    cv= fVerboseCommand-> ConvertToString(fGenerator-> GetVerboseLevel());
+  }
+  else  if (aCommand == fOpenCommand)
+  {
+    cv= fGenerator-> GetFileName();
   }
   return cv;
 }

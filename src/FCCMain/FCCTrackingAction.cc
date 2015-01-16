@@ -42,8 +42,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCTrackingAction::FCCTrackingAction()
-   : G4UserTrackingAction()
+FCCTrackingAction::FCCTrackingAction() : G4UserTrackingAction()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -55,7 +54,6 @@ FCCTrackingAction::~FCCTrackingAction()
 
 void FCCTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-   G4int PID = aTrack->GetDynamicParticle()->GetPDGcode();
    if( !(abs(aTrack->GetMomentum().pseudoRapidity())<5.5) )
    {
       ((G4Track*)aTrack)->SetTrackStatus(fStopAndKill);
@@ -78,25 +76,25 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
    {
       FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*)aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
       FCCOutput::Instance()->SaveTrack(FCCOutput::eMC,
-                                       info->GetID(),
-                                       info->GetPID(),
+                                       info->GetPartID(),
+                                       info->GetPDG(),
                                        info->GetMCMomentum()/MeV );
       FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker,
-                                       info->GetID(),
-                                       info->GetPID(),
+                                       info->GetPartID(),
+                                       info->GetPDG(),
                                        info->GetTrackerMomentum()/MeV,
                                        info->GetTrackerResolution(),
                                        info->GetTrackerEfficiency());
       FCCOutput::Instance()->SaveTrack(FCCOutput::eEMCal,
-                                       info->GetID(),
-                                       info->GetPID(),
+                                       info->GetPartID(),
+                                       info->GetPDG(),
                                        info->GetEMCalPosition()/mm,
                                        info->GetEMCalResolution(),
                                        info->GetEMCalEfficiency(),
                                        info->GetEMCalEnergy()/MeV);
       FCCOutput::Instance()->SaveTrack(FCCOutput::eHCal,
-                                       info->GetID(),
-                                       info->GetPID(),
+                                       info->GetPartID(),
+                                       info->GetPDG(),
                                        info->GetHCalPosition()/mm,
                                        info->GetHCalResolution(),
                                        info->GetHCalEfficiency(),

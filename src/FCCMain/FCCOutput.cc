@@ -32,15 +32,15 @@ FCCOutput* FCCOutput::Instance()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCOutput::SetFileName(G4String name)
+void FCCOutput::SetFileName(G4String aName)
 {
-   fFileName = name;
+   fFileName = aName;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCOutput::AppendName(G4bool app)
+void FCCOutput::AppendName(G4bool aApp)
 {
-   fFileNameWithRunNo = app;
+   fFileNameWithRunNo = aApp;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -49,13 +49,13 @@ G4String FCCOutput::GetFileName()
    return fFileName;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCOutput::StartAnalysis(G4int runID)
+void FCCOutput::StartAnalysis(G4int aRunID)
 {
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
    if ( fFileNameWithRunNo)
    {
       fFileName +=  "_run";
-      fFileName += G4UIcommand::ConvertToString(runID);
+      fFileName += G4UIcommand::ConvertToString(aRunID);
    }
    analysisManager->SetVerboseLevel(1);
    analysisManager->SetFileName(fFileName);
@@ -66,7 +66,6 @@ void FCCOutput::StartAnalysis(G4int runID)
 void FCCOutput::EndAnalysis()
 {
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   // save histograms & ntuple
    analysisManager->Write();
    analysisManager->CloseFile();
 }
@@ -77,10 +76,7 @@ void FCCOutput::CreateNtuples()
    const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
    G4String evName = "Event_";
    evName += G4UIcommand::ConvertToString(event->GetEventID());
-
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   // Creating ntuple
-   //
    G4int ntupID = 2*event->GetEventID();
 
    analysisManager->CreateNtuple(evName, evName);
@@ -129,56 +125,56 @@ void FCCOutput::CreateHistograms()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCOutput::SaveTrack(SaveType what, G4int partID,  G4int PID,
-                          G4ThreeVector vec, G4double resolution, G4double efficiency, G4double energy)
+void FCCOutput::SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
+                          G4ThreeVector aVector, G4double aResolution, G4double aEfficiency, G4double aEnergy)
 {
    G4int evNo = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   switch(what)
+   switch(aWhatToSave)
    {
    case eMC:
    {
-      analysisManager->FillNtupleIColumn(evNo, 0, partID);
-      analysisManager->FillNtupleIColumn(evNo, 1, PID);
-      analysisManager->FillNtupleDColumn(evNo, 2, vec.x());
-      analysisManager->FillNtupleDColumn(evNo, 3, vec.y());
-      analysisManager->FillNtupleDColumn(evNo, 4, vec.z());
-      fCurrentID = partID;
+      analysisManager->FillNtupleIColumn(evNo, 0, aPartID);
+      analysisManager->FillNtupleIColumn(evNo, 1, aPDG);
+      analysisManager->FillNtupleDColumn(evNo, 2, aVector.x());
+      analysisManager->FillNtupleDColumn(evNo, 3, aVector.y());
+      analysisManager->FillNtupleDColumn(evNo, 4, aVector.z());
+      fCurrentID = aPartID;
       break;
    }
    case eTracker:
    {
-      if (partID != fCurrentID)
+      if (aPartID != fCurrentID)
          G4cout<<" Wrong particle - trying to save Tracker information of different particle"<<G4endl;
-      analysisManager->FillNtupleDColumn(evNo, 5, resolution);
-      analysisManager->FillNtupleDColumn(evNo, 6, efficiency);
-      analysisManager->FillNtupleDColumn(evNo, 7, vec.x());
-      analysisManager->FillNtupleDColumn(evNo, 8, vec.y());
-      analysisManager->FillNtupleDColumn(evNo, 9, vec.z());
+      analysisManager->FillNtupleDColumn(evNo, 5, aResolution);
+      analysisManager->FillNtupleDColumn(evNo, 6, aEfficiency);
+      analysisManager->FillNtupleDColumn(evNo, 7, aVector.x());
+      analysisManager->FillNtupleDColumn(evNo, 8, aVector.y());
+      analysisManager->FillNtupleDColumn(evNo, 9, aVector.z());
       break;
    }
    case eEMCal:
    {
-      if (partID != fCurrentID)
+      if (aPartID != fCurrentID)
          G4cout<<" Wrong particle - trying to save EMCal information of different particle"<<G4endl;
-      analysisManager->FillNtupleDColumn(evNo, 10, resolution);
-      analysisManager->FillNtupleDColumn(evNo, 11, efficiency);
-      analysisManager->FillNtupleDColumn(evNo, 12, vec.x());
-      analysisManager->FillNtupleDColumn(evNo, 13, vec.y());
-      analysisManager->FillNtupleDColumn(evNo, 14, vec.z());
-      analysisManager->FillNtupleDColumn(evNo, 15, energy);
+      analysisManager->FillNtupleDColumn(evNo, 10, aResolution);
+      analysisManager->FillNtupleDColumn(evNo, 11, aEfficiency);
+      analysisManager->FillNtupleDColumn(evNo, 12, aVector.x());
+      analysisManager->FillNtupleDColumn(evNo, 13, aVector.y());
+      analysisManager->FillNtupleDColumn(evNo, 14, aVector.z());
+      analysisManager->FillNtupleDColumn(evNo, 15, aEnergy);
       break;
    }
    case eHCal:
    {
-      if (partID != fCurrentID)
+      if (aPartID != fCurrentID)
          G4cout<<" Wrong particle - trying to save HCal information of different particle"<<G4endl;
-      analysisManager->FillNtupleDColumn(evNo, 16, resolution);
-      analysisManager->FillNtupleDColumn(evNo, 17, efficiency);
-      analysisManager->FillNtupleDColumn(evNo, 18, vec.x());
-      analysisManager->FillNtupleDColumn(evNo, 19, vec.y());
-      analysisManager->FillNtupleDColumn(evNo, 20, vec.z());
-      analysisManager->FillNtupleDColumn(evNo, 21, energy);
+      analysisManager->FillNtupleDColumn(evNo, 16, aResolution);
+      analysisManager->FillNtupleDColumn(evNo, 17, aEfficiency);
+      analysisManager->FillNtupleDColumn(evNo, 18, aVector.x());
+      analysisManager->FillNtupleDColumn(evNo, 19, aVector.y());
+      analysisManager->FillNtupleDColumn(evNo, 20, aVector.z());
+      analysisManager->FillNtupleDColumn(evNo, 21, aEnergy);
       analysisManager->AddNtupleRow(evNo);
       break;
    }
@@ -187,10 +183,10 @@ void FCCOutput::SaveTrack(SaveType what, G4int partID,  G4int PID,
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCOutput::FillHistogram(G4int HNo, G4double value) const
+void FCCOutput::FillHistogram(G4int aHistNo, G4double aValue) const
 {
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   analysisManager->FillH1(HNo, value/GeV); // value is put in GeV
+   analysisManager->FillH1(aHistNo, aValue/GeV); // value is put to histogram in GeV
    return;
 }
 

@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/persistency/gdml/G01/include/G01DetectorConstruction.hh
+//
 //
 
 #ifndef FCC_DETECTOR_CONSTRUCTION_H
@@ -31,17 +31,31 @@
 
 #include "G4VUserDetectorConstruction.hh"
 
-/// Detector construction allowing to use the geometry read from the GDML file
+
+/**
+	@brief     Construction of detector geometry.
+ 	@details   A mandatory initialization class of the detector setup. Detector construction allows to use the geometry read from the GDML file. Based on G4 examples/persistency/gdml/G01/include/G01DetectorConstruction.hh.
+ 	@author    Anna Zaborowska
+ */
 
 class FCCDetectorConstruction : public G4VUserDetectorConstruction
+
 {
   public:
 
+		/**
+			A default constructor
+			@param setWorld A pointer to the G4VPhysicalVolume object.
+		*/
     FCCDetectorConstruction(G4VPhysicalVolume *setWorld = 0)
     {
       fWorld = setWorld;
     }
 
+		/**
+			Method invoked by G4RunManager::Initialize()
+         @return A pointer to the world volume.
+		*/
     virtual G4VPhysicalVolume *Construct()
     {
       return fWorld;
@@ -49,6 +63,9 @@ class FCCDetectorConstruction : public G4VUserDetectorConstruction
 
   private:
 
+		/**
+			A pointer to the world volume.
+		*/
     G4VPhysicalVolume *fWorld;
 };
 

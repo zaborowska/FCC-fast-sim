@@ -36,21 +36,16 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCActionInitialization::FCCActionInitialization()
-   : G4VUserActionInitialization(), fFileName("DefaultOutput"), fSmear(true)
+FCCActionInitialization::FCCActionInitialization() : G4VUserActionInitialization(), fFileName("DefaultOutput"), fSmear(true)
 {}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-FCCActionInitialization::FCCActionInitialization(const G4String aOutName, const G4String aSmear)
-   : G4VUserActionInitialization(), fFileName(aOutName),fSmear(G4UIcommand::ConvertToBool(aSmear))
+FCCActionInitialization::FCCActionInitialization(const G4String aOutName, const G4String aSmear) : G4VUserActionInitialization(), fFileName(aOutName),fSmear(G4UIcommand::ConvertToBool(aSmear))
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCActionInitialization::FCCActionInitialization(const G4String aOutName)
-   : G4VUserActionInitialization(), fFileName(aOutName),fSmear(true)
+FCCActionInitialization::FCCActionInitialization(const G4String aOutName) : G4VUserActionInitialization(), fFileName(aOutName),fSmear(true)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

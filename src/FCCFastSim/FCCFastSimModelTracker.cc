@@ -46,47 +46,44 @@
 #include "G4FieldTrackUpdator.hh"
 #include "G4SystemOfUnits.hh"
 
-FCCFastSimModelTracker::FCCFastSimModelTracker(G4String modelName, G4Region* envelope, FCCDetectorParametrisation::Parametrisation type)
-   : G4VFastSimulationModel(modelName, envelope), fCalcParam(), fParam(type)
+FCCFastSimModelTracker::FCCFastSimModelTracker(G4String aModelName, G4Region* aEnvelope, FCCDetectorParametrisation::Parametrisation aType)
+   : G4VFastSimulationModel(aModelName, aEnvelope), fCalculateParametrisation(), fParametrisation(aType)
 {}
 
-FCCFastSimModelTracker::FCCFastSimModelTracker(G4String modelName, G4Region* envelope)
-   : G4VFastSimulationModel(modelName, envelope), fCalcParam(), fParam(FCCDetectorParametrisation::eCMS)
+FCCFastSimModelTracker::FCCFastSimModelTracker(G4String aModelName, G4Region* aEnvelope)
+   : G4VFastSimulationModel(aModelName, aEnvelope), fCalculateParametrisation(), fParametrisation(FCCDetectorParametrisation::eCMS)
 {}
 
-FCCFastSimModelTracker::FCCFastSimModelTracker(G4String modelName)
-   : G4VFastSimulationModel(modelName), fCalcParam(), fParam(FCCDetectorParametrisation::eCMS)
+FCCFastSimModelTracker::FCCFastSimModelTracker(G4String aModelName)
+   : G4VFastSimulationModel(aModelName), fCalculateParametrisation(), fParametrisation(FCCDetectorParametrisation::eCMS)
 {}
 
 FCCFastSimModelTracker::~FCCFastSimModelTracker()
 {}
 
-G4bool FCCFastSimModelTracker::IsApplicable(const G4ParticleDefinition& particleType)
+G4bool FCCFastSimModelTracker::IsApplicable(const G4ParticleDefinition& aParticleType)
 {
-   return  particleType.GetPDGCharge() != 0;
+   return  aParticleType.GetPDGCharge() != 0;
 }
 
-G4bool FCCFastSimModelTracker::ModelTrigger(const G4FastTrack& fastTrack)
+G4bool FCCFastSimModelTracker::ModelTrigger(const G4FastTrack& /*aFastTrack*/)
 {
-   return true; //! (fastTrack.GetEnvelopeSolid()->DistanceToIn( fastTrack.GetPrimaryTrackLocalPosition () ));
+   return true;
 }
 
-void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
-                            G4FastStep& fastStep)
+void FCCFastSimModelTracker::DoIt(const G4FastTrack& aFastTrack,
+                            G4FastStep& aFastStep)
 {
 // ================
-   // G4double distance = fastTrack.GetEnvelopeSolid()->DistanceToOut( fastTrack.GetPrimaryTrackLocalPosition(),
-   //                                                                  fastTrack.GetPrimaryTrackLocalDirection() );
-   // G4ThreeVector position = fastTrack.GetPrimaryTrackLocalPosition() +  distance*fastTrack.GetPrimaryTrackLocalDirection();
-   G4ThreeVector spin        = fastTrack.GetPrimaryTrack()->GetPolarization() ;
-   G4FieldTrack  theFieldTrack = G4FieldTrack( fastTrack.GetPrimaryTrack()->GetPosition(),
-                                             fastTrack.GetPrimaryTrack()->GetMomentumDirection(),
+   G4ThreeVector spin        = aFastTrack.GetPrimaryTrack()->GetPolarization() ;
+   G4FieldTrack  theFieldTrack = G4FieldTrack( aFastTrack.GetPrimaryTrack()->GetPosition(),
+                                             aFastTrack.GetPrimaryTrack()->GetMomentumDirection(),
                                              0.0,
-                                             fastTrack.GetPrimaryTrack()->GetKineticEnergy(),
-                                             fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetDefinition()->GetPDGMass(),
-                                             0.0,    // UNUSED: fastTrack.GetPrimaryTrack().GetVelocity(),
-                                             fastTrack.GetPrimaryTrack()->GetGlobalTime(), // Lab.
-                                             fastTrack.GetPrimaryTrack()->GetProperTime(), // Part.
+                                             aFastTrack.GetPrimaryTrack()->GetKineticEnergy(),
+                                             aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetDefinition()->GetPDGMass(),
+                                             0.0,    // UNUSED: aFastTrack.GetPrimaryTrack().GetVelocity(),
+                                             aFastTrack.GetPrimaryTrack()->GetGlobalTime(), // Lab.
+                                             aFastTrack.GetPrimaryTrack()->GetProperTime(), // Part.
                                              &spin) ;
 
     G4double retSafety= -1.0;
@@ -94,47 +91,41 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& fastTrack,
     G4FieldTrack endTrack('a') ;
     G4double  currentMinimumStep= 10*m; // change that to sth connected to particle momentum !!!!!
     G4PathFinder* fPathFinder=  G4PathFinder::GetInstance();
-    G4double lengthAlongCurve = fPathFinder->ComputeStep( theFieldTrack,
+    /*G4double lengthAlongCurve = */ fPathFinder->ComputeStep( theFieldTrack,
                                                     currentMinimumStep,
                                                     0,
-                                                    fastTrack.GetPrimaryTrack()->GetCurrentStepNumber(),
+                                                    aFastTrack.GetPrimaryTrack()->GetCurrentStepNumber(),
                                                     retSafety,
                                                     retStepLimited,
                                                     endTrack,
-                                                    fastTrack.GetPrimaryTrack()->GetVolume() ) ;
-       // G4cout << " PathFinder ComputeStep returns " << lengthAlongCurve << G4endl;
-       // G4cout << " Position: " << position << G4endl;
-       // G4cout << " PathFind: " << endTrack.GetPosition() << G4endl;
-   fastStep.ProposePrimaryTrackFinalPosition( endTrack.GetPosition() );
-
+                                                    aFastTrack.GetPrimaryTrack()->GetVolume() ) ;
+   aFastStep.ProposePrimaryTrackFinalPosition( endTrack.GetPosition() );
 
 // ================
 
    // smear according to tracker resolution
-   G4int PID = fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPDGcode();
-   G4ThreeVector Porg = fastTrack.GetPrimaryTrack()->GetMomentum();
-
-   if ( !fastTrack.GetPrimaryTrack()->GetParentID() )
+   G4ThreeVector Porg = aFastTrack.GetPrimaryTrack()->GetMomentum();
+   if ( !aFastTrack.GetPrimaryTrack()->GetParentID() )
    {
       if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
       {
-         G4double res = fCalcParam->GetResolution(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
-         G4double eff = fCalcParam->GetEfficiency(FCCDetectorParametrisation::eTracker, fParam, Porg.mag());
-         G4ThreeVector Psm = FCCSmearer::Instance()->SmearMomentum(fastTrack.GetPrimaryTrack(), res);
+         G4double res = fCalculateParametrisation->GetResolution(FCCDetectorParametrisation::eTRACKER, fParametrisation, Porg.mag());
+         G4double eff = fCalculateParametrisation->GetEfficiency(FCCDetectorParametrisation::eTRACKER, fParametrisation, Porg.mag());
+         G4ThreeVector Psm = FCCSmearer::Instance()->SmearMomentum(aFastTrack.GetPrimaryTrack(), res);
          FCCOutput::Instance()->FillHistogram(0,(Porg.mag()/MeV - Psm.mag()/MeV) );
          // setting values of Psm, res and eff
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
-                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerMomentum(Psm);
+                                           (aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerMomentum(Psm);
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
-                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerResolution(res);
+                                           (aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerResolution(res);
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
-                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerEfficiency(eff);
+                                           (aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerEfficiency(eff);
       }
       else
       {
          // setting a value of Porg
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
-                                           (fastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerMomentum(Porg);
+                                           (aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetTrackerMomentum(Porg);
       }
    }
 }

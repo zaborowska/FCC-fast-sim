@@ -23,8 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/eventgenerator/HepMC/HepMCEx03/include/HepMCG4Pythia8Interface.hh
-//
 
 #ifndef FCC_PYTHIA_INTERFACE_H
 #define FCC_PYTHIA_INTERFACE_H
@@ -35,51 +33,87 @@
 
 class FCCPythiaMessenger;
 
-/// A generic interface class with Pythia8 event generator via HepMC.
+/**
+	@brief     Interface to Pythia8 event generator.
+ 	@details   An interface to Pythia8 event generator via HepMC. Based on G4 examples/eventgenerator/HepMC/HepMCEx03/include/HepMCG4Pythia8Interface.hh.
+ 	@author    Anna Zaborowska
+*/
 
 class FCCPythiaInterface : public FCCHepMCInterface {
 protected:
-   G4int verbose;
-   HepMC::Pythia8ToHepMC ToHepMC;
-   Pythia8::Pythia pythia;
-
-  FCCPythiaMessenger* messenger;
-
+   /**
+      A verbosity level.
+   */
+   G4int fVerbose;
+   /**
+      An interface to the HepMC standard format.
+   */
+   HepMC::Pythia8ToHepMC fToHepMC;
+   /**
+      Pythia8.
+   */
+   Pythia8::Pythia fPythia;
+   /**
+      A pointer to the messenger that connects the UI with this class.
+   */
+  FCCPythiaMessenger* fMessenger;
+   /**
+      Generates a Pythia event according to the parameters set with other methods. Converts it to HepMC standard format.
+   */
   virtual HepMC::GenEvent* GenerateHepMCEvent();
 
 public:
+   /**
+      A default constructor.
+   */
   FCCPythiaInterface();
   ~FCCPythiaInterface();
-
-  // set/get methods
-  void SetVerboseLevel(G4int i);
+   /**
+      A setter of the verbosity level.
+      @param aLevel A verbosity level.
+   */
+  void SetVerboseLevel(G4int aLevel);
+   /**
+      A getter of the verbosity level.
+   */
   G4int GetVerboseLevel() const;
-
-  // call pyxxx
-  void CallPythiaInit(G4int beam, G4int target, G4double eCM);
+   /**
+      Initializes Pythia8.
+      @param aBeam The beam particle PDG code.
+      @param aTarget The target particle PDG code.
+      @param aEnergyCM The energy of the system in the centre of mass frame.
+   */
+  void CallPythiaInit(G4int aBeam, G4int aTarget, G4double aEnergyCM);
+   /**
+      Prints Pytia statistics.
+   */
   void CallPythiaStat();
-  void CallPythiaReadString(G4String par);
-
-  // random numbers operations
-  void SetRandomSeed(G4int iseed);
-  void PrintRandomStatus(std::ostream& ostr=G4cout) const;
-
-  // setup user parameters (empty in default).
-  // Implement your parameters in a delived class if you want.
-  virtual void SetUserParameters();
-
+   /**
+      Passes a string instruction to Pythia.
+      @param aInstruction A string instruction.
+   */
+  void CallPythiaReadString(G4String aInstruction);
+   /**
+      Sets the random number seed.
+      @param aSeed A seed.
+   */
+  void SetRandomSeed(G4int aSeed);
+   /**
+      Printing method.
+   */
   virtual void Print() const;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-inline void FCCPythiaInterface::SetVerboseLevel(G4int i)
+
+inline void FCCPythiaInterface::SetVerboseLevel(G4int aLevel)
 {
-  verbose= i;
+  fVerbose= aLevel;
 }
 
 inline G4int FCCPythiaInterface::GetVerboseLevel() const
 {
-  return verbose;
+  return fVerbose;
 }
 
 #endif

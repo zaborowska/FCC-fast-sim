@@ -34,26 +34,25 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCRootReader::FCCRootReader()
-   : verbose(0)
+   : fVerbose(0)
 {
    gSystem->Load("libHepMCdict");
-   messenger= new FCCRootMessenger(this);
+   fMessenger= new FCCRootMessenger(this);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCRootReader::~FCCRootReader()
 {
-   //delete rootInput;
-   delete messenger;
+   delete fMessenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void FCCRootReader::Initialize()
 {
-   G4cout << filename << G4endl;
-   rootInput= new TFile(filename.c_str());
-   if(verbose>0) rootInput->ls();
-   rootLnk = (rootInput->GetListOfKeys())->FirstLink();
+   G4cout << fFileName << G4endl;
+   fRootInput= new TFile(fFileName.c_str());
+   if(fVerbose>0) fRootInput->ls();
+   fLinkToEvent = (fRootInput->GetListOfKeys())->FirstLink();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -62,10 +61,10 @@ HepMC::GenEvent* FCCRootReader::GenerateHepMCEvent()
    HepMC::GenEvent* evt;
    G4String keyName;
    TKey* key;
-   key = (TKey*)rootLnk->GetObject();
-   evt = (HepMC::GenEvent*) rootInput->Get(key->GetName());
-   if(verbose>0) G4cout << "Getting HepMC EVENT named: " << key->GetName() << G4endl;
-   rootLnk=rootLnk->Next();
-   if(verbose>0) evt->print();
+   key = (TKey*)fLinkToEvent->GetObject();
+   evt = (HepMC::GenEvent*) fRootInput->Get(key->GetName());
+   if(fVerbose>0) G4cout << "Getting HepMC EVENT named: " << key->GetName() << G4endl;
+   fLinkToEvent=fLinkToEvent->Next();
+   if(fVerbose>0) evt->print();
    return evt;
 }

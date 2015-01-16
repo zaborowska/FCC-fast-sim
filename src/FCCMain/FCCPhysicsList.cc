@@ -66,21 +66,16 @@ void FCCPhysicsList::ConstructParticle()
 
 void FCCPhysicsList::ConstructBosons()
 {
-  // pseudo-particles
   G4Geantino::GeantinoDefinition();
   G4ChargedGeantino::ChargedGeantinoDefinition();
 
-  // gamma
   G4Gamma::GammaDefinition();
-
-  // optical photon
   G4OpticalPhoton::OpticalPhotonDefinition();
 }
 
 #include "G4LeptonConstructor.hh"
 void FCCPhysicsList::ConstructLeptons()
 {
-  // Construct all leptons
   G4LeptonConstructor pConstructor;
   pConstructor.ConstructParticle();
 }
@@ -88,7 +83,6 @@ void FCCPhysicsList::ConstructLeptons()
 #include "G4MesonConstructor.hh"
 void FCCPhysicsList::ConstructMesons()
 {
-  //  Construct all mesons
   G4MesonConstructor pConstructor;
   pConstructor.ConstructParticle();
 }
@@ -96,7 +90,6 @@ void FCCPhysicsList::ConstructMesons()
 #include "G4BaryonConstructor.hh"
 void FCCPhysicsList::ConstructBaryons()
 {
-  //  Construct all barions
   G4BaryonConstructor  pConstructor;
   pConstructor.ConstructParticle();
 }
@@ -104,7 +97,6 @@ void FCCPhysicsList::ConstructBaryons()
 #include "G4IonConstructor.hh"
 void FCCPhysicsList::ConstructIons()
 {
-  //  Construct light ions
   G4IonConstructor pConstructor;
   pConstructor.ConstructParticle();
 }
@@ -242,7 +234,6 @@ void FCCPhysicsList::ConstructEM()
 #include "G4Decay.hh"
 void FCCPhysicsList::ConstructGeneral()
 {
-  // Add Decay Process
   G4Decay* theDecayProcess = new G4Decay();
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
@@ -282,8 +273,6 @@ void FCCPhysicsList::SetCuts()
   if (verboseLevel >1){
     G4cout << "FCCPhysicsList::SetCuts:";
   }
-  //  " G4VUserPhysicsList::SetCutsWithDefault" method sets
-  //   the default cut value for all particle types
   SetCutsWithDefault();
 }
 

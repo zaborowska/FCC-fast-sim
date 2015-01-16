@@ -27,8 +27,8 @@
 #ifndef FCC_PARTICLE_GUN_H
 #define FCC_PARTICLE_GUN_H
 
-#include "FCCParticleGunMessenger.hh"
-#include "G4VPrimaryGenerator.hh"
+#include "G4ParticleGunMessenger.hh"
+#include "G4ParticleGun.hh"
 #include "G4Event.hh"
 #include "globals.hh"
 #include "G4VPrimaryGenerator.hh"
@@ -37,55 +37,25 @@
 #include "G4PrimaryVertex.hh"
 #include "G4ParticleMomentum.hh"
 
-class FCCParticleGun: public G4VPrimaryGenerator
+/**
+   @brief     Extension of G4ParticleGun to shoot particles in random directions.
+   @details   An extension of G4ParticleGun. Shoots in a random direction a particle with given momentum and type).
+ 	@author    Anna Zaborowska
+*/
+
+class FCCParticleGun: public G4ParticleGun
 {
 public:
+   /**
+      A default constructor.
+   */
    FCCParticleGun();
    virtual ~FCCParticleGun();
-
-   void GeneratePrimaryVertex(G4Event* evt);
-
-   void SetParticleDefinition
-   (G4ParticleDefinition * aParticleDefinition);
-   void SetParticleEnergy(G4double aKineticEnergy);
-   void SetParticleMomentum(G4double aMomentum);
-   void SetParticleMomentum(G4ParticleMomentum aMomentum);
-   void SetParticleMomentumDirection
-   (G4ParticleMomentum aMomentumDirection)
-      { particle_momentum_direction =  aMomentumDirection.unit(); }
-   void SetParticleCharge(G4double aCharge)
-      { particle_charge = aCharge; }
-   void SetParticlePolarization(G4ThreeVector aVal)
-      { particle_polarization = aVal; }
-   void SetNumberOfParticles(G4int i)
-      { NumberOfParticlesToBeGenerated = i; }
-
-   G4ParticleDefinition* GetParticleDefinition() const
-      { return particle_definition; }
-   G4ParticleMomentum GetParticleMomentumDirection() const
-      { return particle_momentum_direction; }
-   G4double GetParticleEnergy() const
-      { return particle_energy; }
-   G4double GetParticleMomentum() const
-      { return particle_momentum; }
-   G4double GetParticleCharge() const
-      { return particle_charge; }
-   G4ThreeVector GetParticlePolarization() const
-      { return particle_polarization; }
-   G4int GetNumberOfParticles() const
-      { return NumberOfParticlesToBeGenerated; }
-
-   G4int                 NumberOfParticlesToBeGenerated;
-   G4ParticleDefinition* particle_definition;
-   G4ParticleMomentum    particle_momentum_direction;
-   G4double	           particle_energy;
-   G4double              particle_momentum;
-   G4double	           particle_charge;
-   G4ThreeVector         particle_polarization;
-
-private:
-   FCCParticleGunMessenger* theMessenger;
-
+   /**
+      Generates an event containing a particle just as in G4ParticleGun, additionally it sets a vertex position and momentum direction using randomly generated numbers. Attaches FCCPrimaryParticleInformation to all the primaries.
+      @param aEvent A generated event.
+   */
+   void GeneratePrimaryVertex(G4Event* aEvent);
 };
 
 #endif

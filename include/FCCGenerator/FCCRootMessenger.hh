@@ -23,8 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh
-//
 
 #ifndef FCC_ROOT_MESSENGER_H
 #define FCC_ROOT_MESSENGER_H
@@ -33,24 +31,52 @@
 
 class FCCRootReader;
 class G4UIdirectory;
-class G4UIcmdWithoutParameter;
 class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
+/**
+   @brief     Communicator between UI and FCCRootReader.
+ 	@details   A messenger class handling the commands from the UI to FCCPythiaInterface. Based on G4 examples/extended/eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh.
+ 	@author    Anna Zaborowska
+*/
+
 class FCCRootMessenger : public G4UImessenger {
 public:
-  FCCRootMessenger(FCCRootReader* agen);
-  ~FCCRootMessenger();
-
-  void SetNewValue(G4UIcommand* command, G4String newValues);
-  G4String GetCurrentValue(G4UIcommand* command);
+   /**
+      A constructor. The directory and the commands names are set here.
+      @param aGenerator A pointer to the FCCRootReader class object.
+   */
+   FCCRootMessenger(FCCRootReader* aGenerator);
+   ~FCCRootMessenger();
+   /**
+      A method calling the methods from the FCCRootReader class, depending on the command.
+      @param aCommand A pointer to the command typed by the user in the UI.
+      @param aNewValues A new value of the command set by the user.
+   */
+   void SetNewValue(G4UIcommand* aCommand, G4String aNewValues);
+   /**
+      A method calling the methods from the FCCRootReader class, depending on the command.
+      @param aCommand A pointer to the command typed by the user in the UI.
+   */
+   G4String GetCurrentValue(G4UIcommand* aCommand);
 
 private:
-  FCCRootReader* gen;
-
-  G4UIdirectory* dir;
-  G4UIcmdWithAnInteger* verbose;
-  G4UIcmdWithAString* open;
+   /**
+      A pointer to the FCCRootReader class that is connected to the UI.
+   */
+   FCCRootReader* fGenerator;
+   /**
+      A directory for the commands associated with this messenger.
+   */
+   G4UIdirectory* fDirectory;
+   /**
+      A command that takes an integer parameter. Used to set the verbose level.
+   */
+   G4UIcmdWithAnInteger* fVerboseCommand;
+   /**
+      A command that takes an string parameter. Sets the name of the ROOT file with the event.
+   */
+   G4UIcmdWithAString* fOpenCommand;
 
 };
 

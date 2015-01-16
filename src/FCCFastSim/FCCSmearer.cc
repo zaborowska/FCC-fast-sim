@@ -47,11 +47,11 @@ void FCCSmearer::MakeManagers()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4ThreeVector FCCSmearer::SmearMomentum(const G4Track* aTrackOriginal, G4double resolution = -1)
+G4ThreeVector FCCSmearer::SmearMomentum(const G4Track* aTrackOriginal, G4double aResolution = -1)
 {
-   if(resolution != -1)
+   if(aResolution != -1)
    {
-      return SmearGaussian(aTrackOriginal, resolution);
+      return SmearGaussian(aTrackOriginal, aResolution);
    }
    else
    {
@@ -61,13 +61,13 @@ G4ThreeVector FCCSmearer::SmearMomentum(const G4Track* aTrackOriginal, G4double 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double FCCSmearer::SmearEnergy(const G4Track* aTrackOriginal, G4double resolution = -1)
+G4double FCCSmearer::SmearEnergy(const G4Track* aTrackOriginal, G4double aResolution = -1)
 {
    G4double newE = -1;
    while (newE < 0) // to ensure the resulting value is not negative (vital for energy smearing, does not change direction for momentum smearing)
    {
-      if(resolution != -1)
-         newE = aTrackOriginal->GetKineticEnergy() * Gauss(1,resolution);
+      if(aResolution != -1)
+         newE = aTrackOriginal->GetKineticEnergy() * Gauss(1, aResolution);
       else
       {
          G4int PID = aTrackOriginal->GetDynamicParticle()->GetPDGcode();
@@ -85,21 +85,20 @@ G4double FCCSmearer::SmearEnergy(const G4Track* aTrackOriginal, G4double resolut
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4ThreeVector FCCSmearer::SmearGaussian(const G4Track* aTrackOriginal, G4double resolution)
+G4ThreeVector FCCSmearer::SmearGaussian(const G4Track* aTrackOriginal, G4double aResolution)
 {
    G4ThreeVector originP = aTrackOriginal->GetMomentum();
-   double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
    G4ThreeVector originPos = aTrackOriginal->GetPosition();
-   G4double rdm = Gauss(1,resolution);
+   G4double rdm = Gauss(1,aResolution);
    G4ThreeVector smearedMom (originP.x()*rdm,  originP.y()*rdm,  originP.z()*rdm);
    return smearedMom;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double FCCSmearer::Gauss(G4double mean, G4double stdDev)
+G4double FCCSmearer::Gauss(G4double aMean, G4double aStandardDeviation)
 {
-   return fRandomGauss->fire(mean, stdDev);
+   return fRandomGauss->fire(aMean, aStandardDeviation);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -152,11 +151,11 @@ G4double* FCCSmearer::Atlfast(const G4Track* aTrackOriginal)
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4double* FCCSmearer::ComputeTrackParams(G4double charge, G4ThreeVector vertexMomentum, G4ThreeVector vertexPosition)
+G4double* FCCSmearer::ComputeTrackParams(G4double aCharge, G4ThreeVector aVertexMomentum, G4ThreeVector aVertexPosition)
 {
    // calculation of track parameter representation: implemented in Atlfast::TrackTrajectory
-   double pt = vertexMomentum.perp();
-   double q  = charge;
+   double pt = aVertexMomentum.perp();
+   double q  = aCharge;
    q /= abs(q); //  |q| = 1
 
    G4double bField =
@@ -164,22 +163,22 @@ G4double* FCCSmearer::ComputeTrackParams(G4double charge, G4ThreeVector vertexMo
 
    // Working in MeV and mm
    double radius = pt/(2*0.149898*bField);
-   double x0  = vertexPosition.x() - q* radius*sin(vertexMomentum.phi());
-   double y0  = vertexPosition.y() + q* radius*cos(vertexMomentum.phi());
+   double x0  = aVertexPosition.x() - q* radius*sin(aVertexMomentum.phi());
+   double y0  = aVertexPosition.y() + q* radius*cos(aVertexMomentum.phi());
    G4ThreeVector hCentre(x0,y0);
 
    // calculate parameters
    double impactParameter = -q*(hCentre.perp() - radius);
-   double theta = vertexMomentum.theta();
+   double theta = aVertexMomentum.theta();
    double cotTheta = 1/tan(theta);
-   double eta = vertexMomentum.pseudoRapidity();
+   /*double eta = aVertexMomentum.pseudoRapidity();*/
    double zPerigee;
    double phi;
 
    //  Calculate Phi
    phi = CheckPhi(hCentre.phi() + M_PI/2.);
 
-   zPerigee = vertexPosition.z() + cotTheta*radius*(phi-vertexMomentum.phi());
+   zPerigee = aVertexPosition.z() + cotTheta*radius*(phi-aVertexMomentum.phi());
 
    G4double* params = new G4double[5];
    params[0] = impactParameter;
@@ -192,46 +191,46 @@ G4double* FCCSmearer::ComputeTrackParams(G4double charge, G4ThreeVector vertexMo
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4ThreeVector FCCSmearer::ComputePosFromParams(G4double* params, G4double phiVertex)
+G4ThreeVector FCCSmearer::ComputePosFromParams(G4double* aParams, G4double aPhiVertex)
 {
    G4double x,y,z;
    G4double bField =
       ((G4UniformMagField*)(G4TransportationManager::GetTransportationManager()->GetFieldManager()->GetDetectorField())) ->GetConstantFieldValue().mag();
-   double radius = 1./(2*0.149898*bField*params[4]);
+   double radius = 1./(2*0.149898*bField*aParams[4]);
    if(radius<0) radius = -1* radius;
-   double q = (params[4] > 0) - (params[4] < 0); // returns signum(charge)
+   double q = (aParams[4] > 0) - (aParams[4] < 0); // returns signum(charge)
 
    // helix centre
-   double xC = ( params[0] - q * radius) *sin(params[2]);
-   double yC = ( q * params[0] + q * radius) *cos(params[2]);
+   double xC = ( aParams[0] - q * radius) *sin(aParams[2]);
+   double yC = ( q * aParams[0] + q * radius) *cos(aParams[2]);
 
    // vertex point
-   x = xC + q * radius * sin(phiVertex);
-   y = yC - q * radius * cos(phiVertex);
-   z = params[1] + params[3]*radius*(params[2]-phiVertex);
+   x = xC + q * radius * sin(aPhiVertex);
+   y = yC - q * radius * cos(aPhiVertex);
+   z = aParams[1] + aParams[3]*radius*(aParams[2]-aPhiVertex);
 
    G4ThreeVector pos (x,y,z);
    return pos;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4ThreeVector FCCSmearer::ComputeMomFromParams(G4double* params)
+G4ThreeVector FCCSmearer::ComputeMomFromParams(G4double* aParams)
 {
-   double Px = (-1)*1./params[4]*cos(params[2]);
-   double Py = (-1)*1./params[4]*sin(params[2]);
-   double Pz = abs(1./params[4])*sin( atan(1./params[3]) );
+   double Px = (-1)*1./aParams[4]*cos(aParams[2]);
+   double Py = (-1)*1./aParams[4]*sin(aParams[2]);
+   double Pz = abs(1./aParams[4])*sin( atan(1./aParams[3]) );
    G4ThreeVector P (Px,Py,Pz);
    return P;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double FCCSmearer::CheckPhi(G4double Phi)
+G4double FCCSmearer::CheckPhi(G4double aPhi)
 {
-   if(Phi<-M_PI)
-      while(Phi<-M_PI)
-         Phi+=2*M_PI;
-   else if(Phi>M_PI)
-      while(Phi>M_PI)
-         Phi-=2*M_PI;
-   return Phi;
+   if(aPhi<-M_PI)
+      while(aPhi<-M_PI)
+         aPhi+=2*M_PI;
+   else if(aPhi>M_PI)
+      while(aPhi>M_PI)
+         aPhi-=2*M_PI;
+   return aPhi;
 }

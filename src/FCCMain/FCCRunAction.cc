@@ -31,10 +31,10 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCRunAction::FCCRunAction(const G4String OutName="SimpleOutput")
+FCCRunAction::FCCRunAction(const G4String aOutName="SimpleOutput")
  : G4UserRunAction()
 {
-   FCCOutput::Instance()->SetFileName(OutName);
+   FCCOutput::Instance()->SetFileName(aOutName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -46,15 +46,15 @@ FCCRunAction::~FCCRunAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCRunAction::BeginOfRunAction(const G4Run* run)
+void FCCRunAction::BeginOfRunAction(const G4Run* aRun)
 {
-   FCCOutput::Instance()->StartAnalysis(run->GetRunID());
+   FCCOutput::Instance()->StartAnalysis(aRun->GetRunID());
    FCCOutput::Instance()->CreateHistograms();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCRunAction::EndOfRunAction(const G4Run* /*run*/)
+void FCCRunAction::EndOfRunAction(const G4Run* /*aRun*/)
 {
    FCCOutput::Instance()->EndAnalysis();
 }

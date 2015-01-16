@@ -1,5 +1,5 @@
 /generator/select hepmcRoot
 #/generator/hepmcRoot/verbose 1
-/generator/hepmcRoot/open ../PythiaInHepMC_140GeV.root
+/generator/hepmcRoot/open ../PythiaInHepMC.root
 /run/beamOn 1
 

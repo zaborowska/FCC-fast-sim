@@ -37,14 +37,12 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCEventAction::FCCEventAction()
-   : G4UserEventAction(), fSmear(0)
+FCCEventAction::FCCEventAction() : G4UserEventAction(), fSmear(1)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-FCCEventAction::FCCEventAction(G4bool smearing)
-   : G4UserEventAction(), fSmear(smearing)
+FCCEventAction::FCCEventAction(G4bool aSmear)  : G4UserEventAction(), fSmear(aSmear)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -54,7 +52,7 @@ FCCEventAction::~FCCEventAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCEventAction::BeginOfEventAction(const G4Event* event)
+void FCCEventAction::BeginOfEventAction(const G4Event* /*aEvent*/)
 {
    G4EventManager::GetEventManager()->SetUserInformation(new FCCEventInformation(fSmear));
    FCCOutput::Instance()->CreateNtuples();
@@ -62,7 +60,7 @@ void FCCEventAction::BeginOfEventAction(const G4Event* event)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void FCCEventAction::EndOfEventAction(const G4Event* event){
+void FCCEventAction::EndOfEventAction(const G4Event* /*aEvent*/){
 
 }
 

@@ -35,67 +35,51 @@
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-FCCPythiaInterface::FCCPythiaInterface()
-   : verbose(0)
+FCCPythiaInterface::FCCPythiaInterface() : fVerbose(0)
 {
-  messenger= new FCCPythiaMessenger(this);
+  fMessenger= new FCCPythiaMessenger(this);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCPythiaInterface::~FCCPythiaInterface()
 {
-  delete messenger;
+  delete fMessenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCPythiaInterface::CallPythiaReadString(G4String par)
+void FCCPythiaInterface::CallPythiaReadString(G4String aInstruction)
 {
-   pythia.readString(par);
+   fPythia.readString(aInstruction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCPythiaInterface::CallPythiaInit(G4int beam,
-                                        G4int target, G4double eCM)
+void FCCPythiaInterface::CallPythiaInit(G4int aBeam, G4int aTarget, G4double aEnergyCM)
 {
-   pythia.init(beam,target, eCM);
+   fPythia.init(aBeam, aTarget, aEnergyCM);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void FCCPythiaInterface::CallPythiaStat()
 {
-   pythia.stat();
+   fPythia.stat();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCPythiaInterface::SetRandomSeed(G4int iseed)
+void FCCPythiaInterface::SetRandomSeed(G4int aSeed)
 {
-   pythia.readString("Random:setSeed = on");
+   fPythia.readString("Random:setSeed = on");
    ostringstream Seed;
-   Seed<<"Random:seed = "<<iseed;
-   pythia.readString(Seed.str());
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCPythiaInterface::PrintRandomStatus(std::ostream& /*ostr*/) const
-{
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void FCCPythiaInterface::SetUserParameters()
-{
-  G4cout << "set user parameters of PYTHIA common." << G4endl
-         << "nothing to be done in default."
-         << G4endl;
+   Seed<<"Random:seed = "<<aSeed;
+   fPythia.readString(Seed.str());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 HepMC::GenEvent* FCCPythiaInterface::GenerateHepMCEvent()
 {
-   pythia.next();
-
+   fPythia.next();
    HepMC::GenEvent* hepmcevt = new HepMC::GenEvent();
-   ToHepMC.fill_next_event( pythia, hepmcevt );
-   if(verbose>0) hepmcevt-> print();
+   fToHepMC.fill_next_event( fPythia, hepmcevt );
+   if(fVerbose>0) hepmcevt-> print();
 
   return hepmcevt;
 }
