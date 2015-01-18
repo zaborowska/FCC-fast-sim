@@ -81,7 +81,7 @@
     <volume name="ECalBarrel0x7ff5f9e7b420">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="ECalBarrel0x7ff5f9e7b300"/>
-      <auxiliary auxtype="SensDet" auxvalue="ECalBarrel"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="ECalBarrel"/>
     </volume>
     <volume name="world_volume0x7ff5f9e77ca0">
       <materialref ref="Air0x7ff5f9e72ea0"/>

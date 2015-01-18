@@ -111,7 +111,7 @@
     <volume name="TrackerBarrelLog">
       <materialref ref="Beryllium0x7ff5f9e3baf0"/>
       <solidref ref="TrackerBarrel"/>
-      <auxiliary auxtype="SensDet" auxvalue="TrackerBarrel"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="TrackerBarrel"/>
     </volume>
 
 <!-- EM Calorimeters -->
@@ -119,27 +119,27 @@
     <volume name="ECalBarrel0x7ff5f9e7b420">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="ECalBarrel0x7ff5f9e7b300"/>
-      <auxiliary auxtype="SensDet" auxvalue="ECalBarrel"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="ECalBarrel"/>
     </volume>
     <volume name="ECalEndCap_10x7ff5f9e7b710">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="ECalEndCap_10x7ff5f9e7b630"/>
-      <auxiliary auxtype="SensDet" auxvalue="ECalEndCap1"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="ECalEndCap1"/>
     </volume>
     <volume name="ECalEndCap_20x7ff5f9e7bd10">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="ECalEndCap_20x7ff5f9e7bc30"/>
-      <auxiliary auxtype="SensDet" auxvalue="ECalEndCap2"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="ECalEndCap2"/>
     </volume>
     <volume name="ECalForward_10x7ff5f9e7c130">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="ECalForward_10x7ff5f9e7c050"/>
-      <auxiliary auxtype="SensDet" auxvalue="ECalForward1"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="ECalForward1"/>
     </volume>
     <volume name="ECalForward_20x7ff5f9e7c490">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="ECalForward_20x7ff5f9e7c330"/>
-      <auxiliary auxtype="SensDet" auxvalue="ECalForward2"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="ECalForward2"/>
     </volume>
 
 <!-- Hadron Calorimeters -->
@@ -147,27 +147,27 @@
     <volume name="HCalBarrel0x7ff5f9e7d060">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="HCalBarrel0x7ff5f9e7cf80"/>
-      <auxiliary auxtype="SensDet" auxvalue="HCalBarrel"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="HCalBarrel"/>
     </volume>
     <volume name="HCalEndCap_10x7ff5f9e7d4b0">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="HCalEndCap_10x7ff5f9e7d3d0"/>
-      <auxiliary auxtype="SensDet" auxvalue="HCalEndCap1"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="HCalEndCap1"/>
     </volume>
     <volume name="HCalEndCap_20x7ff5f9e7d790">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="HCalEndCap_20x7ff5f9e7d6b0"/>
-      <auxiliary auxtype="SensDet" auxvalue="HCalEndCap2"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="HCalEndCap2"/>
     </volume>
     <volume name="HCalForward_10x7ff5f9e7daf0">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="HCalForward_10x7ff5f9e7b840"/>
-      <auxiliary auxtype="SensDet" auxvalue="HCalForward1"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="HCalForward1"/>
     </volume>
     <volume name="HCalForward_20x7ff5f9e7b9d0">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="HCalForward_20x7ff5f9e7dc40"/>
-      <auxiliary auxtype="SensDet" auxvalue="HCalForward2"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="HCalForward2"/>
     </volume>
 
 <!-- Muon Detectors -->
@@ -175,62 +175,62 @@
     <volume name="MuonEndCap_10x7ff5f9e7efa0">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonEndCap_10x7ff5f9e7eec0"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonEndCap1"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonEndCap1"/>
     </volume>
     <volume name="MuonEndCap_20x7ff5f9e7f280">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonEndCap_20x7ff5f9e7f1a0"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonEndCap2"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonEndCap2"/>
     </volume>
     <volume name="MuonEndCap_30x7ff5f9e7f550">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonEndCap_30x7ff5f9e7f470"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonEndCap3"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonEndCap3"/>
     </volume>
     <volume name="MuonEndCap_40x7ff5f9e7f820">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonEndCap_40x7ff5f9e7f740"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonEndCap4"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonEndCap4"/>
     </volume>
     <volume name="MuonEndCap_50x7ff5f9e7faf0">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonEndCap_50x7ff5f9e7fa10"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonEndCap5"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonEndCap5"/>
     </volume>
     <volume name="MuonEndCap_60x7ff5f9e7fdc0">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonEndCap_60x7ff5f9e7fce0"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonEndCap6"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonEndCap6"/>
     </volume>
     <volume name="MuonForward_10x7ff5f9e80200">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonForward_10x7ff5f9e80120"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonForward1"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonForward1"/>
     </volume>
     <volume name="MuonForward_20x7ff5f9e804e0">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonForward_20x7ff5f9e80400"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonForward2"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonForward2"/>
     </volume>
     <volume name="MuonForward_30x7ff5f9e807b0">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonForward_30x7ff5f9e806d0"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonForward3"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonForward3"/>
     </volume>
     <volume name="MuonForward_40x7ff5f9e80a80">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonForward_40x7ff5f9e809a0"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonForward4"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonForward4"/>
     </volume>
     <volume name="MuonForward_50x7ff5f9e80d50">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonForward_50x7ff5f9e80c70"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonForward5"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonForward5"/>
     </volume>
     <volume name="MuonForward_60x7ff5f9e81020">
       <materialref ref="Aluminum0x7ff5f9e42670"/>
       <solidref ref="MuonForward_60x7ff5f9e80f40"/>
-      <auxiliary auxtype="SensDet" auxvalue="MuonForward6"/>
+      <auxiliary auxtype="FastSimModel" auxvalue="MuonForward6"/>
     </volume>
 
 <!-- World and Physical Volumes -->

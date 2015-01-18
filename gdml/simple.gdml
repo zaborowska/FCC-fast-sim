@@ -32,7 +32,7 @@
   <volume name="Boxvol" >
    <materialref ref="Air" />
    <solidref ref="Box" />
-   <auxiliary auxtype="SensDet" auxvalue="Tracker"/>
+   <auxiliary auxtype="FastSimModel" auxvalue="Tracker"/>
    <auxiliary auxtype="Color" auxvalue="Blue"/>
   </volume>
   <volume name="World" >
