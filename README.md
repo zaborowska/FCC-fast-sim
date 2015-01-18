@@ -10,6 +10,7 @@ ____________________________________________________________________
 
         mkdir build
         cd build
+        source /afs/cern.ch/sw/lcg/contrib/gcc/4.9/x86_64-slc6-gcc49-opt/setup.sh
         source /afs/cern.ch/sw/lcg/external/geant4/10.1/x86_64-slc6-gcc49-opt/CMake-setup.sh
         source /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.25/x86_64-slc6-gcc48-opt/root/bin/thisroot.sh
         export PYTHIA8DATA=/afs/cern.ch/sw/lcg/external/MCGenerators_lcgcmt67b/pythia8/186/x86_64-slc6-gcc47-opt/xmldoc
@@ -20,9 +21,20 @@ ____________________________________________________________________
               -DCMAKE_CXX_COMPILER='/afs/cern.ch/sw/lcg/contrib/gcc/4.9/x86_64-slc6-gcc49-opt/bin/g++' \
               -DCMAKE_INSTALL_PREFIX=. ..
         make
+        
+
+2. Documentation
+-------------------
+
+	cd build
+	make doc
+	
+Documentation can be found in
+
+	build/doc/html/index.html
 
 
-2. Running an example
+3. Running an example
 -------------------
 
 Usage: ./FCCfastsim
@@ -32,19 +44,19 @@ Usage: ./FCCfastsim
 		<settings macro : optional (if not ->GUI)>
 
 
-2.1 Without GUI
+3.1 Without GUI
 
         ./FCCfastsim ../gdml/simple.gdml Output true pythia.in
 
-2.2 With GUI
+3.2 With GUI
 
         ./FCCfastsim ../gdml/simple.gdml Output true
 
 
-3. Macro with settings: event generator
+4. Macro with settings: event generator
 -------------------
 
-3.1. Simple particle gun (default)
+4.1. Simple particle gun (default)
 
      gun.in:
 
@@ -55,7 +67,7 @@ Usage: ./FCCfastsim
           /run/setCut 10 m
           /run/beamOn 1000
 
-3.2. Pythia 8
+4.2. Pythia 8
 
 Detail of Pythia processes, beam/target (PDG code) ans energy (in GeV) need to be specified in Geant macro:
 
@@ -66,7 +78,7 @@ Detail of Pythia processes, beam/target (PDG code) ans energy (in GeV) need to b
           /generator/pythia8/read "PhaseSpace:pTHatMin = 20."
           /generator/pythia8/init 2212 2212 14000.
 
-3.3. HepMC event read from ROOT file
+4.3. HepMC event read from ROOT file
 
        root.in:
 
@@ -77,7 +89,7 @@ Detail of Pythia processes, beam/target (PDG code) ans energy (in GeV) need to b
 
 
 
-4. Geometry description: GDML
+5. Geometry description: GDML
 -------------------
 
 Geometry is read from the GDML file. All GDMLs are stored in gdml/ directory:
@@ -89,7 +101,7 @@ FCCOnedetector.gdl - Only one EM calorimeter (sensitive detector)
 simple.gdml - Simple box as a detector
 
 
-5. Choosing the parametrisation type
+6. Choosing the parametrisation type
 -------------------
 
 The details concerning the detectors and fast simulation models are described in the file:
