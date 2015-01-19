@@ -112,14 +112,14 @@ void FCCOutput::CreateNtuples()
 void FCCOutput::CreateHistograms()
 {
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   analysisManager->CreateH1("Pdiff","P smeared in tracker", 100, -10, 10);
-   analysisManager->SetH1XAxisTitle(0, "#Delta p (MeV)");
+   analysisManager->CreateH1("Pdiff","momentum smeared in tracker", 100, 0.8,1.2);
+   analysisManager->SetH1XAxisTitle(0, "p_{smeared}/p_{true}");
    analysisManager->SetH1YAxisTitle(0, "Entries");
-   analysisManager->CreateH1("EMCalEdiff","E smeared in EMCal", 100, -10., 10);
-   analysisManager->SetH1XAxisTitle(1, "#Delta E (MeV)");
+   analysisManager->CreateH1("EMCalEdiff","energy smeared in EMCal", 100, 0.5, 1.5);
+   analysisManager->SetH1XAxisTitle(1, "E_{smeared}/E_{true}");
    analysisManager->SetH1YAxisTitle(1, "Entries");
-   analysisManager->CreateH1("HCalEdiff","E smeared in HCal", 100, -100., 100);
-   analysisManager->SetH1XAxisTitle(2, "#Delta E (MeV)");
+   analysisManager->CreateH1("HCalEdiff","energy smeared in HCal", 100, 0., 2);
+   analysisManager->SetH1XAxisTitle(2, "E_{smeared}/E_{true}");
    analysisManager->SetH1YAxisTitle(2, "Entries");
 }
 
@@ -186,7 +186,7 @@ void FCCOutput::SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
 void FCCOutput::FillHistogram(G4int aHistNo, G4double aValue) const
 {
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   analysisManager->FillH1(aHistNo, aValue/GeV); // value is put to histogram in GeV
+   analysisManager->FillH1(aHistNo, aValue);
    return;
 }
 
