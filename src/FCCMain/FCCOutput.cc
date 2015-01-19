@@ -77,7 +77,11 @@ void FCCOutput::CreateNtuples()
    G4String evName = "Event_";
    evName += G4UIcommand::ConvertToString(event->GetEventID());
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   G4int ntupID = 2*event->GetEventID();
+   G4int ntupID;
+   if(((FCCEventInformation*)event->GetUserInformation())->GetSavePerigee())
+      ntupID = 2*event->GetEventID();
+   else
+      ntupID = event->GetEventID();
 
    analysisManager->CreateNtuple(evName, evName);
    analysisManager->CreateNtupleIColumn("particleID");  // column Id = 0
@@ -106,6 +110,38 @@ void FCCOutput::CreateNtuples()
    analysisManager->CreateNtupleDColumn("hcal_Z"); // column Id = 20
    analysisManager->CreateNtupleDColumn("hcal_E");  // column Id = 21
    analysisManager->FinishNtuple(ntupID);
+
+   if(((FCCEventInformation*)event->GetUserInformation())->GetSavePerigee())
+   {
+   evName += "_perigee";
+   analysisManager->CreateNtuple(evName, evName);
+   analysisManager->CreateNtupleIColumn("particleID");  // column Id = 0
+   analysisManager->CreateNtupleIColumn("PID");  // column Id = 1
+   analysisManager->CreateNtupleDColumn("MC_d0");  // column Id = 2
+   analysisManager->CreateNtupleDColumn("MC_z0"); // column Id = 3
+   analysisManager->CreateNtupleDColumn("MC_phi"); // column Id = 4
+   analysisManager->CreateNtupleDColumn("MC_cottheta"); // column Id = 5
+   analysisManager->CreateNtupleDColumn("MC_qpT"); // column Id = 6
+
+   analysisManager->CreateNtupleDColumn("tracker_d0");  // column Id = 7
+   analysisManager->CreateNtupleDColumn("tracker_z0"); // column Id = 8
+   analysisManager->CreateNtupleDColumn("tracker_phi"); // column Id = 9
+   analysisManager->CreateNtupleDColumn("tracker_cottheta"); // column Id = 10
+   analysisManager->CreateNtupleDColumn("tracker_qpT"); // column Id = 11
+
+   analysisManager->CreateNtupleDColumn("emcal_d0");  // column Id = 12
+   analysisManager->CreateNtupleDColumn("emcal_z0"); // column Id = 13
+   analysisManager->CreateNtupleDColumn("emcal_phi"); // column Id = 14
+   analysisManager->CreateNtupleDColumn("emcal_cottheta"); // column Id = 15
+   analysisManager->CreateNtupleDColumn("emcal_qpT"); // column Id = 16
+
+   analysisManager->CreateNtupleDColumn("hcal_d0");  // column Id = 17
+   analysisManager->CreateNtupleDColumn("hcal_z0"); // column Id = 18
+   analysisManager->CreateNtupleDColumn("hcal_phi"); // column Id = 19
+   analysisManager->CreateNtupleDColumn("hcal_cottheta"); // column Id = 20
+   analysisManager->CreateNtupleDColumn("hcal_qpT"); // column Id = 21
+   analysisManager->FinishNtuple(ntupID+1);
+   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -128,11 +164,14 @@ void FCCOutput::CreateHistograms()
 void FCCOutput::SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
                           G4ThreeVector aVector, G4double aResolution, G4double aEfficiency, G4double aEnergy)
 {
-   G4int evNo = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
+   G4int evNo = event->GetEventID();
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+   if( ((FCCEventInformation*)event->GetUserInformation())->GetSavePerigee() )
+   evNo *= 2;
    switch(aWhatToSave)
    {
-   case eMC:
+   case  FCCOutput::eMC:
    {
       analysisManager->FillNtupleIColumn(evNo, 0, aPartID);
       analysisManager->FillNtupleIColumn(evNo, 1, aPDG);
@@ -142,7 +181,7 @@ void FCCOutput::SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
       fCurrentID = aPartID;
       break;
    }
-   case eTracker:
+   case  FCCOutput::eTracker:
    {
       if (aPartID != fCurrentID)
          G4cout<<" Wrong particle - trying to save Tracker information of different particle"<<G4endl;
@@ -153,7 +192,7 @@ void FCCOutput::SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
       analysisManager->FillNtupleDColumn(evNo, 9, aVector.z());
       break;
    }
-   case eEMCal:
+   case  FCCOutput::eEMCal:
    {
       if (aPartID != fCurrentID)
          G4cout<<" Wrong particle - trying to save EMCal information of different particle"<<G4endl;
@@ -165,7 +204,7 @@ void FCCOutput::SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
       analysisManager->FillNtupleDColumn(evNo, 15, aEnergy);
       break;
    }
-   case eHCal:
+   case  FCCOutput::eHCal:
    {
       if (aPartID != fCurrentID)
          G4cout<<" Wrong particle - trying to save HCal information of different particle"<<G4endl;
@@ -179,6 +218,7 @@ void FCCOutput::SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
       break;
    }
    }
+   G4cout<<" SAVING NORAML INFO TO "<<evNo<<" ntuple"<<G4endl;
    return;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -189,4 +229,85 @@ void FCCOutput::FillHistogram(G4int aHistNo, G4double aValue) const
    analysisManager->FillH1(aHistNo, aValue);
    return;
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCOutput::SavePerigee(SaveType aWhatToSave, G4int aPartID,  G4int aPDG, G4double* aPerigee) const
+{
+   G4cout<<aWhatToSave<<" To save: "<<aPerigee[0]<<" , "<<aPerigee[1]<<" , "<<aPerigee[2]<<" , "<<aPerigee[3]<<" , "<<aPerigee[4]<<G4endl;
+   const G4Event* event = G4RunManager::GetRunManager()->GetCurrentEvent();
+   G4int evNo = event->GetEventID();
+   if( !((FCCEventInformation*)event->GetUserInformation())->GetSavePerigee())
+   {
+      G4cout<<"=========================================================================="<<G4endl
+            <<"To save perigee on needs to set FCCEventInformation::fSavePerigee flag !!"<<G4endl
+            <<"Nothing will be done now"<<G4endl<<G4endl;
+      return;
+   }
+   G4cout<<" SAVING PERIGEE INFO TO "<<2*evNo+1<<" ntuple"<<G4endl;
+   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+   switch(aWhatToSave)
+   {
+   case FCCOutput::eMC:
+   {
+      if (aPartID != fCurrentID)
+      {
+         G4cout<<" Wrong particle - trying to save MC information of different particle"<<G4endl
+            <<" (please check if it is called *after* MC information is filled (FCCOutput::SaveTrack())"<<G4endl;
+      }
+      analysisManager->FillNtupleIColumn(2*evNo+1, 0, aPartID);
+      analysisManager->FillNtupleIColumn(2*evNo+1, 1, aPDG);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 2, aPerigee[0]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 3, aPerigee[1]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 4, aPerigee[2]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 5, aPerigee[3]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 6, aPerigee[4]);
+      break;
+   }
+   case FCCOutput::eTracker:
+   {
+      if (aPartID != fCurrentID)
+      {
+         G4cout<<" Wrong particle - trying to save Tracker information of different particle"<<G4endl;
+         break;
+      }
+      analysisManager->FillNtupleDColumn(2*evNo+1, 7, aPerigee[0]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 8, aPerigee[1]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 9, aPerigee[2]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 10, aPerigee[3]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 11, aPerigee[4]);
+      break;
+   }
+   case FCCOutput::eEMCal:
+   {
+      if (aPartID != fCurrentID)
+      {
+         G4cout<<" Wrong particle - trying to save EMCal information of different particle"<<G4endl;
+         break;
+      }
+      analysisManager->FillNtupleDColumn(2*evNo+1, 12, aPerigee[0]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 13, aPerigee[1]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 14, aPerigee[2]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 15, aPerigee[3]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 16, aPerigee[4]);
+      break;
+   }
+   case FCCOutput::eHCal:
+   {
+      if (aPartID != fCurrentID)
+      {
+         G4cout<<" Wrong particle - trying to save HCal information of different particle"<<G4endl;
+         break;
+      }
+      analysisManager->FillNtupleDColumn(2*evNo+1, 17, aPerigee[0]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 18, aPerigee[1]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 19, aPerigee[2]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 20, aPerigee[3]);
+      analysisManager->FillNtupleDColumn(2*evNo+1, 21, aPerigee[4]);
+      analysisManager->AddNtupleRow(2*evNo+1);
+      break;
+   }
+   }
+   return;
+}
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

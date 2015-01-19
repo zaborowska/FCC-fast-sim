@@ -99,6 +99,23 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
                                        info->GetHCalResolution(),
                                        info->GetHCalEfficiency(),
                                        info->GetHCalEnergy()/MeV);
+
+      if(info->GetPerigeeMC())FCCOutput::Instance()->SavePerigee(FCCOutput::eMC,
+                                       info->GetPartID(),
+                                       info->GetPDG(),
+                                       info->GetPerigeeMC());
+      if(info->GetPerigeeTracker())FCCOutput::Instance()->SavePerigee(FCCOutput::eTracker,
+                                       info->GetPartID(),
+                                       info->GetPDG(),
+                                       info->GetPerigeeTracker());
+      if(info->GetPerigeeEMCal())FCCOutput::Instance()->SavePerigee(FCCOutput::eEMCal,
+                                       info->GetPartID(),
+                                       info->GetPDG(),
+                                       info->GetPerigeeEMCal());
+      if(info->GetPerigeeHCal()) FCCOutput::Instance()->SavePerigee(FCCOutput::eHCal,
+                                       info->GetPartID(),
+                                       info->GetPDG(),
+                                       info->GetPerigeeHCal());
    }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

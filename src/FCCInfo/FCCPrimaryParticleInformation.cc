@@ -26,7 +26,7 @@
 
 #include "FCCPrimaryParticleInformation.hh"
 
-FCCPrimaryParticleInformation::FCCPrimaryParticleInformation(G4int aPartID, G4int aPDG, G4ThreeVector aMomentum): fPartID(aPartID), fPDG(aPDG), fMomentumMC(aMomentum), fMomentumTracker(0), fResolutionTracker(0), fEfficiencyTracker(0), fPositionEMCal(0), fEnergyEMCal(0), fResolutionEMCal(0), fEfficiencyEMCal(0), fPositionHCal(0), fEnergyHCal(0), fResolutionHCal(0), fEfficiencyHCal(0)
+FCCPrimaryParticleInformation::FCCPrimaryParticleInformation(G4int aPartID, G4int aPDG, G4ThreeVector aMomentum): fPartID(aPartID), fPDG(aPDG), fMomentumMC(aMomentum), fMomentumTracker(0), fResolutionTracker(0), fEfficiencyTracker(0), fPositionEMCal(0), fEnergyEMCal(0), fResolutionEMCal(0), fEfficiencyEMCal(0), fPositionHCal(0), fEnergyHCal(0), fResolutionHCal(0), fEfficiencyHCal(0), fPerigeeMC(NULL), fPerigeeTracker(NULL), fPerigeeEMCal(NULL), fPerigeeHCal(NULL)
 {}
 
 FCCPrimaryParticleInformation::~FCCPrimaryParticleInformation()

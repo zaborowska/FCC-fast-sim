@@ -26,11 +26,15 @@
 
 #include "FCCEventInformation.hh"
 
-FCCEventInformation::FCCEventInformation() :fDoSmearing(true)
+FCCEventInformation::FCCEventInformation() :fDoSmearing(true), fSavePerigee(false)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-FCCEventInformation::FCCEventInformation(G4bool aSmear): fDoSmearing(aSmear)
+FCCEventInformation::FCCEventInformation(G4bool aSmear): fDoSmearing(aSmear), fSavePerigee(false)
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+FCCEventInformation::FCCEventInformation(G4bool aSmear, G4bool aSavePerigee): fDoSmearing(aSmear), fSavePerigee(aSavePerigee)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -47,6 +51,17 @@ G4bool FCCEventInformation::GetDoSmearing()
 {
    return fDoSmearing;
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void FCCEventInformation::SetSavePerigee(G4bool aSavePerigee)
+{
+   fSavePerigee = aSavePerigee;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4bool FCCEventInformation::GetSavePerigee()
+{
+   return fSavePerigee;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -54,5 +69,6 @@ G4bool FCCEventInformation::GetDoSmearing()
 void FCCEventInformation::Print() const
 {
    G4cout<<"FCCEventInformation: "<<G4endl
-         <<"do smearing: "<<fDoSmearing<<G4endl;
+         <<"do smearing: "<<fDoSmearing<<G4endl
+         <<"save perigee: "<<fSavePerigee<<G4endl;
 }

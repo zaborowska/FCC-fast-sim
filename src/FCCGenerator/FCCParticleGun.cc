@@ -26,8 +26,11 @@
 
 #include "FCCParticleGun.hh"
 #include "FCCPrimaryParticleInformation.hh"
+#include "FCCEventInformation.hh"
 #include "Randomize.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4EventManager.hh"
+#include "FCCSmearer.hh"
 #include "G4MuonPlus.hh"
 
 FCCParticleGun::FCCParticleGun()
@@ -80,8 +83,10 @@ void FCCParticleGun::GeneratePrimaryVertex(G4Event* aEvent)
       particle->SetPolarization(particle_polarization.x(),
                                 particle_polarization.y(),
                                 particle_polarization.z());
-      particle->SetUserInformation( new FCCPrimaryParticleInformation(i, particle_definition->GetPDGEncoding() , (eP.unit())*particle_energy) );
+      particle->SetUserInformation( new FCCPrimaryParticleInformation(i, particle_definition->GetPDGEncoding() , (eP.unit())*particle_energy));
       vertex->SetPrimary( particle );
+      G4double* params = FCCSmearer::Instance()->ComputeTrackParams(particle_charge, particle_energy*eP.unit(), pos );
+      ((FCCPrimaryParticleInformation*)particle->GetUserInformation())->SetPerigeeMC(params);
    }
 
    aEvent->AddPrimaryVertex( vertex );

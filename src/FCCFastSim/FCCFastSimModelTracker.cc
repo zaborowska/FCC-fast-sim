@@ -107,11 +107,16 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& aFastTrack,
    G4ThreeVector Porg = aFastTrack.GetPrimaryTrack()->GetMomentum();
    if ( !aFastTrack.GetPrimaryTrack()->GetParentID() )
    {
-      if (((FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation())->GetDoSmearing())
+      FCCEventInformation* info = (FCCEventInformation*) G4EventManager::GetEventManager()->GetUserInformation();
+      if ( info->GetDoSmearing() )
       {
          G4double res = fCalculateParametrisation->GetResolution(FCCDetectorParametrisation::eTRACKER, fParametrisation, Porg.mag());
          G4double eff = fCalculateParametrisation->GetEfficiency(FCCDetectorParametrisation::eTRACKER, fParametrisation, Porg.mag());
-         G4ThreeVector Psm = FCCSmearer::Instance()->SmearMomentum(aFastTrack.GetPrimaryTrack(), res);
+         G4ThreeVector Psm;
+         if( info->GetSavePerigee() )
+            Psm = FCCSmearer::Instance()->SmearMomentum(aFastTrack.GetPrimaryTrack(), res, FCCOutput::eTracker);
+         else
+            Psm = FCCSmearer::Instance()->SmearMomentum(aFastTrack.GetPrimaryTrack(), res);
          FCCOutput::Instance()->FillHistogram(0,((Psm.mag()/MeV) / (Porg.mag()/MeV)) );
          // setting values of Psm, res and eff
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>

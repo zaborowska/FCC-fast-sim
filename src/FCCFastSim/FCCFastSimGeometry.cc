@@ -80,7 +80,7 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* aAuxMap): fField(
          (1.* ((*TrackerList[iterTracker]->GetRootLogicalVolumeIterator())->GetMaterial()->GetRadlen()) );
       TrackerList[iterTracker]->GetProductionCuts()->SetProductionCut(
           1*m, idxG4GammaCut );
-      fTrackerSmearModel.push_back( new FCCFastSimModelTracker("fastSimModelTracker",TrackerList[iterTracker], FCCDetectorParametrisation::eCMS));
+      fTrackerSmearModel.push_back( new FCCFastSimModelTracker("fastSimModelTracker",TrackerList[iterTracker], FCCDetectorParametrisation::eATLFAST));
    }
    for (G4int iterECal=0; iterECal<G4int(ECalList.size()); iterECal++)
    {
@@ -89,7 +89,7 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* aAuxMap): fField(
          (0.5* ((*ECalList[iterECal]->GetRootLogicalVolumeIterator())->GetMaterial()->GetRadlen()) );
       ECalList[iterECal]->GetProductionCuts()->SetProductionCut(
          0.1*m, idxG4GammaCut );
-      fEMCalSmearModel.push_back( new FCCFastSimModelEMCal("fastSimModelEMCal",ECalList[iterECal], FCCDetectorParametrisation::eCMS));
+      fEMCalSmearModel.push_back( new FCCFastSimModelEMCal("fastSimModelEMCal",ECalList[iterECal], FCCDetectorParametrisation::eATLFAST));
    }
    for (G4int iterHCal=0; iterHCal<G4int(HCalList.size()); iterHCal++)
    {
@@ -99,7 +99,7 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* aAuxMap): fField(
       HCalList[iterHCal]->GetProductionCuts()->SetProductionCut(
          1.*m, idxG4GammaCut );
 
-      fHCalSmearModel.push_back(new FCCFastSimModelHCal("fastSimModelHCal",HCalList[iterHCal], FCCDetectorParametrisation::eCMS));
+      fHCalSmearModel.push_back(new FCCFastSimModelHCal("fastSimModelHCal",HCalList[iterHCal], FCCDetectorParametrisation::eATLFAST));
    }
 
    // for (G4int iterMuon=0; iterMuon<G4int(MuonList.size()); iterMuon++)

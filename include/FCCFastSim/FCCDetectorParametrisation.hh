@@ -24,7 +24,7 @@ public:
    /**
       A detector type (tracking detector, electromagnetic calorimeter or hadronic calorimeter).
     */
-   enum Detector {eTRACKER,eEMCAL, eHCAL};
+   enum Detector {eTRACKER, eEMCAL, eHCAL};
    /**
       Gets the resolution of a detector for a given particle.
       @param aDetector A detector type.

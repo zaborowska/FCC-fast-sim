@@ -16,7 +16,7 @@ public:
 /**
 	Indicates to which ntuple save the information.
  */
-   enum SaveType {eMC, eTracker, eEMCal, eHCal};
+   enum SaveType {eNoSave, eMC, eTracker, eEMCal, eHCal};
 
 /**
    Allows the access to the FCCOutput class member without creating the class object.
@@ -57,16 +57,24 @@ public:
    void CreateHistograms();
 /**
    Saves the information about the particle (track).
-   @param what enum indicating what kind of information to store (in which ntuple).
-   @param partID A unique ID within event (taken Geant TrackID).
-   @param PID A PDG code of a particle.
-   @param vec A vector to be stored (particle momentum in tracker or position of energy deposit in calorimeter).
-   @param resolution A resolution of the detector that was used.
-   @param efficiency An efficiency of the detector that was used.
-   @param energy An energy deposit (for calorimeters only: FCCOutput::SaveType::eEMCal or FCCOutput::SaveType::eHCal).
+   @param aWhatToSave enum indicating what kind of information to store (in which ntuple).
+   @param aPartID A unique ID within event (taken Geant TrackID).
+   @param aPDG A PDG code of a particle.
+   @param aVector A vector to be stored (particle momentum in tracker or position of energy deposit in calorimeter).
+   @param aResolution A resolution of the detector that was used.
+   @param aEfficiency An efficiency of the detector that was used.
+   @param aEnergy An energy deposit (for calorimeters only: FCCOutput::SaveType::eEMCal or FCCOutput::SaveType::eHCal).
  */
-   void SaveTrack(SaveType what, G4int partID,  G4int PID,
-                  G4ThreeVector vec, G4double resolution = 0, G4double efficiency = 1, G4double energy = 0);
+   void SaveTrack(SaveType aWhatToSave, G4int partID,  G4int PID,
+                  G4ThreeVector aVector, G4double aResolution = 0, G4double aEfficiency = 1, G4double aEnergy = 0) ;
+/**
+   Saves the information about the particle (track).
+   @param aWhatToSave enum indicating what kind of information to store (in which ntuple).
+   @param aPartID A unique ID within event (taken Geant TrackID).
+   @param aPDG A PDG code of a particle.
+   @param aPerigee A perigee representation of a track.
+ */
+   void SavePerigee(SaveType aWhatToSave, G4int aPartID,  G4int aPDG , G4double* aPerigee) const;
 /**
    Fills the histogram.
    @param HNo Number of a histogram (decided by the order of creation in CreateHistograms(), the first one is 0) .

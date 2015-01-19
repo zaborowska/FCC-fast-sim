@@ -1,4 +1,6 @@
 #include "FCCSmearer.hh"
+#include "FCCPrimaryParticleInformation.hh"
+#include "G4PrimaryParticle.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4TransportationManager.hh"
@@ -47,7 +49,7 @@ void FCCSmearer::MakeManagers()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4ThreeVector FCCSmearer::SmearMomentum(const G4Track* aTrackOriginal, G4double aResolution = -1)
+G4ThreeVector FCCSmearer::SmearMomentum(const G4Track* aTrackOriginal, G4double aResolution, FCCOutput::SaveType aSave)
 {
    if(aResolution != -1)
    {
@@ -55,13 +57,13 @@ G4ThreeVector FCCSmearer::SmearMomentum(const G4Track* aTrackOriginal, G4double 
    }
    else
    {
-      return SmearPerigee(aTrackOriginal);
+      return SmearPerigee(aTrackOriginal, aSave);
    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4double FCCSmearer::SmearEnergy(const G4Track* aTrackOriginal, G4double aResolution = -1)
+G4double FCCSmearer::SmearEnergy(const G4Track* aTrackOriginal, G4double aResolution, FCCOutput::SaveType aSave)
 {
    G4double newE = -1;
    while (newE < 0) // to ensure the resulting value is not negative (vital for energy smearing, does not change direction for momentum smearing)
@@ -73,7 +75,7 @@ G4double FCCSmearer::SmearEnergy(const G4Track* aTrackOriginal, G4double aResolu
          G4int PID = aTrackOriginal->GetDynamicParticle()->GetPDGcode();
          if( abs(PID) == 11 || abs(PID) == 13 || abs(PID) == 211)
          {
-            G4ThreeVector mom = SmearPerigee(aTrackOriginal);
+            G4ThreeVector mom = SmearPerigee(aTrackOriginal, aSave);
             newE = sqrt(mom.mag2()+pow(aTrackOriginal->GetDynamicParticle()->GetDefinition()->GetPDGMass(),2) )-aTrackOriginal->GetDynamicParticle()->GetDefinition()->GetPDGMass();
          }
          else
@@ -102,11 +104,32 @@ G4double FCCSmearer::Gauss(G4double aMean, G4double aStandardDeviation)
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4ThreeVector FCCSmearer::SmearPerigee(const G4Track* aTrackOriginal)
+G4ThreeVector FCCSmearer::SmearPerigee(const G4Track* aTrackOriginal, FCCOutput::SaveType aSave)
 {
    G4double* params = Atlfast(aTrackOriginal);
    G4ThreeVector smearedMom =FCCSmearer::Instance()->ComputeMomFromParams(params);
    G4ThreeVector orgMom = aTrackOriginal->GetMomentum();
+   if(aSave != FCCOutput::eNoSave)
+   {
+      switch(aSave)
+      {
+      case FCCOutput::eTracker:
+      {
+         ((FCCPrimaryParticleInformation*)aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation()) -> SetPerigeeTracker(params);
+         break;
+      }
+      case FCCOutput::eEMCal:
+      {
+         ((FCCPrimaryParticleInformation*)aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation()) -> SetPerigeeEMCal(params);
+         break;
+      }
+      case FCCOutput::eHCal:
+      {
+         ((FCCPrimaryParticleInformation*)aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation()) -> SetPerigeeHCal(params);
+         break;
+      }
+      }
+   }
    return smearedMom;
 }
 

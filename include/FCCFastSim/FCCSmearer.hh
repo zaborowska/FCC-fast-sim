@@ -1,6 +1,7 @@
 #ifndef FCC_SMEARER_H
 #define FCC_SMEARER_H
 
+#include "FCCOutput.hh"
 #include "globals.hh"
 #include "G4Track.hh"
 #include "CLHEP/Random/JamesRandom.h"
@@ -22,13 +23,13 @@ public:
    static FCCSmearer* Instance();
    void MakeManagers();
 
-   G4ThreeVector SmearMomentum(const G4Track* aTrack, G4double resolution);
-   G4double SmearEnergy(const G4Track* aTrack, G4double resolution);
+   G4ThreeVector SmearMomentum(const G4Track* aTrack, G4double resolution = -1, FCCOutput::SaveType aSavePerigee  = FCCOutput::eNoSave);
+   G4double SmearEnergy(const G4Track* aTrack, G4double resolution = -1, FCCOutput::SaveType aSavePerigee  = FCCOutput::eNoSave);
 
    G4ThreeVector SmearGaussian(const G4Track* aTrackOriginal, G4double stdDev);
    G4double Gauss(G4double mean, G4double stdDev);
 
-   G4ThreeVector SmearPerigee(const G4Track* aTrackOriginal);
+   G4ThreeVector SmearPerigee(const G4Track* aTrackOriginal, FCCOutput::SaveType aSavePerigee  = FCCOutput::eNoSave);
    G4double* Atlfast(const G4Track* aTrackOriginal);
    G4double* ComputeTrackParams(G4double charge, G4ThreeVector vertexMomentum, G4ThreeVector vertexPosition);
    G4ThreeVector ComputePosFromParams(G4double* params, G4double phiVertex);

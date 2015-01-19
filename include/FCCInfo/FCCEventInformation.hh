@@ -39,34 +39,54 @@ class FCCEventInformation: public G4VUserEventInformation
 {
 public:
    /**
-      A default constructor.
+      A default constructor. Sets flag fDoSmearing to true and fSavePerigee to false.
    */
    FCCEventInformation();
    /**
-      A constructor.
+      A constructor. Sets flag fSavePerigee to false.
       @param aSmear The flag indicating if smearing should be done.
    */
    FCCEventInformation(G4bool aSmear);
+   /**
+      A constructor.
+      @param aSmear The flag indicating if smearing should be done.
+      @param aSavePerigee The flag indicating if perigee representation should be saved.
+   */
+   FCCEventInformation(G4bool aSmear, G4bool aSavePerigee);
    virtual ~FCCEventInformation();
    /**
-      A printing method.
+      Prints event information.
    */
    virtual void Print() const;
    /**
-      A setter of the flag indicating if smearing should be done.
+      Sets the flag indicating if smearing should be done.
       @param aSmear A boolean flag.
    */
    void SetDoSmearing(G4bool aSmear);
    /**
-      A getter of the flag indicating if smearing should be done.
+      Gets the flag indicating if smearing should be done.
    */
    G4bool GetDoSmearing();
+
+   /**
+      Sets the flag indicating if perigee representation should be saved.
+      @param aSavePerigee A boolean flag.
+   */
+   void SetSavePerigee(G4bool aSavePerigee);
+   /**
+      Gets the flag indicating if perigee representation should be saved.
+   */
+   G4bool GetSavePerigee();
 
 private:
    /**
       A flag indicating if smearing should be performed. It is read by implementations of G4VFastSimulationModel.
    */
    G4bool fDoSmearing;
+   /**
+      A flag indicating if perigee parametrisation should be saved.
+   */
+   G4bool fSavePerigee;
 };
 
 #endif
