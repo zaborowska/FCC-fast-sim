@@ -112,7 +112,7 @@ void FCCOutput::CreateNtuples()
 void FCCOutput::CreateHistograms()
 {
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-   analysisManager->CreateH1("Pdiff","momentum smeared in tracker", 100, 0.8,1.2);
+   analysisManager->CreateH1("Pdiff","momentum smeared in tracker", 100, 0.5,1.5);
    analysisManager->SetH1XAxisTitle(0, "p_{smeared}/p_{true}");
    analysisManager->SetH1YAxisTitle(0, "Entries");
    analysisManager->CreateH1("EMCalEdiff","energy smeared in EMCal", 100, 0.5, 1.5);
@@ -189,5 +189,4 @@ void FCCOutput::FillHistogram(G4int aHistNo, G4double aValue) const
    analysisManager->FillH1(aHistNo, aValue);
    return;
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
