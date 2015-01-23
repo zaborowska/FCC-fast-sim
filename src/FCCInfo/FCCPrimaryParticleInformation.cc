@@ -47,4 +47,16 @@ void FCCPrimaryParticleInformation::Print() const
          <<"HCal resolution: "<<fResolutionHCal<<G4endl
          <<"HCal efficiency: "<<fEfficiencyHCal<<G4endl
        ;
+   if(fPerigeeMC)
+      G4cout<<" MC perigee: "<<fPerigeeMC[0]<<"\t"<<fPerigeeMC[1]<<"\t"<<fPerigeeMC[2]<<"\t"
+            <<fPerigeeMC[3]<<"\t"<<fPerigeeMC[4]<<G4endl;
+   if(fPerigeeTracker)
+      G4cout<<" Tracker perigee: "<<fPerigeeTracker[0]<<"\t"<<fPerigeeTracker[1]<<"\t"<<fPerigeeTracker[2]<<"\t"
+            <<fPerigeeTracker[3]<<"\t"<<fPerigeeTracker[4]<<G4endl;
+   if(fPerigeeEMCal)
+      G4cout<<" EMCal perigee: "<<fPerigeeEMCal[0]<<"\t"<<fPerigeeEMCal[1]<<"\t"<<fPerigeeEMCal[2]<<"\t"
+            <<fPerigeeEMCal[3]<<"\t"<<fPerigeeEMCal[4]<<G4endl;
+   if(fPerigeeHCal)
+      G4cout<<" HCal perigee: "<<fPerigeeHCal[0]<<"\t"<<fPerigeeHCal[1]<<"\t"<<fPerigeeHCal[2]<<"\t"
+            <<fPerigeeHCal[3]<<"\t"<<fPerigeeHCal[4]<<G4endl;
 }

@@ -88,6 +88,5 @@ void FCCParticleGun::GeneratePrimaryVertex(G4Event* aEvent)
       G4double* params = FCCSmearer::Instance()->ComputeTrackParams(particle_charge, particle_energy*eP.unit(), pos );
       ((FCCPrimaryParticleInformation*)particle->GetUserInformation())->SetPerigeeMC(params);
    }
-
    aEvent->AddPrimaryVertex( vertex );
 }

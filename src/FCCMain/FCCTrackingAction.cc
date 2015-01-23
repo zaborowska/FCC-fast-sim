@@ -116,6 +116,8 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
                                        info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetPerigeeHCal());
+      if(info->GetPerigeeMC() || info->GetPerigeeTracker() || info->GetPerigeeEMCal() || info->GetPerigeeHCal() )
+         FCCOutput::Instance()->EndPerigeeRow();
    }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

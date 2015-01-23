@@ -140,7 +140,7 @@ G4double* FCCSmearer::Atlfast(const G4Track* aTrackOriginal)
    // original track position, momentum and charge
    G4ThreeVector originP = aTrackOriginal->GetMomentum();
    double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
-   G4ThreeVector originPos = aTrackOriginal->GetPosition();
+   G4ThreeVector originPos = aTrackOriginal->GetVertexPosition();
 
    G4double* originParams;
    originParams = ComputeTrackParams(originCharge, originP, originPos);
@@ -209,7 +209,6 @@ G4double* FCCSmearer::ComputeTrackParams(G4double aCharge, G4ThreeVector aVertex
    params[2] = phi;
    params[3] = cotTheta;
    params[4] = q/pt;
-
    return params;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

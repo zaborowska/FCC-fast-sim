@@ -76,6 +76,10 @@ public:
  */
    void SavePerigee(SaveType aWhatToSave, G4int aPartID,  G4int aPDG , G4double* aPerigee) const;
 /**
+   Ends a ntuple row. Needs to be called after the last SavePerigee().
+ */
+   void EndPerigeeRow() const;
+/**
    Fills the histogram.
    @param HNo Number of a histogram (decided by the order of creation in CreateHistograms(), the first one is 0) .
    @param value A value to be filled into the histogram.

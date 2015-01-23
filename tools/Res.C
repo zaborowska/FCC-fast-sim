@@ -4,7 +4,7 @@ void Res(const char* filename)
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(10);
 
-   TCanvas* c = new TCanvas(Form("c_%s", filename),filename, 0, 0, 1600, 800);
+   TCanvas* c = new TCanvas(Form("c_%s", filename),filename, 0, 0, 1600, 500);
    c->Divide(3,1);
    TLatex latex;
    latex.SetTextSize(0.035);
@@ -23,6 +23,7 @@ void Res(const char* filename)
    TFitResultPtr rP = hP->Fit("gaus", "S");
    hP->Draw();
    hP->SetTitle(Form("%s: tracker", filename));
+   hP->GetYaxis()->SetTitleOffset(1.4);
    // hP->GetXaxis()->SetRangeUser(-1000,1000);
    if(hP->GetEntries())
    {
@@ -36,6 +37,7 @@ void Res(const char* filename)
    TFitResultPtr rEE = hEE->Fit("gaus","S");
    hEE->Draw();
    hEE->SetTitle(Form("%s: EMCal", filename));
+   hEE->GetYaxis()->SetTitleOffset(1.4);
    // hEE->GetXaxis()->SetRangeUser(-200,200);
    if(hEE->GetEntries())
    {
@@ -48,6 +50,7 @@ void Res(const char* filename)
    TFitResultPtr rEH = hEH->Fit("gaus","S");
    hEH->Draw();
    hEH->SetTitle(Form("%s: HCal", filename));
+   hEH->GetYaxis()->SetTitleOffset(1.3);
    // hEH->GetXaxis()->SetRangeUser(-2500,2500);
    if(hEH->GetEntries())
    {
@@ -55,4 +58,5 @@ void Res(const char* filename)
       latex.DrawLatexNDC(0.15,0.85,Form("#color[4]{resolution: %.1f%}",hres*100 ));
       latex.DrawLatexNDC(0.15,0.8 ,Form("#color[4]{p = %.0f GeV}",sqrt(pX*pX+pY*pY+pZ*pZ)/1.e3 ));
    }
+   c->Print(Form("%s.png",filename));
 }
