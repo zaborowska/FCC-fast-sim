@@ -104,49 +104,49 @@ simple.gdml - Simple box as a detector
 6. Details on code
 -------------------
 
-        6.1. Detector geometry
-        - - - - - - - -
+6.1. Detector geometry
+- - - - - - - -
 
-        Path to the geometry file is given as a parameter to application. It should be a GDML file.
-        However, the fast simulation models are attached to the detectors based on the auxiliary information.
-        Each <volume> item inside <structure> ... </structure> block can contain auxiliary tag:
+Path to the geometry file is given as a parameter to application. It should be a GDML file.
+However, the fast simulation models are attached to the detectors based on the auxiliary information.
+Each <volume> item inside <structure> ... </structure> block can contain auxiliary tag:
 
-             <auxiliary auxtype=”FastSimModel” auxvalue=”tracker*”/>
+     <auxiliary auxtype=”FastSimModel” auxvalue=”tracker*”/>
 
-        auxtype is the key, 'FastSimModel' should be used;
-        auxvalue is the value that should contain the fast simulation model that is attached to the volume:
+auxtype is the key, 'FastSimModel' should be used;
+auxvalue is the value that should contain the fast simulation model that is attached to the volume:
 
-        'Tracker' -> for FCCFastSimModelTracker
-        'ECal' -> for FCCFastSimModelEMCal
-        'HCal' -> for FCCFastSimModelHCal
+'Tracker' -> for FCCFastSimModelTracker
+'ECal' -> for FCCFastSimModelEMCal
+'HCal' -> for FCCFastSimModelHCal
 
-        e.g. TrackerBarrel, ECalBarrel, ECalEndCap
-
-
-        6.2. Magnetic field
-        - - - - - - - -
-
-        Uniform magnetic field is defined in lines 122-127 of
-
-            src/FCCFastSim/FCCFastSimGeometry.cc.
+e.g. TrackerBarrel, ECalBarrel, ECalEndCap
 
 
-        6.3. Parametrisation
-        - - - - - - - -
+6.2. Magnetic field
+- - - - - - - -
 
-        The parametrisation type (what resolutions of the smearing should be used) is given to the fast simulation models in the constructor. It can alter for each detector and can be changed in lines 85, 94 and 104 of
+Uniform magnetic field is defined in lines 122-127 of
 
-           src/FCCFastSim/FCCFastSimGeometry.cc
+    src/FCCFastSim/FCCFastSimGeometry.cc.
 
-        Possible parametrisation types:
 
-           FCCDetectorParametrisation::eCMS
-           FCCDetectorParametrisation::eATLAS
-           FCCDetectorParametrisation::eALEPH
-           FCCDetectorParametrisation::eATLFAST
+6.3. Parametrisation
+- - - - - - - -
 
-        The last one depends on the input parametrisation files (data/*txt), the others are defined in
+The parametrisation type (what resolutions of the smearing should be used) is given to the fast simulation models in the constructor. It can alter for each detector and can be changed in lines 85, 94 and 104 of
 
-           src/FCCFastSim/FCCDetectorParametrisation.cc
+   src/FCCFastSim/FCCFastSimGeometry.cc
 
-        The class contains also the information about the detector efficiency.
+Possible parametrisation types:
+
+   FCCDetectorParametrisation::eCMS
+   FCCDetectorParametrisation::eATLAS
+   FCCDetectorParametrisation::eALEPH
+   FCCDetectorParametrisation::eATLFAST
+
+The last one depends on the input parametrisation files (data/*txt), the others are defined in
+
+   src/FCCFastSim/FCCDetectorParametrisation.cc
+
+The class contains also the information about the detector efficiency.
