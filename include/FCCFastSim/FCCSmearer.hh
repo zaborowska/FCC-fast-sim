@@ -46,13 +46,13 @@ public:
 /**
    First possible type of smearing. Smears the momentum with a given resolution.
    @param aTrackOriginal A track to smear.
-   @param aResolution A resolution taken as a standard deviation of a Gaussian resolution.
+   @param aResolution A resolution taken as a standard deviation of a Gaussian distribution.
 */
    G4ThreeVector SmearGaussian(const G4Track* aTrackOriginal, G4double aResolution);
 /**
    Returns a random number from a Gaussian distribution.
-   @param aTrackOriginal A track to smear.
-   @param aStandardDeviation A resolution taken as a standard deviation of a Gaussian resolution.
+   @param aMean A mean of the Gaussian distribution.
+   @param aStandardDeviation A standard deviation of a Gaussian distribution.
 */
    G4double Gauss(G4double aMean, G4double aStandardDeviation);
 /**
