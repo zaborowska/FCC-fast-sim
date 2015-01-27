@@ -141,7 +141,6 @@ G4double* FCCSmearer::Atlfast(const G4Track* aTrackOriginal)
    G4ThreeVector originP = aTrackOriginal->GetMomentum();
    double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
    G4ThreeVector originPos = aTrackOriginal->GetVertexPosition();
-
    G4double* originParams;
    originParams = ComputeTrackParams(originCharge, originP, originPos);
 
@@ -159,10 +158,10 @@ G4double* FCCSmearer::Atlfast(const G4Track* aTrackOriginal)
 
    // Atlfast smeared variables
    double impactParameter = originParams[0] + smearVariables[0]; // [0]
-   double zPerigee = originParams[1]  + smearVariables[1]; //[1]
+   double zPerigee = originParams[1] + smearVariables[1]; //[1]
    double Phi = CheckPhi(originParams[2] + smearVariables[2]); //[2]
-   double cotTheta = originParams[3] + smearVariables[3] ; //[3]
-   double invPtCharge = originParams[4] +  smearVariables[4]; // q/pT where q = q/|q| (just sign) //[4]
+      double cotTheta = originParams[3] + smearVariables[3] ; //[3]
+   double invPtCharge = originParams[4] + smearVariables[4]; // q/pT where q = q/|q| (just sign) //[4]
 
    G4double* params = new G4double[5];
    params[0] = impactParameter;
@@ -193,7 +192,7 @@ G4double* FCCSmearer::ComputeTrackParams(G4double aCharge, G4ThreeVector aVertex
    // calculate parameters
    double impactParameter = -q*(hCentre.perp() - radius);
    double theta = aVertexMomentum.theta();
-   double cotTheta = 1/tan(theta);
+   double cotTheta = 1./tan(theta);
    /*double eta = aVertexMomentum.pseudoRapidity();*/
    double zPerigee;
    double phi;
@@ -240,7 +239,8 @@ G4ThreeVector FCCSmearer::ComputeMomFromParams(G4double* aParams)
 {
    double Px = (-1)*1./aParams[4]*cos(aParams[2]);
    double Py = (-1)*1./aParams[4]*sin(aParams[2]);
-   double Pz = abs(1./aParams[4])*sin( atan(1./aParams[3]) );
+   double q = (aParams[4] > 0) - (aParams[4] < 0); // returns signum(charge)
+   double Pz = q/aParams[4]*aParams[3];
    G4ThreeVector P (Px,Py,Pz);
    return P;
 }
