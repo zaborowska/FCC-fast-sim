@@ -16,7 +16,7 @@ public:
 /**
 	Indicates to which ntuple save the information.
  */
-   enum SaveType {eNoSave, eMC, eTracker, eEMCal, eHCal};
+   enum SaveType {eNoSave, eSaveMC, eSaveTracker, eSaveEMCal, eSaveHCal};
 
 /**
    Allows the access to the FCCOutput class member without creating the class object.

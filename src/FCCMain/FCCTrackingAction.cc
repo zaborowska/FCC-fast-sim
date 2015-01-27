@@ -75,24 +75,24 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
    if ( aTrack->GetTrackStatus() == fStopAndKill && aTrack->GetParentID()==0 )
    {
       FCCPrimaryParticleInformation* info = (FCCPrimaryParticleInformation*)aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation();
-      FCCOutput::Instance()->SaveTrack(FCCOutput::eMC,
+      FCCOutput::Instance()->SaveTrack(FCCOutput::eSaveMC,
                                        info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetMCMomentum()/MeV );
-      FCCOutput::Instance()->SaveTrack(FCCOutput::eTracker,
+      FCCOutput::Instance()->SaveTrack(FCCOutput::eSaveTracker,
                                        info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetTrackerMomentum()/MeV,
                                        info->GetTrackerResolution(),
                                        info->GetTrackerEfficiency());
-      FCCOutput::Instance()->SaveTrack(FCCOutput::eEMCal,
+      FCCOutput::Instance()->SaveTrack(FCCOutput::eSaveEMCal,
                                        info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetEMCalPosition()/mm,
                                        info->GetEMCalResolution(),
                                        info->GetEMCalEfficiency(),
                                        info->GetEMCalEnergy()/MeV);
-      FCCOutput::Instance()->SaveTrack(FCCOutput::eHCal,
+      FCCOutput::Instance()->SaveTrack(FCCOutput::eSaveHCal,
                                        info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetHCalPosition()/mm,
@@ -100,19 +100,19 @@ void FCCTrackingAction::PostUserTrackingAction(const G4Track* aTrack)
                                        info->GetHCalEfficiency(),
                                        info->GetHCalEnergy()/MeV);
 
-      if(info->GetPerigeeMC())FCCOutput::Instance()->SavePerigee(FCCOutput::eMC,
+      if(info->GetPerigeeMC())FCCOutput::Instance()->SavePerigee(FCCOutput::eSaveMC,
                                        info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetPerigeeMC());
-      if(info->GetPerigeeTracker())FCCOutput::Instance()->SavePerigee(FCCOutput::eTracker,
+      if(info->GetPerigeeTracker())FCCOutput::Instance()->SavePerigee(FCCOutput::eSaveTracker,
                                        info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetPerigeeTracker());
-      if(info->GetPerigeeEMCal())FCCOutput::Instance()->SavePerigee(FCCOutput::eEMCal,
+      if(info->GetPerigeeEMCal())FCCOutput::Instance()->SavePerigee(FCCOutput::eSaveEMCal,
                                        info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetPerigeeEMCal());
-      if(info->GetPerigeeHCal()) FCCOutput::Instance()->SavePerigee(FCCOutput::eHCal,
+      if(info->GetPerigeeHCal()) FCCOutput::Instance()->SavePerigee(FCCOutput::eSaveHCal,
                                        info->GetPartID(),
                                        info->GetPDG(),
                                        info->GetPerigeeHCal());

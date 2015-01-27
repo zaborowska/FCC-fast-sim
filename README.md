@@ -21,14 +21,14 @@ ____________________________________________________________________
               -DCMAKE_CXX_COMPILER='/afs/cern.ch/sw/lcg/contrib/gcc/4.9/x86_64-slc6-gcc49-opt/bin/g++' \
               -DCMAKE_INSTALL_PREFIX=. ..
         make
-        
+
 
 2. Documentation
 -------------------
 
 	cd build
 	make doc
-	
+
 Documentation can be found in
 
 	build/doc/html/index.html
@@ -101,20 +101,52 @@ FCCOnedetector.gdl - Only one EM calorimeter (sensitive detector)
 simple.gdml - Simple box as a detector
 
 
-6. Choosing the parametrisation type
+6. Details on code
 -------------------
 
-The details concerning the detectors and fast simulation models are described in the file:
+        6.1. Detector geometry
+        - - - - - - - -
 
-   src/FCCFastSim/FCCFastSimGeometry.cc
+        Path to the geometry file is given as a parameter to application. It should be a GDML file.
+        However, the fast simulation models are attached to the detectors based on the auxiliary information.
+        Each <volume> item inside <structure> ... </structure> block can contain auxiliary tag:
 
-Possible parametrisation types:
+             <auxiliary auxtype=”FastSimModel” auxvalue=”tracker*”/>
 
-   FCCDetectorParametrisation::eCMS
-   FCCDetectorParametrisation::eATLAS
-   FCCDetectorParametrisation::eALEPH
-   FCCDetectorParametrisation::eATLFAST
+        auxtype is the key, 'FastSimModel' should be used;
+        auxvalue is the value that should contain the fast simulation model that is attached to the volume:
 
-Resolution and efficiency for a given parametrisation type can be found in:
+        'Tracker' -> for FCCFastSimModelTracker
+        'ECal' -> for FCCFastSimModelEMCal
+        'HCal' -> for FCCFastSimModelHCal
 
-   src/FCCFastSim/FCCDetectorParametrisation.cc
+        e.g. TrackerBarrel, ECalBarrel, ECalEndCap
+
+
+        6.2. Magnetic field
+        - - - - - - - -
+
+        Uniform magnetic field is defined in lines 122-127 of
+
+            src/FCCFastSim/FCCFastSimGeometry.cc.
+
+
+        6.3. Parametrisation
+        - - - - - - - -
+
+        The parametrisation type (what resolutions of the smearing should be used) is given to the fast simulation models in the constructor. It can alter for each detector and can be changed in lines 85, 94 and 104 of
+
+           src/FCCFastSim/FCCFastSimGeometry.cc
+
+        Possible parametrisation types:
+
+           FCCDetectorParametrisation::eCMS
+           FCCDetectorParametrisation::eATLAS
+           FCCDetectorParametrisation::eALEPH
+           FCCDetectorParametrisation::eATLFAST
+
+        The last one depends on the input parametrisation files (data/*txt), the others are defined in
+
+           src/FCCFastSim/FCCDetectorParametrisation.cc
+
+        The class contains also the information about the detector efficiency.
