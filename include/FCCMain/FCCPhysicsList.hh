@@ -23,8 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// based on G4 examples/extended/parametrisations/Par01/include/Par01PhysicsList.hh
-//
 
 #ifndef FCC_PHYSICS_LIST_H
 #define FCC_PHYSICS_LIST_H

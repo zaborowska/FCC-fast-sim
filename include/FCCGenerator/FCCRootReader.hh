@@ -42,33 +42,8 @@ class FCCRootMessenger;
  	@author    Anna Zaborowska
 */
 
-class FCCRootReader : public FCCHepMCInterface {
-protected:
-   /**
-      A name of the ROOT file with the event.
-   */
-   G4String fFileName;
-   /**
-      A pointer to the ROOT file with events.
-   */
-   TFile* fRootInput;
-   /**
-      A link to the file content (set to the next-to-use event).
-   */
-   TObjLink *fLinkToEvent;
-   /**
-      A verbosity level.
-   */
-   G4int fVerbose;
-   /**
-      A pointer to the messenger that connects the UI with this class.
-   */
-   FCCRootMessenger* fMessenger;
-   /**
-      Reads an event saved in a HepMC standard format, in the ROOT file.
-   */
-   virtual HepMC::GenEvent* GenerateHepMCEvent();
-
+class FCCRootReader : public FCCHepMCInterface
+{
 public:
    /**
       A default constructor.
@@ -97,6 +72,32 @@ public:
       Opens the file and sets the link to the first event in the file.
    */
   void Initialize();
+protected:
+   /**
+      Reads an event saved in a HepMC standard format, in the ROOT file.
+   */
+   virtual HepMC::GenEvent* GenerateHepMCEvent();
+   /**
+      A name of the ROOT file with the event.
+   */
+   G4String fFileName;
+   /**
+      A pointer to the ROOT file with events.
+   */
+   TFile* fRootInput;
+   /**
+      A link to the file content (set to the next-to-use event).
+   */
+   TObjLink *fLinkToEvent;
+   /**
+      A verbosity level.
+   */
+   G4int fVerbose;
+   /**
+      A pointer to the messenger that connects the UI with this class.
+   */
+   FCCRootMessenger* fMessenger;
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

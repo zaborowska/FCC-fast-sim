@@ -39,29 +39,8 @@ class FCCPythiaMessenger;
  	@author    Anna Zaborowska
 */
 
-class FCCPythiaInterface : public FCCHepMCInterface {
-protected:
-   /**
-      A verbosity level.
-   */
-   G4int fVerbose;
-   /**
-      An interface to the HepMC standard format.
-   */
-   HepMC::Pythia8ToHepMC fToHepMC;
-   /**
-      Pythia8.
-   */
-   Pythia8::Pythia fPythia;
-   /**
-      A pointer to the messenger that connects the UI with this class.
-   */
-  FCCPythiaMessenger* fMessenger;
-   /**
-      Generates a Pythia event according to the parameters set with other methods. Converts it to HepMC standard format.
-   */
-  virtual HepMC::GenEvent* GenerateHepMCEvent();
-
+class FCCPythiaInterface : public FCCHepMCInterface
+{
 public:
    /**
       A default constructor.
@@ -69,12 +48,12 @@ public:
   FCCPythiaInterface();
   ~FCCPythiaInterface();
    /**
-      A setter of the verbosity level.
+      Sets of the verbosity level.
       @param aLevel A verbosity level.
    */
   void SetVerboseLevel(G4int aLevel);
    /**
-      A getter of the verbosity level.
+      Gets of the verbosity level.
    */
   G4int GetVerboseLevel() const;
    /**
@@ -102,6 +81,28 @@ public:
       Printing method.
    */
   virtual void Print() const;
+protected:
+   /**
+      Generates a Pythia event according to the parameters set with other methods. Converts it to HepMC standard format.
+   */
+  virtual HepMC::GenEvent* GenerateHepMCEvent();
+   /**
+      A verbosity level.
+   */
+   G4int fVerbose;
+   /**
+      An interface to the HepMC standard format.
+   */
+   HepMC::Pythia8ToHepMC fToHepMC;
+   /**
+      Pythia8 object.
+   */
+   Pythia8::Pythia fPythia;
+   /**
+      A pointer to the messenger that connects the UI with this class.
+   */
+  FCCPythiaMessenger* fMessenger;
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

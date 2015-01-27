@@ -23,8 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
-//
 
 #ifndef FCC_DETECTOR_CONSTRUCTION_H
 #define FCC_DETECTOR_CONSTRUCTION_H
@@ -53,7 +51,7 @@ class FCCDetectorConstruction : public G4VUserDetectorConstruction
     }
 
 		/**
-			Method invoked by G4RunManager::Initialize()
+			A method invoked by G4RunManager::Initialize()
          @return A pointer to the world volume.
 		*/
     virtual G4VPhysicalVolume *Construct()

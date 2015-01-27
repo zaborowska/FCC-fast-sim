@@ -40,7 +40,26 @@ class G4UIcmdWithAnInteger;
  	@details   A messenger class handling the commands from the UI to FCCPythiaInterface. Based on G4 examples/eventgenerator/HepMC/HepMCEx01/include/HepMCG4PythiaMessenger.hh.
  	@author    Anna Zaborowska
 */
-class FCCPythiaMessenger : public G4UImessenger {
+class FCCPythiaMessenger : public G4UImessenger
+{
+public:
+   /**
+      A constructor. The directory and the commands names are set here.
+      @param aGenerator A pointer to the FCCPythiaInterface class object.
+   */
+   FCCPythiaMessenger(FCCPythiaInterface* aGenerator);
+   ~FCCPythiaMessenger();
+   /**
+      Calls the methods from the FCCPythiaInterface class, depending on the command.
+      @param aCommand A pointer to the command typed by the user in the UI.
+      @param aNewValues A new value of the command set by the user.
+   */
+   void SetNewValue(G4UIcommand* aCommand, G4String aNewValues);
+   /**
+      Calls the methods from the FCCPythiaInterface class, depending on the command.
+      @param aCommand A pointer to the command typed by the user in the UI.
+   */
+   G4String GetCurrentValue(G4UIcommand* aCommand);
 private:
    /**
       A pointer to the FCCPythiaInterface class that is connected to the UI.
@@ -75,24 +94,6 @@ private:
    */
    G4UIcmdWithAnInteger*    fSeedCommand;
 
-public:
-   /**
-      A constructor. The directory and the commands names are set here.
-      @param aGenerator A pointer to the FCCPythiaInterface class object.
-   */
-   FCCPythiaMessenger(FCCPythiaInterface* aGenerator);
-   ~FCCPythiaMessenger();
-   /**
-      A method calling the methods from the FCCPythiaInterface class, depending on the command.
-      @param aCommand A pointer to the command typed by the user in the UI.
-      @param aNewValues A new value of the command set by the user.
-   */
-   void SetNewValue(G4UIcommand* aCommand, G4String aNewValues);
-   /**
-      A method calling the methods from the FCCPythiaInterface class, depending on the command.
-      @param aCommand A pointer to the command typed by the user in the UI.
-   */
-   G4String GetCurrentValue(G4UIcommand* aCommand);
 };
 
 #endif

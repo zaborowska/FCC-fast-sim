@@ -73,6 +73,8 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* aAuxMap): fField(
       }
    }
 
+   // Attaching Fast Simulation models to the lists of G4Region
+
    for (G4int iterTracker=0; iterTracker<G4int(TrackerList.size()); iterTracker++)
    {
       TrackerList[iterTracker]->SetProductionCuts(new G4ProductionCuts());
@@ -115,8 +117,7 @@ FCCFastSimGeometry::FCCFastSimGeometry(const G4GDMLAuxMapType* aAuxMap): fField(
    // }
 
 
-   // set a number of parametrisations to ensure a proper ntuple numbering
-
+   // Electromagnetic field
 
    fField = new G4UniformMagField(G4ThreeVector(0.,0.,0.01));
    G4FieldManager* fieldMgr

@@ -49,27 +49,27 @@ public:
    FCCPrimaryGeneratorAction();
    ~FCCPrimaryGeneratorAction();
    /**
-      A method invoked from G4RunManager during the event loop. It calls the selected particle generator in order to generate an event.
+      Calls the selected particle generator in order to generate an event. It is invoked in G4RunManager during the event loop.
       @param aEvent A generated event.
    */
    virtual void GeneratePrimaries(G4Event* aEvent);
 
    /**
-      A setter of the current particle generator.
+      Sets of the current particle generator.
       @param aGenerator A pointer to the particle generator.
    */
    void SetGenerator(G4VPrimaryGenerator* aGenerator);
    /**
-      A setter of the current particle generator.
+      Sets of the current particle generator.
       @param aGeneratorName A name of the particle generator (set in the constructor).
    */
    void SetGenerator(G4String aGeneratorName);
    /**
-      A getter of the current particle generator.
+      Gets of the current particle generator.
    */
    G4VPrimaryGenerator* GetGenerator() const;
    /**
-      A getter of the name of the current particle generator.
+      Gets of the name of the current particle generator.
    */
    G4String GetGeneratorName() const;
 

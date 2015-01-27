@@ -40,7 +40,8 @@ class G4UIcmdWithAnInteger;
  	@author    Anna Zaborowska
 */
 
-class FCCRootMessenger : public G4UImessenger {
+class FCCRootMessenger : public G4UImessenger
+{
 public:
    /**
       A constructor. The directory and the commands names are set here.
@@ -49,13 +50,13 @@ public:
    FCCRootMessenger(FCCRootReader* aGenerator);
    ~FCCRootMessenger();
    /**
-      A method calling the methods from the FCCRootReader class, depending on the command.
+      Calls the methods from the FCCRootReader class, depending on the command.
       @param aCommand A pointer to the command typed by the user in the UI.
       @param aNewValues A new value of the command set by the user.
    */
    void SetNewValue(G4UIcommand* aCommand, G4String aNewValues);
    /**
-      A method calling the methods from the FCCRootReader class, depending on the command.
+      Calls the methods from the FCCRootReader class, depending on the command.
       @param aCommand A pointer to the command typed by the user in the UI.
    */
    G4String GetCurrentValue(G4UIcommand* aCommand);
