@@ -94,7 +94,7 @@ Detail of Pythia processes, beam/target (PDG code) ans energy (in GeV) need to b
 
 Geometry is read from the GDML file. All GDMLs are stored in gdml/ directory:
 
-FCCSD.gdml - Complex detector with various EM calorimeters, hadron calorimeters, muon detectors (all sensitive detectors)
+FCCFullDetector.gdml - Complex detector with various EM calorimeters, hadron calorimeters, muon detectors (all sensitive detectors)
 
 FCCOnedetector.gdl - Only one EM calorimeter (sensitive detector)
 
