@@ -1,6 +1,12 @@
+###
+###  FCC-fast-sim example G4 macro
+###  Pythia 8 event generator
+###
+
 /generator/select particleGun
+
 /gun/particle e-
-/gun/direction 0.1 0.1 0.05
+# /gun/direction momentum direction is set randomly
 /gun/energy 10 GeV
 /run/setCut 10 m
 /run/beamOn 1000

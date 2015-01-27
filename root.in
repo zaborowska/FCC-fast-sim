@@ -1,5 +1,12 @@
+###
+###  FCC-fast-sim example G4 macro
+###  reading event from ROOT file (in HepMC format)
+###
+
 /generator/select hepmcRoot
+
 #/generator/hepmcRoot/verbose 1
-/generator/hepmcRoot/open ../PythiaInHepMC.root
-/run/beamOn 1
+/generator/hepmcRoot/open ../data/PythiaInHepMC.root
+
+/run/beamOn 10
 

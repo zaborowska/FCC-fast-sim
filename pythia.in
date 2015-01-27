@@ -1,4 +1,6 @@
-###  examplePar01.in
+###
+###  FCC-fast-sim example G4 macro
+###  Pythia 8 event generator
 ###
 
 /generator/select pythia8
