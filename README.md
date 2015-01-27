@@ -6,7 +6,7 @@ Geant 4 based fast simulation
 ____________________________________________________________________
 
 1. Installation
--------------------
+==================
 
         mkdir build
         cd build
@@ -24,7 +24,7 @@ ____________________________________________________________________
 
 
 2. Documentation
--------------------
+==================
 
 	cd build
 	make doc
@@ -35,7 +35,7 @@ Documentation can be found in
 
 
 3. Running an example
--------------------
+==================
 
 Usage: ./FCCfastsim
 		<intput gdml filename : mandatory>
@@ -54,7 +54,7 @@ Usage: ./FCCfastsim
 
 
 4. Macro with settings: event generator
--------------------
+==================
 
 4.1. Simple particle gun (default)
 
@@ -67,6 +67,7 @@ Usage: ./FCCfastsim
           /run/setCut 10 m
           /run/beamOn 1000
 
+-------------------
 4.2. Pythia 8
 
 Detail of Pythia processes, beam/target (PDG code) ans energy (in GeV) need to be specified in Geant macro:
@@ -78,6 +79,7 @@ Detail of Pythia processes, beam/target (PDG code) ans energy (in GeV) need to b
           /generator/pythia8/read "PhaseSpace:pTHatMin = 20."
           /generator/pythia8/init 2212 2212 14000.
 
+-------------------
 4.3. HepMC event read from ROOT file
 
        root.in:
@@ -90,7 +92,7 @@ Detail of Pythia processes, beam/target (PDG code) ans energy (in GeV) need to b
 
 
 5. Geometry description: GDML
--------------------
+==================
 
 Geometry is read from the GDML file. All GDMLs are stored in gdml/ directory:
 
@@ -102,10 +104,10 @@ simple.gdml - Simple box as a detector
 
 
 6. Details on code
--------------------
+==================
 
 6.1. Detector geometry
-- - - - - - - -
+-------------------
 
 Path to the geometry file is given as a parameter to application. It should be a GDML file.
 However, the fast simulation models are attached to the detectors based on the auxiliary information.
@@ -124,7 +126,7 @@ e.g. TrackerBarrel, ECalBarrel, ECalEndCap
 
 
 6.2. Magnetic field
-- - - - - - - -
+-------------------
 
 Uniform magnetic field is defined in lines 122-127 of
 
@@ -132,7 +134,7 @@ Uniform magnetic field is defined in lines 122-127 of
 
 
 6.3. Parametrisation
-- - - - - - - -
+-------------------
 
 The parametrisation type (what resolutions of the smearing should be used) is given to the fast simulation models in the constructor. It can alter for each detector and can be changed in lines 85, 94 and 104 of
 
