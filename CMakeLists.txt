@@ -69,7 +69,7 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*/*.cc ${PROJECT_SOURCE_DIR}/src/*/*
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*/*.hh ${PROJECT_SOURCE_DIR}/include/*/*/*.hh)
 
 #----------------------------------------------------------------------------
-# Generate dictionaries
+# Generate dictionary for input/output via HepMC ROOT files
 #
 ROOT_GENERATE_DICTIONARY(HepMC include/FCCGenerator/FCCHepMCClasses.hh  LINKDEF include/FCCGenerator/FCCHepMCLinkDef.h )
 add_library(HepMCdict SHARED ${sources} HepMC.cxx)
@@ -86,9 +86,7 @@ target_link_libraries(FCCfastsim ${Geant4_LIBRARIES}
                        HepMCdict ${ROOT_LIBRARIES})
 
 #----------------------------------------------------------------------------
-# Copy all scripts to the build directory, i.e. the directory in which we
-# build Par01. This is so that we can run the executable directly because it
-# relies on these scripts being in the current working directory.
+# Copy all scripts to the build directory
 #
 set(FCCfastsim_SCRIPTS
     pythia.in root.in vis.mac gun.in data/Atlfast_MuonResParam_CSC.dat
