@@ -114,7 +114,7 @@ void FCCFastSimModelTracker::DoIt(const G4FastTrack& aFastTrack,
          G4double eff = fCalculateParametrisation->GetEfficiency(FCCDetectorParametrisation::eTRACKER, fParametrisation, Porg.mag());
          G4ThreeVector Psm;
          if( info->GetSavePerigee() )
-            Psm = FCCSmearer::Instance()->SmearMomentum(aFastTrack.GetPrimaryTrack(), res, FCCOutput::eTracker);
+            Psm = FCCSmearer::Instance()->SmearMomentum(aFastTrack.GetPrimaryTrack(), res, FCCOutput::eSaveTracker);
          else
             Psm = FCCSmearer::Instance()->SmearMomentum(aFastTrack.GetPrimaryTrack(), res);
          FCCOutput::Instance()->FillHistogram(0,((Psm.mag()/MeV) / (Porg.mag()/MeV)) );

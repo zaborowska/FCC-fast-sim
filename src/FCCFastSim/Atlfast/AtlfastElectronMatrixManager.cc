@@ -40,12 +40,12 @@ namespace Atlfast
    //------------------------------------------------------------
    // PUBLIC: Constructor : read file and construct data bins
    //------------------------------------------------------------
-   ElectronMatrixManager::ElectronMatrixManager(string aFileName, string aFileNameBrem, int aRandSeed)
+   ElectronMatrixManager::ElectronMatrixManager(string aFileName, string /*aFileNameBrem*/, int aRandSeed)
    {
       m_randSeed = aRandSeed;
       m_file = aFileName;
-      m_bremFile = aFileNameBrem;
-      m_bremMgr = new BremMatrixManager( m_bremFile, m_randSeed );
+      // m_bremFile = aFileNameBrem;
+      // m_bremMgr = new BremMatrixManager( m_bremFile, m_randSeed );
       m_correlatedData = new CorrelatedData(m_randSeed);
       // open file
       ifstream input;
@@ -268,8 +268,8 @@ namespace Atlfast
       CLHEP::HepSymMatrix sigma;
       vector<double> variables;
 
-      // get bremsstrahlung corrections
-      G4Track* bremTrack = m_bremMgr->getBremTrack(track);
+      // // get bremsstrahlung corrections
+      // G4Track* bremTrack = m_bremMgr->getBremTrack(track);
 
       // get data for gaussian smearing
       IBinData* binData = getBinData(track);

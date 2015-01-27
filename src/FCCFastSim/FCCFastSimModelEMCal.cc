@@ -91,7 +91,7 @@ void FCCFastSimModelEMCal::DoIt(const G4FastTrack& aFastTrack,
          G4double eff = fCalculateParametrisation->GetEfficiency(FCCDetectorParametrisation::eEMCAL, fParametrisation, Porg.mag());
          G4double Esm;
          if( info->GetSavePerigee() )
-            Esm = abs(FCCSmearer::Instance()->SmearEnergy(aFastTrack.GetPrimaryTrack(), res,  FCCOutput::eEMCal));
+            Esm = abs(FCCSmearer::Instance()->SmearEnergy(aFastTrack.GetPrimaryTrack(), res,  FCCOutput::eSaveEMCal));
          else
             Esm = abs(FCCSmearer::Instance()->SmearEnergy(aFastTrack.GetPrimaryTrack(), res));
          FCCOutput::Instance()->FillHistogram(1, (Esm/MeV) / (Edep/MeV));

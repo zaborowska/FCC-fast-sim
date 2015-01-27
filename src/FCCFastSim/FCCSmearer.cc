@@ -102,6 +102,7 @@ G4double FCCSmearer::Gauss(G4double aMean, G4double aStandardDeviation)
 {
    return fRandomGauss->fire(aMean, aStandardDeviation);
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4ThreeVector FCCSmearer::SmearPerigee(const G4Track* aTrackOriginal, FCCOutput::SaveType aSave)
@@ -109,26 +110,26 @@ G4ThreeVector FCCSmearer::SmearPerigee(const G4Track* aTrackOriginal, FCCOutput:
    G4double* params = Atlfast(aTrackOriginal);
    G4ThreeVector smearedMom =FCCSmearer::Instance()->ComputeMomFromParams(params);
    G4ThreeVector orgMom = aTrackOriginal->GetMomentum();
-   if(aSave != FCCOutput::eNoSave)
+   switch(aSave)
    {
-      switch(aSave)
-      {
-      case FCCOutput::eTracker:
-      {
-         ((FCCPrimaryParticleInformation*)aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation()) -> SetPerigeeTracker(params);
-         break;
-      }
-      case FCCOutput::eEMCal:
-      {
-         ((FCCPrimaryParticleInformation*)aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation()) -> SetPerigeeEMCal(params);
-         break;
-      }
-      case FCCOutput::eHCal:
-      {
-         ((FCCPrimaryParticleInformation*)aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation()) -> SetPerigeeHCal(params);
-         break;
-      }
-      }
+   case FCCOutput::eNoSave:
+   case FCCOutput::eSaveMC:
+      break;
+   case FCCOutput::eSaveTracker:
+   {
+      ((FCCPrimaryParticleInformation*)aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation()) -> SetPerigeeTracker(params);
+      break;
+   }
+   case FCCOutput::eSaveEMCal:
+   {
+      ((FCCPrimaryParticleInformation*)aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation()) -> SetPerigeeEMCal(params);
+      break;
+   }
+   case FCCOutput::eSaveHCal:
+   {
+      ((FCCPrimaryParticleInformation*)aTrackOriginal->GetDynamicParticle()->GetPrimaryParticle()->GetUserInformation()) -> SetPerigeeHCal(params);
+      break;
+   }
    }
    return smearedMom;
 }

@@ -62,23 +62,14 @@ public:
    */
    inline G4ThreeVector GetMCMomentum() {return fMomentumMC;};
    /**
-      Sets the particle momentum at the entrance to the tracker detector (smeared).
+      Sets the particle momentum at the entrance to the tracker detector.
       @param aMomentum The particle momentum.
    */
    inline void SetTrackerMomentum(G4ThreeVector aMomentum){fMomentumTracker = aMomentum;};
    /**
-      Gets the particle momentum (smeared) at the entrance to the tracker detector. Equals to zero if no smearing is performed.
+      Gets the particle momentum at the entrance to the tracker detector.
    */
    inline G4ThreeVector GetTrackerMomentum() {return fMomentumTracker;}
-   /**
-      Sets the particle momentum at the entrance to the tracker detector (not smeared).
-      @param aMomentum The particle momentum.
-   */
-   inline void SetTrackerTrueMomentum(G4ThreeVector aMomentum){fMomentumTrueTracker = aMomentum;};
-   /**
-      Gets the particle momentum at the entrance to the tracker detector (not smeared).
-   */
-   inline G4ThreeVector GetTrackerTrueMomentum() {return fMomentumTrueTracker;}
    /**
       Sets the tracker detector resolution. Currently equal to -1 if AtlFast type of smearing is used.
       @param aResolution The detector resolution (particle type and momentum dependent).
@@ -107,21 +98,12 @@ public:
    */
    inline G4ThreeVector GetEMCalPosition() {return fPositionEMCal;};
    /**
-      Sets the energy deposit in the electromagnetic calorimeter (not smeared).
-      @param aEnergy The energy deposited in the detector.
-   */
-   inline void SetEMCalTrueEnergy(G4double aEnergy) {fEnergyTrueEMCal = aEnergy;};
-   /**
-      Gets the energy deposit in the electromagnetic calorimeter (not smeared).
-   */
-   inline G4double GetEMCalTrueEnergy() {return fEnergyTrueEMCal;};
-   /**
-      Sets the energy deposit in the electromagnetic calorimeter (smeared).
+      Sets the energy deposit in the electromagnetic calorimeter.
       @param aEnergy The energy deposited in the detector.
    */
    inline void SetEMCalEnergy(G4double aEnergy) {fEnergyEMCal = aEnergy;};
    /**
-      Gets the energy deposit (smeared) in the electromagnetic calorimeter. Equals to zero if no smearing is performed.
+      Sets the energy deposit in the electromagnetic calorimeter.
    */
    inline G4double GetEMCalEnergy() {return fEnergyEMCal;};
    /**
@@ -152,23 +134,14 @@ public:
    */
    inline G4ThreeVector GetHCalPosition() {return fPositionHCal;};
    /**
-      Sets the energy deposit in the hadronic calorimeter (smeared).
+      Sets the energy deposit in the hadronic calorimeter.
       @param aEnergy The energy deposited in the detector.
    */
    inline void SetHCalEnergy(G4double aEnergy) {fEnergyHCal = aEnergy;};
    /**
-      Sets the energy deposit (smeared) in the hadronic calorimeter. Equals to zero if no smearing is performed.
+      Sets the energy deposit in the hadronic calorimeter.
    */
    inline G4double GetHCalEnergy() {return fEnergyHCal;};
-   /**
-      Sets the energy deposit in the hadronic calorimeter (not smeared).
-      @param aEnergy The energy deposited in the detector.
-   */
-   inline void SetHCalTrueEnergy(G4double aEnergy) {fEnergyTrueHCal = aEnergy;};
-   /**
-      Sets the energy deposit in the hadronic calorimeter (not smeared).
-   */
-   inline G4double GetHCalTrueEnergy() {return fEnergyTrueHCal;};
    /**
       Sets the hadronic calorimeter resolution. Currently equal to -1 if AtlFast type of smearing is used.
       @param aResolution The calorimeter resolution (particle type and momentum dependent).

@@ -20,32 +20,107 @@ class FCCSmearer
 {
 public:
 
+/**
+   Allows the access to the FCCSmearer class member without creating the class object.
+	@return A pointer to the FCCSmearer class.
+ */
    static FCCSmearer* Instance();
+/**
+   Creates the managers fElectronManager, fPionManager and fMuonManager that read the parametrisation from the data files.
+*/
    void MakeManagers();
-
-   G4ThreeVector SmearMomentum(const G4Track* aTrack, G4double resolution = -1, FCCOutput::SaveType aSavePerigee  = FCCOutput::eNoSave);
-   G4double SmearEnergy(const G4Track* aTrack, G4double resolution = -1, FCCOutput::SaveType aSavePerigee  = FCCOutput::eNoSave);
-
-   G4ThreeVector SmearGaussian(const G4Track* aTrackOriginal, G4double stdDev);
-   G4double Gauss(G4double mean, G4double stdDev);
-
+/**
+   Smears the momentum with a given resolution. Perigee representation can be saved.
+   @param aTrack A track to smear.
+   @param aResolution A resolution. If equal to -1, AtlFast smearing is done. Otherwise, Gaussian smearing is done with a given resolution as a standard deviation.
+   @param aSavePerigee If not equal to FCCOutput::eNoSave, a perigee is *not* saved
+*/
+   G4ThreeVector SmearMomentum(const G4Track* aTrack, G4double aResolution = -1, FCCOutput::SaveType aSavePerigee  = FCCOutput::eNoSave);
+/**
+   Smears the energy deposit with a given resolution. Perigee representation can be saved.
+   @param aTrack A track to smear.
+   @param aResolution A resolution. If equal to -1, AtlFast smearing is done. Otherwise, Gaussian smearing is done with a given resolution as a standard deviation.
+   @param aSavePerigee If not equal to FCCOutput::eNoSave, a perigee is *not* saved
+*/
+   G4double SmearEnergy(const G4Track* aTrack, G4double aResolution = -1, FCCOutput::SaveType aSavePerigee  = FCCOutput::eNoSave);
+/**
+   First possible type of smearing. Smears the momentum with a given resolution.
+   @param aTrackOriginal A track to smear.
+   @param aResolution A resolution taken as a standard deviation of a Gaussian resolution.
+*/
+   G4ThreeVector SmearGaussian(const G4Track* aTrackOriginal, G4double aResolution);
+/**
+   Returns a random number from a Gaussian distribution.
+   @param aTrackOriginal A track to smear.
+   @param aStandardDeviation A resolution taken as a standard deviation of a Gaussian resolution.
+*/
+   G4double Gauss(G4double aMean, G4double aStandardDeviation);
+/**
+   Second possible type of smearing. Smears the perigee track representation.
+   @param aTrackOriginal A track to smear.
+   @param aSavePerigee Sets the information about the perigee for a given detector in FCCPrimaryParticleInformation.
+*/
    G4ThreeVector SmearPerigee(const G4Track* aTrackOriginal, FCCOutput::SaveType aSavePerigee  = FCCOutput::eNoSave);
+/**
+   Returns the smeared perigee track representation according to AtlFast algorithm.
+   @param aTrackOriginal A track to smear.
+*/
    G4double* Atlfast(const G4Track* aTrackOriginal);
-   G4double* ComputeTrackParams(G4double charge, G4ThreeVector vertexMomentum, G4ThreeVector vertexPosition);
-   G4ThreeVector ComputePosFromParams(G4double* params, G4double phiVertex);
-   G4ThreeVector ComputeMomFromParams(G4double* params);
-   G4double CheckPhi(G4double Phi);
+/**
+   Computes the track perigee representation.
+   @param aCharge A particle charge.
+   @param aVertexMomentum A momentum.
+   @param aVertexPosition A position.
+*/
+   G4double* ComputeTrackParams(G4double aCharge, G4ThreeVector aVertexMomentum, G4ThreeVector aVertexPosition);
+/**
+   Computes the particle position from the perigee representation.
+   @param aParams A perigee representation.
+   @param aPhiVertex Angle phi at vertex point.
+*/
+   G4ThreeVector ComputePosFromParams(G4double* aParams, G4double aPhiVertex);
+/**
+   Computes the particle momentum from the perigee representation.
+   @param aParams A perigee representation.
+*/
+   G4ThreeVector ComputeMomFromParams(G4double* aParams);
+/**
+   Checks if an angle is within limits (-pi,pi)
+   @param aPhi An angle (in radians).
+*/
+   G4double CheckPhi(G4double aPhi);
 
 protected:
+/**
+   A default constructor.
+*/
    FCCSmearer();
    ~FCCSmearer();
 
 private:
+/**
+   A pointer to FCCSmearer object.
+*/
    static FCCSmearer* fFCCSmearer;
+/**
+   CLHEP random engine used by AtlFast.
+*/
    CLHEP::HepRandomEngine*    fRandomEngine;
+/**
+   CLHEP random engine used in gaussian smearing.
+*/
    CLHEP::RandGauss*    fRandomGauss;
+/**
+   Atlfast manager responsible for reading the input data files for electrons.
+*/
    Atlfast::ElectronMatrixManager* fElectronManager;
+/**
+   Atlfast manager responsible for reading the input data files for pions.
+*/
    Atlfast::PionMatrixManager* fPionManager;
+/**
+   Atlfast manager responsible for reading the input data files for muons.
+*/
    Atlfast::MuonMatrixManager* fMuonManager;
 };
 

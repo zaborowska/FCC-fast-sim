@@ -171,7 +171,9 @@ void FCCOutput::SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
       evNo *= 2;
    switch(aWhatToSave)
    {
-   case  FCCOutput::eMC:
+   case FCCOutput::eNoSave:
+      break;
+   case  FCCOutput::eSaveMC:
    {
       analysisManager->FillNtupleIColumn(evNo, 0, aPartID);
       analysisManager->FillNtupleIColumn(evNo, 1, aPDG);
@@ -181,7 +183,7 @@ void FCCOutput::SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
       fCurrentID = aPartID;
       break;
    }
-   case  FCCOutput::eTracker:
+   case  FCCOutput::eSaveTracker:
    {
       if (aPartID != fCurrentID)
          G4cout<<" Wrong particle - trying to save Tracker information of different particle"<<G4endl;
@@ -192,7 +194,7 @@ void FCCOutput::SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
       analysisManager->FillNtupleDColumn(evNo, 9, aVector.z());
       break;
    }
-   case  FCCOutput::eEMCal:
+   case  FCCOutput::eSaveEMCal:
    {
       if (aPartID != fCurrentID)
          G4cout<<" Wrong particle - trying to save EMCal information of different particle"<<G4endl;
@@ -204,7 +206,7 @@ void FCCOutput::SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
       analysisManager->FillNtupleDColumn(evNo, 15, aEnergy);
       break;
    }
-   case  FCCOutput::eHCal:
+   case  FCCOutput::eSaveHCal:
    {
       if (aPartID != fCurrentID)
          G4cout<<" Wrong particle - trying to save HCal information of different particle"<<G4endl;
@@ -246,7 +248,7 @@ void FCCOutput::SavePerigee(SaveType aWhatToSave, G4int aPartID,  G4int aPDG, G4
    {
    case FCCOutput::eNoSave:
       break;
-   case FCCOutput::eMC:
+   case FCCOutput::eSaveMC:
    {
       if (aPartID != fCurrentID)
       {
@@ -262,7 +264,7 @@ void FCCOutput::SavePerigee(SaveType aWhatToSave, G4int aPartID,  G4int aPDG, G4
       analysisManager->FillNtupleDColumn(2*evNo+1, 6, aPerigee[4]);
       break;
    }
-   case FCCOutput::eTracker:
+   case FCCOutput::eSaveTracker:
    {
       if (aPartID != fCurrentID)
       {
@@ -276,7 +278,7 @@ void FCCOutput::SavePerigee(SaveType aWhatToSave, G4int aPartID,  G4int aPDG, G4
       analysisManager->FillNtupleDColumn(2*evNo+1, 11, aPerigee[4]);
       break;
    }
-   case FCCOutput::eEMCal:
+   case FCCOutput::eSaveEMCal:
    {
       if (aPartID != fCurrentID)
       {
@@ -290,7 +292,7 @@ void FCCOutput::SavePerigee(SaveType aWhatToSave, G4int aPartID,  G4int aPDG, G4
       analysisManager->FillNtupleDColumn(2*evNo+1, 16, aPerigee[4]);
       break;
    }
-   case FCCOutput::eHCal:
+   case FCCOutput::eSaveHCal:
    {
       if (aPartID != fCurrentID)
       {

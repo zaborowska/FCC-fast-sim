@@ -86,7 +86,7 @@ namespace Atlfast
     // (small effects taken into account in double-Gaussian smearing in ElectronMatrixManager)
 
     double impactParameter = var[0];
-    double zPerigee        ; // COMPUTE Z PERIGEE !!!!!!!!!!!!!!!!!!!!!!!!!
+    double zPerigee        = 0; // COMPUTE  !!!!!!!!!!!!!!!!!!!!!!!!!
     double phi             = var[1];
     double cotTheta        = 1/tan( track.GetMomentum().theta() );
     double invPtCharge     = var[2];
@@ -102,7 +102,6 @@ namespace Atlfast
     vec.setX( impactParameter * std::cos(phi) );
     vec.setY( impactParameter * std::sin(phi) );
     vec.setZ( zPerigee );
-
 
    G4DynamicParticle* part = new G4DynamicParticle(track.GetDynamicParticle()->GetDefinition(), vec);
    G4Track* newTrack = new G4Track(part, track.GetGlobalTime(), pos );

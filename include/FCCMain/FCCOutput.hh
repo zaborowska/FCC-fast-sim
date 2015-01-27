@@ -65,7 +65,7 @@ public:
    @param aEfficiency An efficiency of the detector that was used.
    @param aEnergy An energy deposit (for calorimeters only: FCCOutput::SaveType::eEMCal or FCCOutput::SaveType::eHCal).
  */
-   void SaveTrack(SaveType aWhatToSave, G4int partID,  G4int PID,
+   void SaveTrack(SaveType aWhatToSave, G4int aPartID,  G4int aPDG,
                   G4ThreeVector aVector, G4double aResolution = 0, G4double aEfficiency = 1, G4double aEnergy = 0) ;
 /**
    Saves the information about the particle (track).
