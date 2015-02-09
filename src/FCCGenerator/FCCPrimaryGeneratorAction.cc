@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx02/src/H02PrimaryGeneratorAction.cc
+/// Based on eventgenerator/HepMC/HepMCEx02/src/H02PrimaryGeneratorAction.cc
 //
 #include "G4Event.hh"
 #include "FCCParticleGun.hh"
