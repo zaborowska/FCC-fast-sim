@@ -41,10 +41,10 @@ FCCSmearer* FCCSmearer::Instance()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void FCCSmearer::MakeManagers()
 {
-  //Create mangers for smeaing muons, pions and electrons
-  fMuonManager = new Atlfast::MuonMatrixManager("data/Atlfast_MuonResParam_CSC.dat",time(NULL));
-  fPionManager = new Atlfast::PionMatrixManager("data/Atlfast_PionResParam_DC1_NewUnits.dat",time(NULL));
-  fElectronManager = new Atlfast::ElectronMatrixManager("data/Atlfast_ElectronResParam_CSC.dat","data/Atlfast_ElectronBremParam_CSC.dat",time(NULL));
+   //Create mangers for smeaing muons, pions and electrons
+   fMuonManager = new Atlfast::MuonMatrixManager("data/Atlfast_MuonResParam_CSC.dat",time(NULL));
+   fPionManager = new Atlfast::PionMatrixManager("data/Atlfast_PionResParam_DC1_NewUnits.dat",time(NULL));
+   fElectronManager = new Atlfast::ElectronMatrixManager("data/Atlfast_ElectronResParam_CSC.dat","data/Atlfast_ElectronBremParam_CSC.dat",time(NULL));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -139,7 +139,10 @@ G4ThreeVector FCCSmearer::SmearPerigee(const G4Track* aTrackOriginal, FCCOutput:
 G4double* FCCSmearer::Atlfast(const G4Track* aTrackOriginal)
 {
    // original track position, momentum and charge
-   G4ThreeVector originP = aTrackOriginal->GetMomentum();
+   // G4ThreeVector originP = aTrackOriginal->GetMomentum();
+   G4ThreeVector originP = aTrackOriginal->GetVertexMomentumDirection()
+      * sqrt( aTrackOriginal->GetVertexKineticEnergy() * aTrackOriginal->GetVertexKineticEnergy()
+              + 2*  aTrackOriginal->GetVertexKineticEnergy() *  aTrackOriginal->GetDefinition()->GetPDGMass() ) ;
    double originCharge = aTrackOriginal->GetDynamicParticle()->GetCharge();
    G4ThreeVector originPos = aTrackOriginal->GetVertexPosition();
    G4double* originParams;
@@ -161,7 +164,7 @@ G4double* FCCSmearer::Atlfast(const G4Track* aTrackOriginal)
    double impactParameter = originParams[0] + smearVariables[0]; // [0]
    double zPerigee = originParams[1] + smearVariables[1]; //[1]
    double Phi = CheckPhi(originParams[2] + smearVariables[2]); //[2]
-      double cotTheta = originParams[3] + smearVariables[3] ; //[3]
+   double cotTheta = originParams[3] + smearVariables[3] ; //[3]
    double invPtCharge = originParams[4] + smearVariables[4]; // q/pT where q = q/|q| (just sign) //[4]
 
    G4double* params = new G4double[5];
