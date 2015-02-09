@@ -35,11 +35,12 @@ G4double FCCDetectorParametrisation::GetResolution(Detector aDetector, Parametri
          res = 0.01;
          break;
       case FCCDetectorParametrisation::eEMCAL:
-         res = sqrt(pow(0.18/sqrt(aMomentum),2) // stochastic
-                    + pow(0.009,2));      // constant
+         res = sqrt(pow(0.1/sqrt(aMomentum),2) // stochastic
+                    + pow(0.0017,2));      // constant
          break;
       case FCCDetectorParametrisation::eHCAL:
-         res = 0.85/sqrt(aMomentum); // stochastic
+         res = sqrt(pow(0.55/sqrt(aMomentum),2) // stochastic
+                    + pow(0.06,2));      // constant
          break;
       }
    }
@@ -51,12 +52,11 @@ G4double FCCDetectorParametrisation::GetResolution(Detector aDetector, Parametri
          res = 0.01;
          break;
       case FCCDetectorParametrisation::eEMCAL:
-         res = sqrt(pow(0.1/sqrt(aMomentum),2) // stochastic
-                    + pow(0.17,2));      // constant
+         res = sqrt(pow(0.18/sqrt(aMomentum),2) // stochastic
+                    + pow(0.009,2));      // constant
          break;
       case FCCDetectorParametrisation::eHCAL:
-         res = sqrt(pow(0.55/sqrt(aMomentum),2) // stochastic
-                    + pow(0.06,2));      // constant
+         res = 0.85/sqrt(aMomentum); // stochastic
          break;
       }
    }

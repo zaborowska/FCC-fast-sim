@@ -104,6 +104,7 @@ void FCCFastSimModelEMCal::DoIt(const G4FastTrack& aFastTrack,
                                            (aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalResolution(res);
          ((FCCPrimaryParticleInformation*)(const_cast<G4PrimaryParticle*>
                                            (aFastTrack.GetPrimaryTrack()->GetDynamicParticle()->GetPrimaryParticle())->GetUserInformation()))->SetEMCalEfficiency(eff);
+         aFastStep.ProposeTotalEnergyDeposited(Esm);
       }
       else
       {
