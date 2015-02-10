@@ -23,8 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-
-#include "MCParticle.h"
 // ROOT
 #include "TBranch.h"
 #include "TFile.h"
@@ -35,11 +33,6 @@
 // STL
 #include <vector>
 #include <iostream>
-
-// albers specific includes
-#include "albers/EventStore.h"
-#include "albers/Writer.h"
-#include "albers/Registry.h"
 
 #include "FCCActionInitialization.hh"
 #include "G4GlobalFastSimulationManager.hh"

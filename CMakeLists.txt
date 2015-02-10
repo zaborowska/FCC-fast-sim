@@ -54,6 +54,13 @@ set(CMAKE_PREFIX_PATH $ENV{ALBERS} $ENV{FCCEDM})
 find_package(alberscore REQUIRED)
 find_package(fccedm REQUIRED)
 
+message(STATUS "alberscore: ${ALBERSCORE_INCLUDE_DIRS}")
+message(STATUS "alberscore: ${ALBERSCORE_LIBRARIES}")
+message(STATUS "alberscore: ${ALBERSCORE_EXECUTABLE}")
+message(STATUS "fccedm: ${FCCEDM_INCLUDE_DIRS}")
+message(STATUS "fccedm: ${FCCEDM_LIBRARIES}")
+message(STATUS "fccedm: ${FCCEDM_EXECUTABLE}")
+
 #----------------------------------------------------------------------------
 # add a target to generate API documentation with Doxygen
 #
@@ -100,7 +107,8 @@ target_link_libraries(FCCfastsim ${Geant4_LIBRARIES}
                        ${PYTHIA8_LIBRARY}
                        ${PYTHIA8_HEPMC_LIBRARY} ${PYTHIA8_HAPDF_LIBRARY}
                        HepMCdict ${ROOT_LIBRARIES}
-                       utilities datamodel albers)
+                       utilities datamodel albers
+)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory
