@@ -24,6 +24,23 @@
 // ********************************************************************
 //
 
+#include "MCParticle.h"
+// ROOT
+#include "TBranch.h"
+#include "TFile.h"
+#include "TTree.h"
+#include "TROOT.h"
+#include "TLorentzVector.h"
+
+// STL
+#include <vector>
+#include <iostream>
+
+// albers specific includes
+#include "albers/EventStore.h"
+#include "albers/Writer.h"
+#include "albers/Registry.h"
+
 #include "FCCActionInitialization.hh"
 #include "G4GlobalFastSimulationManager.hh"
 #include "FCCDetectorConstruction.hh"

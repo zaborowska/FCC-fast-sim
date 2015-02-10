@@ -5,6 +5,12 @@ project(FCCfastsim)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
+set(CPP11FLAGS "-std=c++11")
+if (${APPLE})
+    set(CPP11FLAGS "-std=c++11\ -stdlib=libc++")
+endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -DDROP_CGAL ${CPP11FLAGS} -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-unused-parameter")
+
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
 # You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
@@ -41,6 +47,14 @@ endif()
 find_package(ROOT REQUIRED)
 
 #----------------------------------------------------------------------------
+# Find FCC-EDM packages
+#
+set(CMAKE_PREFIX_PATH $ENV{ALBERS} $ENV{FCCEDM})
+
+find_package(alberscore REQUIRED)
+find_package(fccedm REQUIRED)
+
+#----------------------------------------------------------------------------
 # add a target to generate API documentation with Doxygen
 #
 find_package(Doxygen)
@@ -64,7 +78,9 @@ include_directories(${PROJECT_SOURCE_DIR}/include/FCCMain
                     ${Geant4_INCLUDE_DIR}
                     ${HEPMC_INCLUDE_DIR}
                     ${PYTHIA8_INCLUDE_DIR}
-                    ${ROOT_INCLUDE_DIR})
+                    ${ROOT_INCLUDE_DIR}
+                    ${ALBERSCORE_INCLUDE_DIRS}
+                    ${FCCEDM_INCLUDE_DIRS})
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*/*.cc ${PROJECT_SOURCE_DIR}/src/*/*/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*/*.hh ${PROJECT_SOURCE_DIR}/include/*/*/*.hh)
 
@@ -83,7 +99,8 @@ target_link_libraries(FCCfastsim ${Geant4_LIBRARIES}
                       ${HEPMC_LIBRARIES}
                        ${PYTHIA8_LIBRARY}
                        ${PYTHIA8_HEPMC_LIBRARY} ${PYTHIA8_HAPDF_LIBRARY}
-                       HepMCdict ${ROOT_LIBRARIES})
+                       HepMCdict ${ROOT_LIBRARIES}
+                       utilities datamodel albers)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory
