@@ -5,11 +5,11 @@ project(FCCfastsim)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
-set(CPP11FLAGS "-std=c++11")
-if (${APPLE})
-    set(CPP11FLAGS "-std=c++11\ -stdlib=libc++")
-endif()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -DDROP_CGAL ${CPP11FLAGS} -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-unused-parameter")
+# set(CPP11FLAGS "-std=c++11")
+# if (${APPLE})
+#     set(CPP11FLAGS "-std=c++11\ -stdlib=libc++")
+# endif()
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -DDROP_CGAL ${CPP11FLAGS} -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-unused-parameter")
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default

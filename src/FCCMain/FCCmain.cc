@@ -23,17 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// ROOT
-#include "TBranch.h"
-#include "TFile.h"
-#include "TTree.h"
-#include "TROOT.h"
-#include "TLorentzVector.h"
-
-// STL
-#include <vector>
-#include <iostream>
-
 #include "FCCActionInitialization.hh"
 #include "G4GlobalFastSimulationManager.hh"
 #include "FCCDetectorConstruction.hh"
