@@ -7,6 +7,14 @@
 #include "G4SystemOfUnits.hh"
 #include "g4root.hh"
 
+// albers specific includes
+#include "albers/EventStore.h"
+#include "albers/Registry.h"
+#include "albers/Writer.h"
+// Data model
+#include "datamodel/EventInfoCollection.h"
+#include "datamodel/MCParticleCollection.h"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 FCCOutput* FCCOutput::fFCCOutput = 0;
 
@@ -60,6 +68,14 @@ void FCCOutput::StartAnalysis(G4int aRunID)
    analysisManager->SetVerboseLevel(1);
    analysisManager->SetFileName(fFileName);
    analysisManager->OpenFile(fFileName);
+
+   albers::Registry   registry;
+   albers::EventStore store(&registry);
+   albers::Writer     writer("simpleexample.root", &registry);
+   EventInfoCollection& evinfocoll = store.create<EventInfoCollection>("EventInfo");
+   MCParticleCollection& pcoll = store.create<MCParticleCollection>("MCParticle");
+   writer.registerForWrite<EventInfoCollection>("EventInfo");
+   writer.registerForWrite<MCParticleCollection>("MCParticle");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -68,6 +84,8 @@ void FCCOutput::EndAnalysis()
    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
    analysisManager->Write();
    analysisManager->CloseFile();
+   // writer.writeEvent();
+   // store.next();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
